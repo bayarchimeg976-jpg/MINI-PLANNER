@@ -29,10 +29,13 @@
         <i class="fa-solid fa-lock"></i>
       </div>
       <h2 class="text-2xl font-bold mb-2">Төлөвлөгч-2026</h2>
-      <p class="text-sm text-gray-500 mb-6">Нэвтрэх утасны дугаараа оруулна уу:</p>
-      <input type="tel" id="login-phone" placeholder="Утасны дугаар (жишээ: 99563946)" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <p class="text-sm text-gray-500 mb-6">Бүртгэлтэй утасны дугаар эсвэл имэйл хаягаараа нэвтэрнэ үү:</p>
+      
+      <!-- Нэвтрэх input (Утас эсвэл Имэйл) -->
+      <input type="text" id="login-identifier" placeholder="Утас (жишээ: 00000000) эсвэл Имэйл" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      
       <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition shadow-md">Нэвтрэх</button>
-      <p id="login-error" class="text-red-500 text-xs mt-3 hidden">Бүртгэлгүй эсвэл буруу дугаар байна!</p>
+      <p id="login-error" class="text-red-500 text-xs mt-3 hidden">Бүртгэлгүй эсвэл буруу утга байна!</p>
     </div>
   </div>
 
@@ -52,7 +55,7 @@
         <span id="user-display-phone" class="text-xs text-gray-500">-</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap">
-        <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-600">VIP</span>
+        <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-600">БАЗА</span>
         
         <!-- 📊 EXCEL НӨӨЦЛӨХ БОЛОН СЭРГЭЭХ ТОВЧЛУУРУУД -->
         <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold transition" title="Датагаа Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
@@ -73,7 +76,7 @@
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'sidehustle')">💡 Нэмэлт орлого</button>
+      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
     </div>
 
     <!-- 1. ӨДРИЙН АЖИЛ -->
@@ -192,31 +195,35 @@
       </div>
     </div>
 
-    <!-- 6. 🎓 ОНЛАЙН КУРСУУД -->
+    <!-- 6. 🎓 ОНЛАЙН КУРСУУД (MASTER БАГЦИЙН ЭКСКЛЮЗИВ АГУУЛГА) -->
     <div id="courses-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-indigo-600"></i> Онлайн курс & Суралцах явц хянагч</h4>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <input type="text" id="course-name" placeholder="Курсын нэр (Жишээ нь: Python сургалт)..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-indigo-600"></i> Онлайн курс & Суралцах явц хянагч</h4>
+        <p id="course-lock-msg" class="text-xs text-rose-500 mb-4 hidden">⚠️ Энэхүү эксклюзив сургалтуудыг үзэх болон нэмэх эрх зөвхөн <b>МАСТЕР БАГЦ (29,900₮)</b>-д нээгдэнэ.</p>
+        <p id="course-master-notice" class="text-xs text-emerald-600 mb-4">✨ Мастер багцын тусгай курсууд болон ахиц хянагч:</p>
+        
+        <div id="course-form-box" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <input type="text" id="course-name" placeholder="Курсын нэр..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
           <input type="number" id="course-lessons" placeholder="Нийт хичээлийн тоо..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
         </div>
-        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addCourse()">Курс нэмэх</button>
+        <button id="course-add-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addCourse()">Курс нэмэх</button>
+        
         <div id="courses-list" class="space-y-3"></div>
       </div>
     </div>
 
-    <!-- 7. 💡 НЭМЭЛТ ОРЛОГО ОЛОХ БОЛОМЖТОЙ САНААНУУД -->
+    <!-- 7. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО -->
     <div id="sidehustle-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-lightbulb text-amber-500"></i> Нэмэлт орлого олох боломжтой санаанууд (Side Hustle Ideas)</h4>
-        <p class="text-xs text-gray-500 mb-4">Өөрийн хийж чадах чөлөөт цагаараа нэмэлт орлого олох санаануудаа бүртгэж, хэрэгжүүлэлтээ хянаарай.</p>
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Аффилэт болон Нэмэлт Орлого Олох Боломж</h4>
+        <p class="text-xs text-gray-500 mb-4">Өөрийн аффилэт линк, санал болгох бүтээгдэхүүнүүд болон нэмэлт орлогын урсгалаа бүртгэж, тооцооллоо хянаарай.</p>
         
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <input type="text" id="sh-title" placeholder="Санааны нэр (Жишээ нь: График дизайн)..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="text" id="sh-title" placeholder="Бүтээгдэхүүн / Аффилэт санаа..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
           <input type="text" id="sh-potential" placeholder="Тооцоолсон орлого (₮)..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
         </div>
-        <textarea id="sh-desc" placeholder="Хэрэгжүүлэх төлөвлөгөө болон шаардлагатай алхмууд..." rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addSideHustle()">Санаа нэмэх</button>
+        <textarea id="sh-desc" placeholder="Аффилэт линк, сурталчилгаа хийх суваг болон хэрэгжүүлэх төлөвлөгөө..." rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addSideHustle()">Орлогын эх үүсвэр нэмэх</button>
         
         <div id="sidehustle-list" class="space-y-3"></div>
       </div>
@@ -225,14 +232,20 @@
   </div>
 
   <script>
-    // 1. ХЭРЭГЛЭГЧИЙН БАЗА (Бүх хэрэглэгчид & багц)
+    // 1. ХЭРЭГЛЭГЧИЙН БАЗА (Өгөгдсөн шаардлагын дагуу 2 багцтай, мэйл болон утсаар орох боломжтой)
+    // Утасны жишээ дугаар дээр 00000000 байх бөгөөд имэйл хаягаар мөн нэвтрэх боломжтой болголоо.
     const usersDatabase = {
-      "99563946": { name: "Түвшинбаяр Баярчимэг", package: "VIP" },
-      "99392981": { name: "Мэндбаяр", package: "MASTER" },
-      "95335368": { name: "Баяраа", package: "BASIC" },
-      "88112233": { name: "Болд", package: "VIP" },
-      "99112233": { name: "Сарнай", package: "MASTER" },
-      "98112233": { name: "Ганзориг", package: "BASIC" }
+      // Мастер багц (29,900₮) - Дотроо "Далд ухамсар ба эрүүл мэнд", "Талархалын шид", "Аз жаргалтай мөнгө", "21 өдрийн челленж" курсуудтай
+      "00000000": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", email: "master@planner.mn" },
+      "master@planner.mn": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", phone: "00000000" },
+
+      // Суурь үндсэн багц (19,900₮)
+      "11111111": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", email: "basic@planner.mn" },
+      "basic@planner.mn": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", phone: "11111111" },
+
+      // Нэмэлт туршилтын хэрэглэгчид
+      "99563946": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", email: "tuvshinbayar@planner.mn" },
+      "tuvshinbayar@planner.mn": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", phone: "99563946" }
     };
 
     let currentPhone = null;
@@ -274,15 +287,15 @@
       if (itemDate) itemDate.valueAsDate = new Date();
 
       // Сесшн шалгах
-      const savedPhone = localStorage.getItem("planner_user_phone");
-      if (savedPhone && usersDatabase[savedPhone]) {
-        initApp(savedPhone);
+      const savedKey = localStorage.getItem("planner_user_key");
+      if (savedKey && usersDatabase[savedKey]) {
+        initApp(savedKey);
       }
     });
 
     // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ
-    function loadUserDataFromStorage(phone) {
-      const saved = localStorage.getItem("planner_data_" + phone);
+    function loadUserDataFromStorage(key) {
+      const saved = localStorage.getItem("planner_data_" + key);
       if (saved) {
         try {
           userData = JSON.parse(saved);
@@ -293,6 +306,16 @@
         }
       } else {
         userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
+        
+        // Хэрэв Мастер багц бол анх ороход шаардлагатай тусгай 4 курсыг автоматаар нэмж өгнө
+        if (currentUser.package === 'MASTER') {
+          userData.coursesData = [
+            { name: "✨ Далд ухамсар ба эрүүл мэнд", totalLessons: 14, completedLessons: 0 },
+            { name: "💖 Талархалын шид", totalLessons: 7, completedLessons: 0 },
+            { name: "💰 Аз жаргалтай мөнгө", totalLessons: 21, completedLessons: 0 },
+            { name: "🚀 21 Өдрийн челленж", totalLessons: 21, completedLessons: 0 }
+          ];
+        }
       }
       renderAll();
     }
@@ -355,12 +378,12 @@
       const wsCourses = XLSX.utils.json_to_sheet(courseRows.length ? courseRows : [{"№": "", "Курсын нэр": "Хоосон байна", "Нийт хичээл": 0, "Үзсэн хичээл": 0, "Гүйцэтгэл (%)": "0%"}]);
       XLSX.utils.book_append_sheet(wb, wsCourses, "Онлайн курс");
 
-      // 7. Нэмэлт орлогын санаанууд
+      // 7. Аффилэт ба орлого
       const shRows = (userData.sideHustleData || []).map((sh, i) => ({
-        "№": i + 1, "Санааны нэр": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
+        "№": i + 1, "Бүтээгдэхүүн/Санаа": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
       }));
-      const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Санааны нэр": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
-      XLSX.utils.book_append_sheet(wb, wsSh, "Нэмэлт орлого");
+      const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Бүтээгдэхүүн/Санаа": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsSh, "Аффилэт ба Орлого");
 
       // Файл татаж авах
       XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
@@ -386,7 +409,6 @@
             sideHustleData: []
           };
 
-          // 1. Өдрийн ажил унших
           if (workbook.Sheets["Өдрийн ажил"]) {
             const jsonDaily = XLSX.utils.sheet_to_json(workbook.Sheets["Өдрийн ажил"]);
             newUserData.taskData.daily = jsonDaily.map(row => ({
@@ -396,7 +418,6 @@
             })).filter(t => t.text && t.text !== "Хоосон байна");
           }
 
-          // 2. 7 хоногийн ажил унших
           if (workbook.Sheets["7 хоногийн ажил"]) {
             const jsonWeekly = XLSX.utils.sheet_to_json(workbook.Sheets["7 хоногийн ажил"]);
             newUserData.taskData.weekly = jsonWeekly.map(row => ({
@@ -406,7 +427,6 @@
             })).filter(t => t.text && t.text !== "Хоосон байна");
           }
 
-          // 3. Санхүү унших
           if (workbook.Sheets["Санхүү"]) {
             const jsonFin = XLSX.utils.sheet_to_json(workbook.Sheets["Санхүү"]);
             const revCat = { 'Орлого': 'inc', 'Зардал': 'exp', 'Өр зээл': 'debt', 'Хуримтлал': 'sav' };
@@ -418,7 +438,6 @@
             })).filter(f => f.source);
           }
 
-          // 4. Өгсөн / Авсан унших
           if (workbook.Sheets["Өгсөн-Авсан"]) {
             const jsonItems = XLSX.utils.sheet_to_json(workbook.Sheets["Өгсөн-Авсан"]);
             newUserData.itemsData = jsonItems.map(row => ({
@@ -431,7 +450,6 @@
             })).filter(i => i.person);
           }
 
-          // 5. Онлайн курс унших
           if (workbook.Sheets["Онлайн курс"]) {
             const jsonCourses = XLSX.utils.sheet_to_json(workbook.Sheets["Онлайн курс"]);
             newUserData.coursesData = jsonCourses.map(row => ({
@@ -441,11 +459,10 @@
             })).filter(c => c.name && c.name !== "Хоосон байна");
           }
 
-          // 6. Нэмэлт орлого унших
-          if (workbook.Sheets["Нэмэлт орлого"]) {
-            const jsonSh = XLSX.utils.sheet_to_json(workbook.Sheets["Нэмэлт орлого"]);
+          if (workbook.Sheets["Аффилэт ба Орлого"]) {
+            const jsonSh = XLSX.utils.sheet_to_json(workbook.Sheets["Аффилэт ба Орлого"]);
             newUserData.sideHustleData = jsonSh.map(row => ({
-              title: row["Санааны нэр"] || "",
+              title: row["Бүтээгдэхүүн/Санаа"] || "",
               potential: row["Тооцоолсон орлого"] || "",
               desc: row["Тэмдэглэл"] || "",
               status: row["Төлөв"] || "pending"
@@ -464,35 +481,64 @@
       reader.readAsArrayBuffer(file);
     }
 
-    // 4. НЭВТРЭХ & СЕСШН ЛОГИК
+    // 4. НЭВТРЭХ & СЕСШН ЛОГИК (Утас эсвэл Имэйлээр нэвтрэх)
     function handleLogin() {
-      const phoneInput = document.getElementById("login-phone").value.trim();
+      const identifier = document.getElementById("login-identifier").value.trim().toLowerCase();
       const errorEl = document.getElementById("login-error");
-      if (usersDatabase[phoneInput]) {
-        localStorage.setItem("planner_user_phone", phoneInput);
-        initApp(phoneInput);
+      
+      // Хэрэв имэйл эсвэл утасны дугаараар базе дотроос хайх
+      let foundKey = null;
+      if (usersDatabase[identifier]) {
+        foundKey = identifier;
+      } else {
+        // Имэйл болон утас хосолсон объектоос хайх
+        for (let key in usersDatabase) {
+          if (key.toLowerCase() === identifier || 
+              (usersDatabase[key].email && usersDatabase[key].email.toLowerCase() === identifier) ||
+              (usersDatabase[key].phone && usersDatabase[key].phone === identifier)) {
+            foundKey = key;
+            break;
+          }
+        }
+      }
+
+      if (foundKey) {
+        // Хэрэв имэйлээр орсон бол гол түлхүүрийг нь олж хадгалах
+        let realKey = foundKey;
+        if (usersDatabase[foundKey].email && usersDatabase[foundKey].email.toLowerCase() === identifier && !usersDatabase[identifier]) {
+          // Хэрэв имэйл түлхүүр байвал
+          realKey = foundKey;
+        }
+        localStorage.setItem("planner_user_key", realKey);
+        initApp(realKey);
       } else {
         errorEl.style.display = "block";
       }
     }
 
     function logout() {
-      localStorage.removeItem("planner_user_phone");
+      localStorage.removeItem("planner_user_key");
       location.reload();
     }
 
-    function initApp(phone) {
-      currentPhone = phone;
-      currentUser = usersDatabase[phone];
+    function initApp(key) {
+      currentPhone = key;
+      currentUser = usersDatabase[key];
       document.getElementById("login-overlay").style.display = "none";
       document.getElementById("app-container").classList.remove("hidden");
       document.getElementById("user-display-name").innerText = currentUser.name;
-      document.getElementById("user-display-phone").innerText = phone;
+      document.getElementById("user-display-phone").innerText = currentUser.phone ? `Утас: ${currentUser.phone}` : `Имэйл: ${currentUser.email || key}`;
       
       const badge = document.getElementById("user-pkg-badge");
-      badge.innerText = currentUser.package + " БАГЦ";
+      if (currentUser.package === 'MASTER') {
+        badge.innerText = `МАСТЕР БАГЦ (${currentUser.price || '29,900₮'})`;
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-600";
+      } else {
+        badge.innerText = `СУУРЬ БАГЦ (${currentUser.price || '19,900₮'})`;
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-blue-600";
+      }
 
-      loadUserDataFromStorage(phone);
+      loadUserDataFromStorage(key);
     }
 
     function renderAll() {
@@ -778,8 +824,12 @@
       });
     }
 
-    // 9. 🎓 ОНЛАЙН КУРСУУД
+    // 9. 🎓 ОНЛАЙН КУРСУУД (MASTER БАГЦ ТУСГАЙ АГУУЛГА)
     function addCourse() {
+      if (currentUser.package !== 'MASTER') {
+        alert("Та Суурь багцтай байна. Энэхүү онлайн сургалтын модулийг ашиглахын тулд Мастер багц руу (29,900₮) шилжинэ үү.");
+        return;
+      }
       const name = document.getElementById("course-name").value.trim();
       const lessons = parseInt(document.getElementById("course-lessons").value);
 
@@ -800,6 +850,7 @@
     }
 
     function updateCourseProgress(index, change) {
+      if (currentUser.package !== 'MASTER') return;
       let course = userData.coursesData[index];
       course.completedLessons += change;
       if (course.completedLessons < 0) course.completedLessons = 0;
@@ -810,6 +861,7 @@
     }
 
     function deleteCourse(index) {
+      if (currentUser.package !== 'MASTER') return;
       userData.coursesData.splice(index, 1);
       saveUserData();
       renderCourses();
@@ -817,7 +869,38 @@
 
     function renderCourses() {
       const container = document.getElementById("courses-list");
+      const lockMsg = document.getElementById("course-lock-msg");
+      const masterNotice = document.getElementById("course-master-notice");
+      const formBox = document.getElementById("course-form-box");
+      const addBtn = document.getElementById("course-add-btn");
+
       if (!container) return;
+
+      // Хэрэв хэрэглэгч СУУРЬ БАГЦ тай байвал курсууд хаалттай байна
+      if (currentUser.package !== 'MASTER') {
+        lockMsg.classList.remove("hidden");
+        masterNotice.classList.add("hidden");
+        formBox.classList.add("hidden");
+        addBtn.classList.add("hidden");
+        container.innerHTML = `
+          <div class="p-6 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center space-y-3">
+            <div class="text-3xl text-purple-600"><i class="fa-solid fa-lock"></i></div>
+            <h5 class="font-bold text-gray-800">Мастер багцын эксклюзив онлайн курсууд</h5>
+            <p class="text-xs text-gray-500 max-w-md mx-auto">
+              Энэхүү хэсэгт <b>Далд ухамсар ба эрүүл мэнд</b>, <b>Талархалын шид</b>, <b>Аз жаргалтай мөнгө</b>, <b>21 Өдрийн челленж</b> зэрэг гүнзгийрүүлсэн сургалтууд багтдаг. Мастер багц (29,900₮)-аар эрхээ идэвхжүүлж бүх сургалтаа үзээрэй.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      // МАСТЕР БАГЦЫН ҮЕД ҮЗҮҮЛЭХ ХЭСЭГ
+      lockMsg.classList.add("hidden");
+      masterNotice.classList.remove("hidden");
+      formBox.classList.remove("grid");
+      formBox.classList.remove("hidden");
+      formBox.style.display = "grid";
+      addBtn.style.display = "block";
       container.innerHTML = "";
 
       const courses = userData.coursesData || [];
@@ -846,7 +929,7 @@
       });
     }
 
-    // 10. 💡 НЭМЭЛТ ОРЛОГО ОЛОХ БОЛОМЖТОЙ САНААНУУД
+    // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО (AFFILIATE & SIDE HUSTLE)
     function addSideHustle() {
       const title = document.getElementById("sh-title").value.trim();
       const potential = document.getElementById("sh-potential").value.trim();
@@ -895,8 +978,8 @@
       items.forEach((sh, idx) => {
         let statusBadge = '';
         if (sh.status === 'pending') statusBadge = '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">⏳ Төлөвлөж буй</span>';
-        else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold">🚀 Хэрэгжүүлж буй</span>';
-        else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold">✅ Ашиг олж эхэлсэн</span>';
+        else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold">🚀 Линк цацсан / Идэвхтэй</span>';
+        else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold">✅ Шимтгэл авсан</span>';
 
         const div = document.createElement("div");
         div.className = "p-4 bg-white border border-gray-200 rounded-xl space-y-2 shadow-2xs";
@@ -904,7 +987,7 @@
           <div class="flex justify-between items-start">
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <b class="text-sm text-gray-800">${sh.title}</b>
+                <b class="text-sm text-gray-800">🔗 ${sh.title}</b>
                 ${statusBadge}
               </div>
               <p class="text-xs text-gray-600 mb-1">${sh.desc}</p>
