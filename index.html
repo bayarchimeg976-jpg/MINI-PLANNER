@@ -9,8 +9,9 @@
       --primary: #2b6cb0;
       --accent: #d69e2e;
       --bg: #faf9f6;
+      --card-bg: #ffffff;
       --text: #2d3748;
-      --lock-bg: #edf2f7;
+      --gray: #e2e8f0;
     }
 
     body {
@@ -18,186 +19,275 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 15px;
+      padding: 0;
     }
 
-    /* Хэрэглэгчийн эрхийн баннер */
-    .user-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
-      color: white;
-      margin-bottom: 10px;
-    }
-    .badge-BASIC { background-color: #718096; }
-    .badge-MASTER { background-color: #d69e2e; }
-    .badge-VIP { background-color: #805ad5; }
-
-    /* Таб цэс */
-    .nav-tabs {
+    /* Нэвтрэх дэлгэц */
+    #login-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
       display: flex;
-      gap: 10px;
-      border-bottom: 2px solid #e2e8f0;
-      margin-bottom: 20px;
-    }
-    .tab-btn {
-      padding: 8px 16px;
-      border: none;
-      background: none;
-      font-weight: bold;
-      cursor: pointer;
-      color: #718096;
-    }
-    .tab-btn.active {
-      color: var(--primary);
-      border-bottom: 2px solid var(--primary);
-    }
-
-    /* Картуудын дизайн */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px;
-    }
-    .course-card {
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      border: 1px solid #e2e8f0;
-      position: relative;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    /* Цоожтой контентын стиль */
-    .locked {
-      background-color: var(--lock-bg);
-      opacity: 0.85;
-    }
-    .lock-overlay {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      margin-top: 10px;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 8px;
-      border: 1px dashed #cbd5e0;
+      align-items: center;
+      z-index: 999;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 12px 0;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 16px;
       text-align: center;
     }
-    .upgrade-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 8px;
-      text-decoration: none;
-    }
-
-    .btn-download {
-      display: inline-block;
+    .login-box button {
+      width: 100%;
+      padding: 10px;
       background: var(--primary);
       color: white;
-      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Үндсэн Апп Контейнер */
+    .app-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--gray);
+    }
+    .user-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      color: white;
+    }
+    .badge-BASIC { background: #718096; }
+    .badge-MASTER { background: #d69e2e; }
+    .badge-VIP { background: #805ad5; }
+
+    /* Навигаци Таб */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 15px 0;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 14px;
+      border: none;
+      background: #edf2f7;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      color: #4a5568;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Карт ба Модуль стилүүд */
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid var(--gray);
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .input-group input, .input-group select {
+      padding: 8px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      flex: 1;
+    }
+    .btn-add {
+      background: #38a169;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Цоожтой Хэсгийн Стил */
+    .locked-card {
+      background: #f7fafc;
+      border: 1px dashed #cbd5e0;
+      position: relative;
+    }
+    .lock-overlay {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .upgrade-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
       border-radius: 6px;
       text-decoration: none;
-      font-size: 13px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    /* Дадал тоолуурын сүлжээ */
+    .habit-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
       margin-top: 10px;
+    }
+    .day-box {
+      border: 1px solid #cbd5e0;
+      padding: 8px;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .day-box.done {
+      background: #38a169;
+      color: white;
+      border-color: #38a169;
     }
   </style>
 </head>
 <body>
 
-  <!-- Нэвтэрсэн хэрэглэгчийн мэдээлэл -->
-  <div id="user-info">
-    <span id="user-name-display">Ачаалж байна...</span>
-    <span id="user-pkg-badge" class="user-badge"></span>
-  </div>
-
-  <!-- Үндсэн цэс -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('planner')">📅 Төлөвлөгч апп</button>
-    <button class="tab-btn" onclick="switchTab('courses')">🧠 Онлайн сургалт (MASTER)</button>
-    <button class="tab-btn" onclick="switchTab('vip')">👑 VIP Бүлэг</button>
-  </div>
-
-  <!-- 1. ТӨЛӨВЛӨГЧ АПП (БҮХ БАГЦАД НЭЭЛТТЭЙ) -->
-  <div id="planner-sec" class="tab-content">
-    <h2>📅 Төлөвлөгч ба Санхүүгийн Модуль</h2>
-    <p>Энэхүү хэсэг нь <b>BASIC</b>, <b>MASTER</b>, <b>VIP</b> бүх хэрэглэгчдэд нээлттэй.</p>
-    <!-- Таны одоогийн төлөвлөгчийн код энд байрлана -->
-    <div class="course-card">
-      31 хоногийн дадал тоолуур & Санхүүгийн хяналтын систем...
+  <!-- 🔑 НЭВТРЭХ ЦОНХ -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <h2>Төлөвлөгч-2026</h2>
+      <p>Нэвтрэх утасны дугаараа оруулна уу:</p>
+      <input type="tel" id="login-phone" placeholder="Утасны дугаар (дээж: 99563946)" />
+      <button onclick="handleLogin()">Нэвтрэх</button>
+      <p id="login-error" style="color: red; display: none; margin-top: 10px; font-size: 13px;">Дугаар олдсонгүй!</p>
     </div>
   </div>
 
-  <!-- 2. МАС ТЕР БАГЦЫН СУРГАЛТУУД -->
-  <div id="courses-sec" class="tab-content" style="display:none;">
-    <h2>🧠 Мастер Багцын Дижитал Хичээлүүд</h2>
-    <div class="card-grid">
+  <!-- 📱 ҮНДСЭН АПП -->
+  <div class="app-container">
+    <div class="header">
+      <div>
+        <h3 id="user-display-name" style="margin: 0;">Хэрэглэгч</h3>
+        <span id="user-display-phone" style="font-size: 12px; color: #718096;">-</span>
+      </div>
+      <div>
+        <span id="user-pkg-badge" class="user-badge"></span>
+        <button onclick="logout()" style="margin-left: 8px; padding: 4px 8px; font-size: 11px;">Гарах</button>
+      </div>
+    </div>
 
-      <!-- Хичээл 1 -->
-      <div class="course-card" id="card-course-1">
-        <h3>📘 "Далд ухамсарын хүч" PDF Гарын авлага</h3>
-        <p>Далд ухамсараа дахин програмчилж, зорилгодоо хүрэх гарын авлага.</p>
-        <div class="content-box">
-          <a href="#" class="btn-download">📄 Татах (PDF)</a>
+    <!-- ТАБ ЦЭСҮҮД -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'planner')">📅 Төлөвлөгч & Дадал</button>
+      <button class="tab-btn" onclick="switchTab(event, 'finance')">💰 Санхүү</button>
+      <button class="tab-btn" onclick="switchTab(event, 'courses')">🧠 Сургалтууд (MASTER)</button>
+      <button class="tab-btn" onclick="switchTab(event, 'vip')">👑 VIP Клуб</button>
+    </div>
+
+    <!-- 1. ТӨЛӨВЛӨГЧ & ДАДАЛ (БҮХ БАГЦ) -->
+    <div id="planner-sec" class="tab-content">
+      <div class="card">
+        <h4>📝 Өдрийн Төлөвлөгөө ба Хийх зүйлс</h4>
+        <div class="input-group">
+          <input type="text" id="todo-input" placeholder="Шинэ ажил нэмэх..." />
+          <button class="btn-add" onclick="addTodo()">Нэмэх</button>
         </div>
+        <ul id="todo-list" style="padding-left: 20px;"></ul>
       </div>
 
-      <!-- Хичээл 2 -->
-      <div class="course-card" id="card-course-2">
-        <h3>🎧 "Далд ухамсарын медитаци" Аудио</h3>
-        <p>Өглөө ба оройд сонсох бясалгалын аудио хичээл.</p>
+      <div class="card">
+        <h4>🔄 31 Хоногийн Дадал Тоолуур</h4>
+        <p style="font-size: 12px; color: #718096;">Өдөр бүр хийсэн бол нүдэн дээр дарж ногоон болгоорой.</p>
+        <div class="habit-grid" id="habit-boxes"></div>
+      </div>
+    </div>
+
+    <!-- 2. САНХҮҮГИЙН МОДУЛЬ (БҮХ БАГЦ) -->
+    <div id="finance-sec" class="tab-content" style="display:none;">
+      <div class="card">
+        <h4>💰 Орлого & Зарлагын Хяналт</h4>
+        <div class="input-group">
+          <input type="text" id="fin-desc" placeholder="Гүйлгээний утга..." />
+          <input type="number" id="fin-amount" placeholder="Дүн (₮)..." />
+          <select id="fin-type">
+            <option value="inc">Орлого (+)</option>
+            <option value="exp">Зарлага (-)</option>
+          </select>
+          <button class="btn-add" onclick="addFinance()">Бүртгэх</button>
+        </div>
+        <h5>Баланс: <span id="total-balance" style="color: #2b6cb0;">0 ₮</span></h5>
+        <ul id="finance-list" style="padding-left: 20px;"></ul>
+      </div>
+    </div>
+
+    <!-- 3. МАС ТЕР БАГЦЫН СУРГАЛТУУД -->
+    <div id="courses-sec" class="tab-content" style="display:none;">
+      <h3>🧠 Мастер Багцын Дижитал Хичээлүүд</h3>
+      <div class="card" id="card-course-1">
+        <h4>📘 "Далд ухамсарын хүч" PDF Гарын авлага</h4>
+        <p style="font-size: 13px;">Далд ухамсараа дахин програмчилж, зорилгодоо хүрэх гарын авлага.</p>
+        <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--primary);">📄 Татах (PDF)</a></div>
+      </div>
+      <div class="card" id="card-course-2">
+        <h4>🎧 "Далд ухамсарын медитаци" Аудио</h4>
+        <p style="font-size: 13px;">Өглөө ба оройд сонсох бясалгалын аудио хичээл.</p>
         <div class="content-box">
-          <audio controls style="width: 100%; margin-top: 10px;">
+          <audio controls style="width:100%; margin-top:8px;">
             <source src="meditation.mp3" type="audio/mpeg">
           </audio>
         </div>
       </div>
-
-      <!-- Хичээл 3 -->
-      <div class="course-card" id="card-course-3">
-        <h3>🙏 "21 хоногийн Талархлын хөтөч"</h3>
-        <p>Талархлын дадлаар амьдралын чанараа дээшлүүлэх нь.</p>
-        <div class="content-box">
-          <a href="#" class="btn-download">📄 Татах (PDF)</a>
-        </div>
-      </div>
-
-      <!-- Хичээл 4 -->
-      <div class="course-card" id="card-course-4">
-        <h3>💰 "Аз жаргалтай мөнгөний хууль"</h3>
-        <p>Сэтгэл зүй ба мөнгөний харилцааг сайжруулах цахим ном.</p>
-        <div class="content-box">
-          <a href="#" class="btn-download">📄 Татах (PDF)</a>
-        </div>
-      </div>
-
     </div>
-  </div>
 
-  <!-- 3. VIP БАГЦЫН ХЭСЭГ -->
-  <div id="vip-sec" class="tab-content" style="display:none;">
-    <h2>👑 VIP Мастер Клуб</h2>
-    <div class="course-card" id="card-vip-content">
-      <h3>👥 VIP Мессенжер & Телеграм Бүлэг</h3>
-      <p>Ганцаарчилсан зөвлөгөө авч, сар бүрийн 21 хоногийн чаленжид оролцох холбоос.</p>
-      <div class="content-box">
-        <a href="https://t.me/your_vip_group" target="_blank" class="btn-download" style="background:#805ad5;">💬 VIP Чатад нэгдэх</a>
+    <!-- 4. VIP БАГЦЫН ХЭСЭГ -->
+    <div id="vip-sec" class="tab-content" style="display:none;">
+      <h3>👑 VIP Мастер Клуб</h3>
+      <div class="card" id="card-vip-content">
+        <h4>👥 VIP Мессенжер & Телеграм Бүлэг</h4>
+        <p style="font-size: 13px;">Ганцаарчилсан зөвлөгөө авч, сар бүрийн 21 хоногийн чаленжид оролцох холбоос.</p>
+        <div class="content-box">
+          <a href="https://t.me/your_vip_group" target="_blank" class="upgrade-btn" style="background:#805ad5;">💬 VIP Чатад нэгдэх</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
     // ------------------------------------------------------------------
-    // 1. ХЭРЭГЛЭГЧИЙН ЭРХИЙН БҮРТГЭЛ (ҮҮНИЙГ ӨӨРЧЛӨЖ ТОХИРУУЛНА)
-    // Багцууд: "BASIC", "MASTER", "VIP"
+    // 1. БҮРТГЭЛТЭЙ УТАСНЫ ДУГААРЫН БАЗА (ЭДГЭЭРИЙГ ӨӨРЧЛӨЖ ТОХИРУУЛНА)
     // ------------------------------------------------------------------
     const usersDatabase = {
       "99563946": { name: "Түвшинбаяр", package: "VIP" },
@@ -205,46 +295,63 @@
       "99001122": { name: "Сараа", package: "BASIC" }
     };
 
-    // Одоо нэвтэрсэн байгаа хэрэглэгчийн утасны дугаар (Системээс автоматаар авна)
-    const currentUserPhone = "88112233"; // Тэст хийхдээ дугаарыг солиод үзээрэй
-
-    const currentUser = usersDatabase[currentUserPhone] || { name: "Зочин", package: "BASIC" };
+    let currentUser = null;
 
     // ------------------------------------------------------------------
-    // 2. ДЭЛГЭЦЭЭР ЭРХИЙГ ХЯНАЖ ЦООЖЛОХ ЛОГИК
+    // 2. НЭВТРЭХ & СЕСШН УПРАВЛЕНИ
     // ------------------------------------------------------------------
-    function applyPackagePermissions() {
-      // 1. Хэрэглэгчийн мэдээллийг харуулах
-      document.getElementById("user-name-display").innerText = currentUser.name + " (" + currentUserPhone + ") ";
+    function handleLogin() {
+      const phoneInput = document.getElementById("login-phone").value.trim();
+      if (usersDatabase[phoneInput]) {
+        localStorage.setItem("planner_user_phone", phoneInput);
+        initApp(phoneInput);
+      } else {
+        document.getElementById("login-error").style.display = "block";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("planner_user_phone");
+      location.reload();
+    }
+
+    function initApp(phone) {
+      currentUser = usersDatabase[phone];
+      document.getElementById("login-overlay").style.display = "none";
+      document.getElementById("user-display-name").innerText = currentUser.name;
+      document.getElementById("user-display-phone").innerText = phone;
+      
       const badge = document.getElementById("user-pkg-badge");
       badge.innerText = currentUser.package + " БАГЦ";
       badge.className = "user-badge badge-" + currentUser.package;
 
-      // 2. MASTER багцын контентыг шалгах
-      if (currentUser.package === "BASIC") {
-        lockModule("courses-sec", "Мастер", "29,000 ₮");
-      }
+      applyPermissions();
+      renderHabits();
+    }
 
-      // 3. VIP багцын контентыг шалгах
-      if (currentUser.package === "BASIC" || currentUser.package === "MASTER") {
-        lockModule("vip-sec", "VIP", "49,000 ₮");
+    // ------------------------------------------------------------------
+    // 3. БАГЦЫН ЭРХИЙГ ШАЛГАЖ ЦООЖЛОХ ЛОГИК
+    // ------------------------------------------------------------------
+    function applyPermissions() {
+      if (currentUser.package === "BASIC") {
+        lockSection("courses-sec", "Мастер", "29,000 ₮");
+        lockSection("vip-sec", "VIP", "49,000 ₮");
+      } else if (currentUser.package === "MASTER") {
+        lockSection("vip-sec", "VIP", "49,000 ₮");
       }
     }
 
-    // Модуль цоожлох функц
-    function lockModule(sectionId, requiredPackageName, upgradePrice) {
-      const section = document.getElementById(sectionId);
-      const cards = section.querySelectorAll(".course-card");
-
+    function lockSection(sectionId, packageName, price) {
+      const cards = document.querySelectorAll(`#${sectionId} .card`);
       cards.forEach(card => {
-        card.classList.add("locked");
-        const contentBox = card.querySelector(".content-box");
-        if (contentBox) {
-          contentBox.innerHTML = `
+        card.classList.add("locked-card");
+        const box = card.querySelector(".content-box");
+        if (box) {
+          box.innerHTML = `
             <div class="lock-overlay">
-              <span>🔒 Энэхүү агуулга <b>${requiredPackageName}</b> багцад нээгдэнэ.</span>
-              <a href="https://m.me/yourfacebookpage" class="upgrade-btn" target="_blank">
-                ${requiredPackageName} (${upgradePrice}) руу ахиулах
+              <span>🔒 Энэхүү агуулга <b>${packageName}</b> багцад нээгдэнэ.</span><br>
+              <a href="https://m.me/yourfacebookpage" target="_blank" class="upgrade-btn">
+                ${packageName} (${price}) руу ахиулах
               </a>
             </div>
           `;
@@ -252,23 +359,69 @@
       });
     }
 
-    // Таб шилжүүлэх функц
-    function switchTab(tabName) {
+    // ------------------------------------------------------------------
+    // 4. ҮНДСЭН ФУНКЦҮҮД (TODO, САНХҮҮ, ДАДАЛ)
+    // ------------------------------------------------------------------
+    function switchTab(evt, tabName) {
       document.querySelectorAll(".tab-content").forEach(el => el.style.display = "none");
       document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
-
-      if (tabName === 'planner') {
-        document.getElementById("planner-sec").style.display = "block";
-      } else if (tabName === 'courses') {
-        document.getElementById("courses-sec").style.display = "block";
-      } else if (tabName === 'vip') {
-        document.getElementById("vip-sec").style.display = "block";
-      }
-      event.target.classList.add("active");
+      document.getElementById(tabName + "-sec").style.display = "block";
+      evt.currentTarget.classList.add("active");
     }
 
-    // Систем ачаалагдахад эрхийг шалгах
-    window.onload = applyPackagePermissions;
+    function addTodo() {
+      const input = document.getElementById("todo-input");
+      if (!input.value) return;
+      const li = document.createElement("li");
+      li.innerText = input.value;
+      document.getElementById("todo-list").appendChild(li);
+      input.value = "";
+    }
+
+    let totalBalance = 0;
+    function addFinance() {
+      const desc = document.getElementById("fin-desc").value;
+      const amount = parseFloat(document.getElementById("fin-amount").value);
+      const type = document.getElementById("fin-type").value;
+
+      if (!desc || isNaN(amount)) return;
+
+      const li = document.createElement("li");
+      if (type === "inc") {
+        totalBalance += amount;
+        li.innerText = `+ ${desc}: ${amount.toLocaleString()} ₮`;
+        li.style.color = "green";
+      } else {
+        totalBalance -= amount;
+        li.innerText = `- ${desc}: ${amount.toLocaleString()} ₮`;
+        li.style.color = "red";
+      }
+
+      document.getElementById("total-balance").innerText = totalBalance.toLocaleString() + " ₮";
+      document.getElementById("finance-list").appendChild(li);
+      document.getElementById("fin-desc").value = "";
+      document.getElementById("fin-amount").value = "";
+    }
+
+    function renderHabits() {
+      const grid = document.getElementById("habit-boxes");
+      grid.innerHTML = "";
+      for (let i = 1; i <= 31; i++) {
+        const box = document.createElement("div");
+        box.className = "day-box";
+        box.innerText = i + "-өдөр";
+        box.onclick = function() { this.classList.toggle("done"); };
+        grid.appendChild(box);
+      }
+    }
+
+    // Систем ачаалагдахад сесшн шалгах
+    window.onload = function() {
+      const savedPhone = localStorage.getItem("planner_user_phone");
+      if (savedPhone && usersDatabase[savedPhone]) {
+        initApp(savedPhone);
+      }
+    };
   </script>
 </body>
 </html>
