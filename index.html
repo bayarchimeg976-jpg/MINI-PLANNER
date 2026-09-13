@@ -1,4 +1,130 @@
-<span id="user-pkg-badge" class="user-badge"></span>
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Төлөвлөгч-2026</title>
+  <!-- Firebase сангууд -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f7f6; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    
+    /* Нэвтрэх хэсгийн Overlay */
+    #login-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;
+    }
+    .login-box {
+      background: #fff; padding: 30px; border-radius: 10px; width: 350px; text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .login-box h2 { margin-bottom: 20px; color: #2b6cb0; }
+    .login-box input {
+      width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px;
+    }
+    .login-box button {
+      width: 100%; padding: 10px; background: #3182ce; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;
+    }
+    .login-box button:hover { background: #2b6cb0; }
+
+    /* Үндсэн контейнер */
+    .app-container {
+      width: 100%; max-width: 800px; background: #fff; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column;
+    }
+    
+    /* Header */
+    .app-header {
+      background: #2b6cb0; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .user-info { display: flex; align-items: center; font-size: 14px; }
+    .user-badge {
+      padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; text-transform: uppercase;
+    }
+    .badge-BASIC { background: #e2e8f0; color: #4a5568; }
+    .badge-MASTER { background: #f6ad55; color: #744210; }
+    .badge-VIP { background: #9f7aea; color: #fff; }
+
+    /* Навигацийн табууд */
+    .nav-tabs { display: flex; background: #edf2f7; border-bottom: 1px solid #e2e8f0; }
+    .tab-btn {
+      flex: 1; padding: 12px; text-align: center; background: none; border: none; cursor: pointer; font-weight: 600; color: #4a5568; font-size: 13px;
+    }
+    .tab-btn.active { background: #fff; color: #2b6cb0; border-bottom: 2px solid #2b6cb0; }
+
+    /* Агуулга */
+    .tab-content { padding: 20px; flex: 1; overflow-y: auto; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .card h3 { margin-bottom: 12px; font-size: 16px; color: #2d3748; }
+    
+    .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+    .input-row input, .input-row select {
+      flex: 1; padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px;
+    }
+    .btn-add { background: #3182ce; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-add:hover { background: #2b6cb0; }
+
+    /* Төлөвлөгөөний жагсаалт */
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #edf2f7; }
+    .task-item.completed .task-title { text-decoration: line-through; color: #a0aec0; }
+    .priority-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; color: #fff; }
+    .p-urgent { background: #e53e3e; }
+    .p-important { background: #dd6b20; }
+    .btn-del { background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 16px; }
+
+    /* Санхүүгийн картууд */
+    .fin-summary { display: flex; gap: 10px; margin-bottom: 15px; }
+    .fin-card { flex: 1; padding: 10px; border-radius: 6px; color: #fff; font-size: 13px; font-weight: bold; text-align: center; }
+    .fc-inc { background: #38a169; }
+    .fc-exp { background: #e53e3e; }
+    .fc-sav { background: #3182ce; }
+
+    /* Дадал зуршил */
+    .habit-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #edf2f7; }
+    .habit-grid { display: flex; gap: 3px; overflow-x: auto; margin-top: 8px; padding-bottom: 5px; }
+    .day-box {
+      width: 24px; height: 24px; border: 1px solid #cbd5e0; border-radius: 4px; display: flex; justify-content: center; align-items: center;
+      font-size: 10px; cursor: pointer; background: #fff; flex-shrink: 0;
+    }
+    .day-box.done { background: #38a169; color: #fff; border-color: #38a169; }
+
+    /* Явцын мөр */
+    .progress-container { background: #e2e8f0; border-radius: 4px; height: 16px; width: 100%; margin-top: 5px; overflow: hidden; position: relative; }
+    .progress-bar { background: #38a169; height: 100%; width: 0%; text-align: center; font-size: 10px; color: #fff; line-height: 16px; transition: width 0.3s; }
+
+    /* VIP Түгжээ */
+    .locked-card { position: relative; min-height: 150px; background: #edf2f7; display: flex; justify-content: center; align-items: center; text-align: center; }
+    .lock-overlay { padding: 20px; }
+    .upgrade-btn { display: inline-block; margin-top: 10px; padding: 6px 15px; background: #9f7aea; color: #fff; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- НЭВТРЭХ ЦОНХ (Overlay) -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <h2>Төлөвлөгч-2026</h2>
+      <p style="font-size: 13px; color: #718096; margin-bottom: 15px;">Утасны дугаараа оруулж нэвтэрнэ үү.</p>
+      <input type="text" id="login-phone" placeholder="Утасны дугаар (Жнь: 99112233)" />
+      <button onclick="handleLogin()">Нэвтрэх</button>
+      <p id="login-error" style="color: #e53e3e; font-size: 12px; margin-top: 10px; display: none;">Бүртгэлгүй дугаар байна!</p>
+    </div>
+  </div>
+
+  <!-- ҮНДСЭН АПП КОНТЕЙНЕР -->
+  <div class="app-container">
+    
+    <!-- Header -->
+    <div class="app-header">
+      <div>
+        <h2 style="font-size: 18px;">✨ Төлөвлөгч 2026</h2>
+        <span id="live-date" style="font-size: 11px; opacity: 0.8;"></span> | <span id="live-clock" style="font-size: 11px; opacity: 0.8;"></span>
+      </div>
+      <div class="user-info">
+        <span id="user-display-name">Хэрэглэгч</span> (<span id="user-display-phone"></span>)
+        <span id="user-pkg-badge" class="user-badge"></span>
         <button onclick="logout()" style="margin-left: 8px; padding: 4px 8px; border: 1px solid #cbd5e0; background: #fff; border-radius: 4px; cursor: pointer; font-size: 11px;">Гарах</button>
       </div>
     </div>
@@ -25,7 +151,7 @@
           <button class="btn-add" onclick="addTask()">Нэмэх</button>
         </div>
         <div>
-          <span>Гүйцэтгэл:</span>
+          <span style="font-size: 12px; color: #718096;">Гүйцэтгэл:</span>
           <div class="progress-container">
             <div id="task-progress-bar" class="progress-bar">0%</div>
           </div>
@@ -42,9 +168,9 @@
       <div class="card">
         <h3>Санхүүгийн тойм</h3>
         <div class="fin-summary">
-          <div class="fin-card fc-inc">Ологоо: <span id="fin-total-inc">0₮</span></div>
-          <div class="fin-card fc-exp">Зарлага: <span id="fin-total-exp">0₮</span></div>
-          <div class="fin-card fc-sav">Хэмнэлт: <span id="fin-total-sav">0₮</span></div>
+          <div class="fin-card fc-inc">Орлого: <br><span id="fin-total-inc">0₮</span></div>
+          <div class="fin-card fc-exp">Зарлага: <br><span id="fin-total-exp">0₮</span></div>
+          <div class="fin-card fc-sav">Үлдэгдэл: <br><span id="fin-total-sav">0₮</span></div>
         </div>
       </div>
       <div class="card">
@@ -54,7 +180,7 @@
             <option value="income">Орлого</option>
             <option value="expense">Зарлага</option>
           </select>
-          <input type="text" id="fin-desc" placeholder="Гүйлгээний утга..." />
+          <input type="text" id="fin-desc" placeholder="Утга..." />
           <input type="number" id="fin-amount" placeholder="Дүн (₮)" />
           <button class="btn-add" onclick="addFinance()">Бүртгэх</button>
         </div>
@@ -80,7 +206,7 @@
     <!-- 4. ЗОРИЛГО / VIP -->
     <div id="tab-vision" class="tab-content" style="display: none;">
       <div id="vip-content-wrapper">
-        <!-- VIP биш бол түгжигдэнэ -->
+        <!-- VIP эрх шалгах хэсэг -->
       </div>
     </div>
 
@@ -88,7 +214,7 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Firebase тохиргоо (Өөрийн төслийн мэдээллээр солих шаардлагатай)
+    // Firebase тохиргоо 
     const firebaseConfig = {
       databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com"
     };
@@ -97,7 +223,7 @@
     }
     const db = firebase.database();
 
-    let currentUser = null; // { phone, name, package }
+    let currentUser = null; 
 
     // Цаг хугацаа шинэчлэх
     setInterval(() => {
@@ -111,7 +237,6 @@
       const phone = document.getElementById('login-phone').value.trim();
       if (!phone) return;
 
-      // Firebase-с хэрэглэгчийг шалгах
       db.ref('users/' + phone).once('value').then(snapshot => {
         const userData = snapshot.val();
         if (userData) {
@@ -119,9 +244,17 @@
           localStorage.setItem('planner_phone', phone);
           initApp();
         } else {
-          // Хэрэв бүртгэлгүй бол демо байдлаар шууд үүсгэх эсвэл алдаа гаргах
-          document.getElementById('login-error').style.display = 'block';
+          // Хэрэв датабааз дээр байхгүй бол шууд BASIC эрхтэйгээр автоматаар бүртгэж нэвтрүүлэх (Тест хийхэд хялбар байх үүднээс)
+          const defaultUser = { name: "Хэрэглэгч", package: "BASIC" };
+          db.ref('users/' + phone).set(defaultUser, () => {
+            currentUser = { phone, ...defaultUser };
+            localStorage.setItem('planner_phone', phone);
+            initApp();
+          });
         }
+      }).catch(err => {
+        console.error(err);
+        document.getElementById('login-error').style.display = 'block';
       });
     }
 
@@ -198,7 +331,7 @@
             <div class="task-item ${val.completed ? 'completed' : ''}">
               <div style="display: flex; align-items: center;">
                 <input type="checkbox" ${val.completed ? 'checked' : ''} onchange="toggleTask('${child.key}', ${!val.completed})" style="margin-right: 10px;" />
-                <span class="task-title">${val.title}</span>
+                <span class="task-title" style="font-size: 14px;">${val.title}</span>
                 ${pClass ? `<span class="priority-badge ${pClass}">${val.priority}</span>` : ''}
               </div>
               <button class="btn-del" onclick="deleteTask('${child.key}')">×</button>
@@ -292,7 +425,7 @@
             <div class="habit-item">
               <div style="font-weight: bold; font-size: 14px; display: flex; justify-content: space-between;">
                 <span>${val.name}</span>
-                <button class="btn-del" onclick="deleteHabit('${habitId}')">Устгах</button>
+                <button class="btn-del" onclick="deleteHabit('${habitId}')" style="font-size: 12px;">Устгах</button>
               </div>
               <div class="habit-grid">${daysHtml}</div>
             </div>
@@ -309,16 +442,16 @@
       db.ref(`habits/${currentUser.phone}/${habitId}`).remove();
     }
 
-    // 4. VIP ЗОРИЛГЫН ХЭСЭГ (Хандалтын эрх шалгах)
+    // 4. VIP ЗОРИЛГЫН ХЭСЭГ 
     function setupVisionTab() {
       const wrapper = document.getElementById('vip-content-wrapper');
       if (currentUser.package === 'VIP' || currentUser.package === 'MASTER') {
         wrapper.innerHTML = `
           <div class="card">
             <h3>🎯 2026 оны Стратеги Зорилгууд (VIP Хэсэг)</h3>
-            <p>Та энэ хэсэгт өөрийн том зорилго, төлөвлөгөө болон Vision Board мэдээллээ хадгалах боломжтой.</p>
-            <textarea style="width:100%; height:120px; padding:10px; border-radius:6px; border:1px solid #cbd5e0;" placeholder="Энд зорилгоо бичнэ үү..."></textarea>
-            <button class="btn-add" style="margin-top: 10px;">Хадгалах</button>
+            <p style="font-size: 13px; color: #718096; margin-bottom: 10px;">Та энэ хэсэгт өөрийн том зорилго, төлөвлөгөө болон Vision Board мэдээллээ хадгалах боломжтой.</p>
+            <textarea style="width:100%; height:120px; padding:10px; border-radius:6px; border:1px solid #cbd5e0; font-size: 14px;" placeholder="Энд зорилгоо бичнэ үү..."></textarea>
+            <button class="btn-add" style="margin-top: 10px; padding: 8px 15px;">Хадгалах</button>
           </div>
         `;
       } else {
@@ -326,7 +459,7 @@
           <div class="card locked-card">
             <div class="lock-overlay">
               <h3>🔒 Түгжигдсэн хэсэг</h3>
-              <p>Энэхүү функц нь зөвхөн <b>MASTER</b> болон <b>VIP</b> эрхтэй хэрэглэгчдэд нээлттэй.</p>
+              <p style="font-size: 13px; color: #718096; margin: 8px 0;">Энэхүү функц нь зөвхөн <b>MASTER</b> болон <b>VIP</b> эрхтэй хэрэглэгчдэд нээлттэй.</p>
               <a href="#" class="upgrade-btn">Эрхээ ахиулах</a>
             </div>
           </div>
