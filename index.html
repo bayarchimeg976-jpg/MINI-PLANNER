@@ -14,6 +14,7 @@
       --gray: #e2e8f0;
       --success: #38a169;
       --danger: #e53e3e;
+      --purple: #805ad5;
     }
 
     body {
@@ -315,6 +316,7 @@
       <button class="tab-btn active" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
       <button class="tab-btn" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
       <button class="tab-btn" onclick="switchTab(event, 'finance')">💰 Санхүү</button>
+      <button class="tab-btn" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
       <button class="tab-btn" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
       <button class="tab-btn" onclick="switchTab(event, 'courses')">🧠 Сургалт (MASTER)</button>
       <button class="tab-btn" onclick="switchTab(event, 'vip')">👑 VIP Клуб</button>
@@ -413,7 +415,27 @@
       </div>
     </div>
 
-    <!-- 4. ДАДАЛ ЗУРШИЛ -->
+    <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС (ШИНЭ ЦЭС) -->
+    <div id="items-sec" class="tab-content" style="display:none;">
+      <div class="card">
+        <h4>🤝 Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
+        <div class="input-row">
+          <input type="date" id="item-date" />
+          <select id="item-type">
+            <option value="given">📤 Өгсөн (Хүнд зээлүүлсэн/өгсөн)</option>
+            <option value="taken">📥 Авсан (Хүнээс ашиглахаар авсан)</option>
+          </select>
+          <input type="text" id="item-person" placeholder="Хүний нэр..." />
+          <input type="text" id="item-name" placeholder="Юу өгсөн/авсан (Ном, Мөнгө, Багаж...)" />
+          <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" />
+          <button class="btn-add" onclick="addItem()">Бүртгэх</button>
+        </div>
+
+        <div id="items-list" style="margin-top: 15px;"></div>
+      </div>
+    </div>
+
+    <!-- 5. ДАДАЛ ЗУРШИЛ -->
     <div id="habits-sec" class="tab-content" style="display:none;">
       <div class="card">
         <h4>🔄 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
@@ -425,26 +447,38 @@
       </div>
     </div>
 
-    <!-- 5. МАСТЕР БАГЦ -->
+    <!-- 6. МАСТЕР БАГЦЫН СУРГАЛТУУД -->
     <div id="courses-sec" class="tab-content" style="display:none;">
-      <h3>🧠 Мастер Багцын Дижитал Хичээлүүд</h3>
+      <h3>🧠 Мастер Багцын Онлайн Хичээлүүд</h3>
+      
+      <div class="card">
+        <h4>💛 "Аз жаргалтай мөнгө" Хичээл</h4>
+        <p style="font-size: 13px;">Мөнгөтэй харьцах сэтгэл зүй, ариун ба эерэг энергийн мөн чанарыг ойлгох гарын авлага.</p>
+        <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--primary);">📘 PDF Гарын авлага үзэх</a></div>
+      </div>
+
+      <div class="card">
+        <h4>✨ "Талархлын ач холбогдол ба Хүч"</h4>
+        <p style="font-size: 13px;">Талархлын дадлаар амьдралаа өөрчлөх практик дасгал, видео хичээл.</p>
+        <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--success);">🎥 Хичээл үзэх & Ажлын хуудас</a></div>
+      </div>
+
+      <div class="card">
+        <h4>🔥 "21 Хоногийн Дадал Челленж"</h4>
+        <p style="font-size: 13px;">Өдөр бүр дадлаа хэвшүүлж, далд ухамсараа дахин програмчлах 21 хоногийн хөтөч.</p>
+        <div class="content-box">
+          <a href="#" class="upgrade-btn" style="background:var(--purple);">🎧 Челленжийн аудио хөтөч сонсох</a>
+        </div>
+      </div>
+
       <div class="card">
         <h4>📘 "Далд ухамсарын хүч" PDF Гарын авлага</h4>
         <p style="font-size: 13px;">Далд ухамсараа дахин програмчилж, зорилгодоо хүрэх гарын авлага.</p>
         <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--primary);">📄 Татах (PDF)</a></div>
       </div>
-      <div class="card">
-        <h4>🎧 "Далд ухамсарын медитаци" Аудио</h4>
-        <p style="font-size: 13px;">Өглөө ба оройд сонсох бясалгалын аудио хичээл.</p>
-        <div class="content-box">
-          <audio controls style="width:100%; margin-top:8px;">
-            <source src="meditation.mp3" type="audio/mpeg">
-          </audio>
-        </div>
-      </div>
     </div>
 
-    <!-- 6. VIP БАГЦ -->
+    <!-- 7. VIP БАГЦ -->
     <div id="vip-sec" class="tab-content" style="display:none;">
       <h3>👑 VIP Мастер Клуб</h3>
       <div class="card">
@@ -471,6 +505,7 @@
     let userData = {
       taskData: { daily: [], weekly: [] },
       finData: [],
+      itemsData: [],
       habitsData: []
     };
 
@@ -492,9 +527,11 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-    document.getElementById('fin-date').valueAsDate = new Date();
 
-    // 3. STORAGE ХАДГАЛАХ ЖУРАМ
+    document.getElementById('fin-date').valueAsDate = new Date();
+    document.getElementById('item-date').valueAsDate = new Date();
+
+    // 3. STORAGE ХАДГАЛАХ
     function loadUserData(phone) {
       const saved = localStorage.getItem("planner_data_" + phone);
       if (saved) {
@@ -502,12 +539,13 @@
           userData = JSON.parse(saved);
           if (!userData.taskData) userData.taskData = { daily: [], weekly: [] };
           if (!userData.finData) userData.finData = [];
+          if (!userData.itemsData) userData.itemsData = [];
           if (!userData.habitsData) userData.habitsData = [];
         } catch(e) {
-          userData = { taskData: { daily: [], weekly: [] }, finData: [], habitsData: [] };
+          userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [] };
         }
       } else {
-        userData = { taskData: { daily: [], weekly: [] }, finData: [], habitsData: [] };
+        userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [] };
       }
     }
 
@@ -550,6 +588,7 @@
       renderTasks('daily');
       renderTasks('weekly');
       renderFinance();
+      renderItems();
       renderHabits();
     }
 
@@ -712,7 +751,68 @@
       ratioBar.innerText = expRatio + "%";
     }
 
-    // 7. ДАДАЛ ЗУРШИЛ
+    // 7. 🤝 ӨГСӨН / АВСАН ЗҮЙЛС
+    function addItem() {
+      const date = document.getElementById("item-date").value;
+      const type = document.getElementById("item-type").value;
+      const person = document.getElementById("item-person").value.trim();
+      const name = document.getElementById("item-name").value.trim();
+      const duedate = document.getElementById("item-duedate").value.trim();
+
+      if (!date || !person || !name) return;
+
+      userData.itemsData.push({
+        date, type, person, name, duedate, done: false
+      });
+
+      document.getElementById("item-person").value = "";
+      document.getElementById("item-name").value = "";
+      document.getElementById("item-duedate").value = "";
+
+      saveUserData();
+      renderItems();
+    }
+
+    function toggleItem(index) {
+      userData.itemsData[index].done = !userData.itemsData[index].done;
+      saveUserData();
+      renderItems();
+    }
+
+    function deleteItem(index) {
+      userData.itemsData.splice(index, 1);
+      saveUserData();
+      renderItems();
+    }
+
+    function renderItems() {
+      const list = document.getElementById("items-list");
+      list.innerHTML = "";
+
+      const items = userData.itemsData || [];
+
+      items.forEach((item, idx) => {
+        const isGiven = item.type === 'given';
+        const badgeText = isGiven ? '📤 Өгсөн' : '📥 Авсан';
+        const badgeColor = isGiven ? '#dd6b20' : '#3182ce';
+
+        const div = document.createElement("div");
+        div.className = `task-item ${item.done ? 'completed' : ''}`;
+        div.innerHTML = `
+          <div>
+            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})">
+            <span style="background:${badgeColor}; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:5px;">${badgeText}</span>
+            <small style="color:#718096; margin-left:5px;">${item.date}</small> - 
+            <b class="task-title">${item.person}: ${item.name}</b>
+            ${item.duedate ? `<span style="font-size:11px; color:#e53e3e; margin-left:5px;">(Буцаах: ${item.duedate})</span>` : ''}
+          </div>
+          <button class="btn-del" onclick="deleteItem(${idx})">✕</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // 8. ДАДАЛ ЗУРШИЛ
     function addHabit() {
       const input = document.getElementById("habit-input");
       if (!input.value.trim()) return;
