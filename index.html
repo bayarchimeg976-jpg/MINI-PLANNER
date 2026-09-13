@@ -225,11 +225,14 @@
   </div>
 
   <script>
-    // 1. ХЭРЭГЛЭГЧИЙН БАЗА (Аюулгүй байдал, тусгаарлалт)
+    // 1. ХЭРЭГЛЭГЧИЙН БАЗА (Бүх хэрэглэгчид & багц)
     const usersDatabase = {
       "99563946": { name: "Түвшинбаяр Баярчимэг", package: "VIP" },
       "99392981": { name: "Мэндбаяр", package: "MASTER" },
-      "95335368": { name: "Баяраа", package: "BASIC" }
+      "95335368": { name: "Баяраа", package: "BASIC" },
+      "88112233": { name: "Болд", package: "VIP" },
+      "99112233": { name: "Сарнай", package: "MASTER" },
+      "98112233": { name: "Ганзориг", package: "BASIC" }
     };
 
     let currentPhone = null;
@@ -329,7 +332,7 @@
 
       // 4. Өгсөн / Авсан
       const itemRows = (userData.itemsData || []).map((it, i) => ({
-        "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцааж авсан/өгсөн' : 'Хүлээгдэж буй'
+        "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцаж авсан/өгсөн' : 'Хүлээгдэж буй'
       }));
       const wsItems = XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{"№": "", "Огноо": "", "Төрөл": "", "Хүний нэр": "", "Эд зүйл": "", "Буцаах хугацаа": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsItems, "Өгсөн-Авсан");
@@ -359,7 +362,7 @@
       const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Санааны нэр": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
       XLSX.utils.book_append_sheet(wb, wsSh, "Нэмэлт орлого");
 
-        // Файл татаж авах
+      // Файл татаж авах
       XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 
@@ -374,7 +377,6 @@
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
 
-          // Шинэ дата объект бэлтгэх
           let newUserData = {
             taskData: { daily: [], weekly: [] },
             finData: [],
