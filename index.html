@@ -16,7 +16,7 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-2">Төлөвлөгч-2026</h2>
       <p class="text-sm text-gray-500 mb-6">Худалдан авалт хийсэн утасны дугаараа оруулж нэвтрэнэ үү.</p>
       
-      <input type="tel" id="phone-input" placeholder="Утасны дугаар (Жишээ: 99112233)" class="w-full text-center text-xl tracking-widest px-4 py-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:border-amber-500">
+      <input type="tel" id="phone-input" placeholder="Утасны дугаар (Жишээ: 99563946)" class="w-full text-center text-xl tracking-widest px-4 py-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:border-amber-500">
       
       <button onclick="checkPhoneAccess()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow-md transition">Нэвтрэх</button>
       
@@ -74,12 +74,11 @@
   </div>
 
   <script>
-    // ХУДАЛДАН АВСАН ХЭРЭГЛЭГЧДИЙН УТАСНЫ ДУГААР
+    // -----------------------------------------------------------------
+    // ХУДАЛДАН АВСАН ХЭРЭГЛЭГЧДИЙН УТАСНЫ ДУГААРЫН ЖАГСААЛТ
+    // -----------------------------------------------------------------
     const allowedPhones = [
-      "99112233",
-      "88112233",
-      "95112233",
-      "99000000"
+      "99563946" // ТАНЫ ДУГААР (АДМИН)
     ];
 
     function checkPhoneAccess() {
@@ -500,7 +499,7 @@
       }
     });
 
-    // ИНТЕРНЭТГҮЙ ҮЕД АЖИЛЛУУЛАХ SERVICE WORKER ТӨХӨӨРӨМЖ
+    // ИНТЕРНЭТГҮЙ ҮЕД АЖИЛЛУУЛАХ SERVICE WORKER
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         const swCode = `
