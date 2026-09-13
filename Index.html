@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ажлын төлөвлөгөө дашборд</title>
+    <!-- Tailwind CSS веб холбоос -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800 p-6">
+
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-xl font-bold mb-6 text-gray-700">Ажлын төлөвлөгөө дашборд</h1>
+
+        <!-- Картнууд (Өдөр, 7 хоног, Сар, Дадал, Санхүү, Онлайн курс) -->
+        <div id="cards-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6"></div>
+
+        <!-- Сонгосон ангиллын ерөнхий гүйцэтгэлийн тойм -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex items-center gap-6">
+            <div id="progress-circle" class="w-20 h-20 rounded-full border-4 border-amber-800 flex items-center justify-center font-bold text-lg text-amber-800">
+                0%
+            </div>
+            <div>
+                <h2 id="current-category-title" class="text-lg font-bold text-gray-800">Сар</h2>
+                <p id="current-category-status" class="text-sm text-gray-500">0/0 ажил дууссан</p>
+            </div>
+        </div>
+
+        <!-- Ангилал сонгох товчнууд -->
+        <div id="tabs-container" class="flex flex-wrap gap-2 mb-4"></div>
+
+        <!-- Даалгавруудын жагсаалт -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-4">
+            <div id="task-list" class="space-y-3"></div>
+        </div>
+
+        <!-- Шинэ ажил нэмэх хэсэг -->
+        <form id="add-task-form" class="flex gap-2">
+            <input 
+                type="text" 
+                id="task-input" 
+                placeholder="Шинэ ажил нэмэх..." 
+                class="flex-1 bg-white px-4 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-800"
+                required
+            />
+            <button 
+                type="submit" 
+                class="bg-amber-800 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-amber-900 transition">
+                +
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Ангилалууд
+        const categories = ['Өдөр', '7 хоног', 'Сар', 'Дадал', 'Санхүү', 'Онлайн курс'];
+
+        // Анхны өгөгдөл
+        const defaultData = {
+            'Өдөр': [
+                { id: 1, text: 'Өглөөний дасгал хийх', completed: true },
+                { id: 2, text: 'Имэйл шалгах', completed: false }
+            ],
+            '7 хоног': [
+                { id: 3, text: 'Долоо хоногийн тайлан гаргах', completed: false }
+            ],
+            'Сар': [
+                { id: 4, text: 'Сарын гүйцэтгэлийн тайлан', completed: true },
+                { id: 5, text: 'Дараа сарын төлөвлөгөө боловсруулах', completed: true },
+                { id: 6, text: 'Хувийн нэг шинэ ур чадвар эзэмших', completed: true }
+            ],
+            'Дадал': [
+                { id: 7, text: 'Өдөрт 2 литр ус уух', completed: true },
+                { id: 8, text: '30 минут ном унших', completed: false }
+            ],
+            'Санхүү': [
+                { id: 9, text: 'Сарын орлого, зарлага тооцох', completed: true },
+                { id: 10, text: 'Хуримтлалд мөнгө шилжүүлэх', completed: false }
+            ],
+            'Онлайн курс': [
+                { id: 11, text: 'Хичээл Module 1 үзэх', completed: false }
+            ]
+        };
+
+        // LocalStorage-оос мэдээлэл авагдах эсвэл анхны өгөгдлийг ашиглана
+        let tasks = JSON.parse(localStorage.getItem('dashboard_tasks')) || defaultData;
+        let activeTab = 'Сар';
+
+        function saveData() {
+            localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
+        }
+
+        function render() {
+            renderCards();
+            renderTabs();
+            renderTaskList();
+            renderSummary();
+        }
+
+        // 1. Картнуудыг зурах
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = categories.map(cat => {
+                const list = tasks[cat] || [];
+                const done = list.filter(t => t.completed).length;
+                const total = list.length;
+                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+                const isActive = cat === activeTab;
+
+                return `
+                    <div onclick="selectTab('${cat}')" class="p-4 rounded-xl cursor-pointer transition border ${
+                        isActive 
+                        ? 'bg-amber-800 text-white shadow-md border-amber-800' 
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-200'
+                    }">
+                        <div class="text-xs opacity-80 mb-1">${cat}</div>
+                        <div class="text-2xl font-bold">${pct}%</div>
+                        <div class="text-[10px] mt-1 opacity-70">${done}/${total} биелсэн</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 2. Таб товчнуудыг зурах
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = categories.map(cat => `
+                <button onclick="selectTab('${cat}')" class="px-4 py-1.5 rounded-full text-sm font-medium transition ${
+                    cat === activeTab 
+                    ? 'bg-amber-800 text-white' 
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        // 3. Даалгавруудыг зурах
+        function renderTaskList() {
+            const container = document.getElementById('task-list');
+            const list = tasks[activeTab] || [];
+
+            if (list.length === 0) {
+                container.innerHTML = <p class="text-sm text-gray-400 py-2">Энэ ангилалд ажил байхгүй байна.</p>;
+                return;
+            }
+
+            container.innerHTML = list.map(t => `
+                <label class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition">
+                    <input 
+                        type="checkbox" 
+                        ${t.completed ? 'checked' : ''} 
+                        onchange="toggleTask(${t.id})"
+                        class="w-5 h-5 accent-amber-800 rounded cursor-pointer"
+                    />
+                    <span class="text-sm ${t.completed ? 'line-through text-gray-400' : 'text-gray-700'}">
+                        ${t.text}
+                    </span>
+                </label>
+            `).join('');
+        }
+
+        // 4. Сонгосон ангиллын хувийн дүн ба мэдээлэл
+        function renderSummary() {
+            const list = tasks[activeTab] || [];
+            const done = list.filter(t => t.completed).length;
+            const total = list.length;
+            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+            document.getElementById('current-category-title').innerText = activeTab;
+            document.getElementById('current-category-status').innerText = ${done}/${total} ажил дууссан;
+            document.getElementById('progress-circle').innerText = ${pct}%;
+            document.getElementById('task-input').placeholder = ${activeTab}-д шинэ ажил нэмэх...;
+        }
+
+        // Ангилал солих
+        function selectTab(cat) {
+            activeTab = cat;
+            render();
+        }
+
+        // Ажил чеклэх / чек арилгах
+        function toggleTask(id) {
+            tasks[activeTab] = tasks[activeTab].map(t => 
+                t.id === id ? { ...t, completed: !t.completed } : t
+            );
+            saveData();
+            render();
+        }
+
+        // Шинэ ажил нэмэх
+        document.getElementById('add-task-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (!tasks[activeTab]) tasks[activeTab] = [];
+
+            tasks[activeTab].push({
+                id: Date.now(),
+                text: text,
+                completed: false
+            });
+
+            input.value = '';
+            saveData();
+            render();
+        });
+
+        // Анх нээхэд зурах
+        render();
+    </script>
+</body>
+</html>
