@@ -894,106 +894,298 @@
       });
     }
 
-    // 9. 🎓 ОНЛАЙН КУРСУУД
-    function addCourse() {
-      if (currentUser.package !== 'MASTER') {
-        alert("Та Суурь багцтай байна. Энэхүү онлайн сургалтын модулийг ашиглахын тулд Мастер багц руу шилжинэ үү.");
-        return;
-      }
-      const name = document.getElementById("course-name").value.trim();
-      const lessons = parseInt(document.getElementById("course-lessons").value);
+    <!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хувь Хүний Хөгжлийн Онлайн Академи - Video Learning Player</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-      if (!name || isNaN(lessons) || lessons <= 0) return;
-      if (!userData.coursesData) userData.coursesData = [];
-
-      userData.coursesData.push({
-        name: name,
-        totalLessons: lessons,
-        completedLessons: 0
-      });
-
-      document.getElementById("course-name").value = "";
-      document.getElementById("course-lessons").value = "";
-
-      saveUserData();
-      renderCourses();
-    }
-
-    function updateCourseProgress(index, change) {
-      if (currentUser.package !== 'MASTER') return;
-      let course = userData.coursesData[index];
-      course.completedLessons += change;
-      if (course.completedLessons < 0) course.completedLessons = 0;
-      if (course.completedLessons > course.totalLessons) course.completedLessons = course.totalLessons;
-
-      saveUserData();
-      renderCourses();
-    }
-
-    function deleteCourse(index) {
-      if (currentUser.package !== 'MASTER') return;
-      userData.coursesData.splice(index, 1);
-      saveUserData();
-      renderCourses();
-    }
-
-    function renderCourses() {
-      const container = document.getElementById("courses-list");
-      const lockMsg = document.getElementById("course-lock-msg");
-      const masterNotice = document.getElementById("course-master-notice");
-      const formBox = document.getElementById("course-form-box");
-      const addBtn = document.getElementById("course-add-btn");
-
-      if (!container) return;
-
-      if (currentUser.package !== 'MASTER') {
-        lockMsg.classList.remove("hidden");
-        masterNotice.classList.add("hidden");
-        formBox.classList.add("hidden");
-        addBtn.classList.add("hidden");
-        container.innerHTML = `
-          <div class="p-6 bg-pink-50/40 border border-dashed border-pink-200 rounded-2xl text-center space-y-3">
-            <div class="text-3xl text-pink-500"><i class="fa-solid fa-lock"></i></div>
-            <h5 class="font-bold text-gray-800">Мастер багцын эксклюзив онлайн курсууд</h5>
-            <p class="text-xs text-gray-500 max-w-md mx-auto">
-              Энэхүү хэсэгт <b>Далд ухамсар ба эрүүл мэнд</b>, <b>Талархалын шид</b>, <b>Аз жаргалтай мөнгө</b>, <b>21 Өдрийн челленж</b> зэрэг курсууд багтдаг. Мастер багц (29,900₮)-аар эрхээ идэвхжүүлж бүх сургалтаа үзээрэй.
-            </p>
-          </div>
-        `;
-        return;
-      }
-
-      lockMsg.classList.add("hidden");
-      masterNotice.classList.remove("hidden");
-      formBox.style.display = "grid";
-      addBtn.style.display = "block";
-      container.innerHTML = "";
-
-      const courses = userData.coursesData || [];
-      courses.forEach((course, idx) => {
-        const percent = Math.round((course.completedLessons / course.totalLessons) * 100);
-
-        const div = document.createElement("div");
-        div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <b class="text-sm text-gray-800">📖 ${course.name}</b>
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-pink-600">${course.completedLessons} / ${course.totalLessons} хичээл (${percent}%)</span>
-              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-600 to-violet-600 text-white p-3 rounded-2xl font-bold text-xl shadow-md">🌟</div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Хөгжлийн Академи</h1>
+                    <p class="text-xs text-slate-500 font-medium">Бясалгал, Эрүүл Мэнд & Санхүүгийн Эрх Чөлөө</p>
+                </div>
             </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="flex-1 bg-pink-50 rounded-full h-3 overflow-hidden">
-              <div class="bg-pink-500 h-full transition-all duration-300" style="width: ${percent}%"></div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-2xl">
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">Нийт явц</span>
+                        <span id="overall-progress-text" class="text-sm font-bold text-indigo-600">0%</span>
+                    </div>
+                </div>
+                <button onclick="resetAllProgress()" class="text-xs text-rose-500 hover:text-rose-700 font-semibold bg-rose-50 px-3 py-2 rounded-xl transition border border-rose-100">
+                    🔄 Шинэчлэх
+                </button>
             </div>
-            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-pink-100 text-pink-700 hover:bg-pink-200 text-xs font-bold rounded-lg transition">+ Хичээл дуусгах</button>
-            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded-lg transition">- Хасах</button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+        
+        <!-- Left Sidebar: Modules & Lessons List (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="mr-2 p-1.5 bg-indigo-100 text-indigo-600 rounded-xl text-xs">📚</span> Сургалтын Модулиуд
+                </h2>
+                <div class="space-y-3" id="course-list-container">
+                    <!-- Dynamic Modules -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Content & Real Video Player Area (8 cols) -->
+        <div class="lg:col-span-8 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between">
+            <div>
+                <!-- Course Header Info -->
+                <div class="border-b border-slate-100 pb-6 mb-6">
+                    <span id="course-badge" class="text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-100">Модуль 1</span>
+                    <h2 id="course-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">Далд ухамсар ба эрүүл мэнд</h2>
+                    <p id="course-desc" class="text-slate-600 mt-2 text-sm sm:text-base leading-relaxed">Эрүүл мэндэд сөргөөр нөлөөлж буй далд ухамсрын түгжрэл, айдас, стрессийг анагаах болон зөв програмчлах арга техникүүд.</p>
+                </div>
+
+                <!-- Real Video Player Box -->
+                <div class="space-y-6">
+                    <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-xl aspect-video relative flex items-center justify-center" id="video-container">
+                        <!-- Embedded YouTube or Video iframe -->
+                        <iframe id="lesson-video-iframe" class="w-full h-full absolute inset-0" src="" title="Lesson Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+
+                    <!-- Current Lesson Info -->
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <h3 id="lesson-current-title" class="text-xl font-bold text-slate-900 tracking-tight">1-р хичээл: Далд ухамсрын хүч ба бие махбод</h3>
+                            <span id="lesson-counter" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl">Хичээл 1 / 4</span>
+                        </div>
+                        <p id="lesson-subtitle-desc" class="text-slate-600 text-sm mt-2 leading-relaxed">Хичээлийн тайлбар болон анхаарах зүйлс энд харагдана.</p>
+                    </div>
+
+                    <!-- Lesson Items Container -->
+                    <div class="border-t border-slate-100 pt-6">
+                        <h4 class="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Энэ модулийн хичээлүүд:</h4>
+                        <div id="lessons-container" class="space-y-3">
+                            <!-- Dynamic Lesson List -->
+                        </div>
+                    </div>
+
+                    <!-- Interactive Practice Task -->
+                    <div class="bg-indigo-50/60 border border-indigo-100 rounded-3xl p-5">
+                        <h4 class="font-bold text-indigo-950 mb-2 flex items-center text-sm sm:text-base">
+                            <span class="mr-2">📝</span> Хичээл үзэж дууссан эсэх сорил
+                        </h4>
+                        <label class="flex items-start space-x-3 cursor-pointer mt-2">
+                            <input type="checkbox" id="task-checkbox" onchange="toggleTaskCompletion()" class="w-5 h-5 mt-0.5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                            <span class="text-sm font-semibold text-slate-700">Энэ хичээлийг анхааралтай үзэж дууссан бөгөөд тэмдэглэл хөтөлсөн.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Navigation Controls -->
+            <div class="border-t border-slate-100 pt-6 mt-8 flex items-center justify-between">
+                <button onclick="prevLesson()" class="px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-2xl text-sm transition">← Өмнөх</button>
+                <button onclick="nextLesson()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-2xl text-sm transition shadow-md shadow-indigo-600/20">Дараах хичээл →</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6 text-center text-xs text-slate-400">
+        <p>&copy; 2026 Хувь Хүний Хөгжлийн Онлайн Академи. Бүх эрх хуулиар хамгаалагдсан.</p>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script>
+        const courses = [
+            {
+                title: "Далд ухамсар ба эрүүл мэнд",
+                badge: "Модуль 1",
+                desc: "Эрүүл мэндэд сөргөөр нөлөөлж буй далд ухамсрын түгжрэл, айдас, стрессийг анагаах болон зөв програмчлах арга техникүүд.",
+                lessons: [
+                    { title: "1-р хичээл: Далд ухамсрын хүч ба бие махбод", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Хүний бие болон далд ухамсрын холбоос хэрхэн ажилладаг тухай суурь ойлголт." },
+                    { title: "2-р хичээл: Сэтгэлзүйн түгжрэл ба биеийн өвчин", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Булчингийн болон эрхтний түгжрэлийг сэтгэлзүйгээр тайлах нь." },
+                    { title: "3-р хичээл: Эдгэрлийн тарни ба аялгуу терапи", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Альфа давалгаа болон эдгэрүүлэгч давтамжуудын үйлчлэл." },
+                    { title: "4-р хичээл: Эрүүл амьдралын шинэ дадал хэвшүүлэх нь", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Тогтвортой дадал суулгах 21 хоногийн систем." }
+                ]
+            },
+            {
+                title: "Талархалын хүч",
+                badge: "Модуль 2",
+                desc: "Талархал илэрхийлэх нь тархины бүтцийг өөрчилж, амьдралд эерэг боломжуудыг хэрхэн татах тухай практик сургалт.",
+                lessons: [
+                    { title: "1-р хичээл: Талархлын шинжлэх ухаан ба тархины өөрчлөлт", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Нейропластик чанар ба талархлын холбоос." },
+                    { title: "2-р хичээл: Өглөөний болон оройн талархлын дадал", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Өдрийг эрч хүчтэй эхлүүлэх болон үдшийн дүгнэлт." },
+                    { title: "3-р хичээл: Бэрхшээлийн өмнө талархах сэтгэлгээ", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Сорилтыг боломж болгон харах ухагдахуун." },
+                    { title: "4-р хичээл: 7 хоногийн талархлын эрчимжүүлсэн бясалгал", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Сэтгэл санааг бүрэн цэвэрлэх хүчирхэг бясалгал." }
+                ]
+            },
+            {
+                title: "Аз жаргалтай мөнгө",
+                badge: "Модуль 3",
+                desc: "Мөнгөтэй харилцах хандлагаа өөрчлөх, элбэг дэлбэг байдлыг татах санхүүгийн сэтгэлгээний хичээлүүд.",
+                lessons: [
+                    { title: "1-р хичээл: Мөнгөний энергийн хууль ба сэтгэлгээний блок", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Өвөг дээдсээс ирсэн хомсдолын сэтгэлгээнээс ангижрах." },
+                    { title: "2-р хичээл: Орлого зарлагаа баяр хөөртэйгөөр удирдах нь", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Санхүүгийн урсгалыг зөв төлөвлөх аргачлал." },
+                    { title: "3-р хичээл: Баялаг бүтээгчдийн дадал ба итгэл үнэмшил", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Саятан хүний өдөр тутмын сэтгэлгээний хэв маяг." },
+                    { title: "4-р хичээл: Санхүүгийн эрх чөлөөнд хүрэх алхамууд", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Идэвхгүй орлого болон хөрөнгө оруулалтын суурь." }
+                ]
+            },
+            {
+                title: "21 хоногийн челленж",
+                badge: "Модуль 4",
+                desc: "Шинэ дадал суулгах, тархиа шинээр програмчлах 21 хоногийн өдөр тутмын бататгах сорилт.",
+                lessons: [
+                    { title: "1-р долоо хоног: Суурь дадал ба сэтгэлгээг цэвэрлэх нь", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Хуучин хорт зуршлаасаа салж эхлэх үе шат." },
+                    { title: "2-р долоо хоног: Эрчим хүчээ нэмэгдүүлэх өдөр тутмын дасгалууд", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Бие махбодын энергийг өндөрт барих практик." },
+                    { title: "3-р долоо хоног: Тогтвортой байдал ба өөрийгөө ялах нь", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Залхуурал болон хойш тавих занг даван туулах." },
+                    { title: "Сүүлчийн өдөр: Шинэ хүн болж өөрчлөгдсөн нь", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Үр дүнг дүгнэж, цаашдын амьдралын төлөвлөгөө гаргах." }
+                ]
+            }
+        ];
+
+        let currentCourseIndex = 0;
+        let currentLessonIndex = 0;
+        let completedLessons = {};
+
+        function initApp() {
+            const saved = localStorage.getItem('academy_completed_lessons');
+            if(saved) completedLessons = JSON.parse(saved);
+            renderCourseList();
+            renderCourseDetails();
+        }
+
+        function renderCourseList() {
+            const container = document.getElementById("course-list-container");
+            container.innerHTML = "";
+            courses.forEach((course, index) => {
+                const isSelected = index === currentCourseIndex;
+                container.innerHTML += `
+                    <button onclick="selectCourse(${index})" class="w-full text-left p-4 rounded-2xl transition-all border ${isSelected ? 'border-indigo-500 bg-indigo-50/50 shadow-sm' : 'border-slate-100 hover:bg-slate-50 bg-white'}">
+                        <div class="font-bold text-slate-900 text-sm">${course.title}</div>
+                        <div class="text-xs text-slate-400 mt-1">Модуль ${index + 1}</div>
+                    </button>
+                `;
+            });
+        }
+
+        function selectCourse(index) {
+            currentCourseIndex = index;
+            currentLessonIndex = 0;
+            renderCourseList();
+            renderCourseDetails();
+        }
+
+        function renderCourseDetails() {
+            const course = courses[currentCourseIndex];
+            document.getElementById("course-badge").innerText = course.badge;
+            document.getElementById("course-title").innerText = course.title;
+            document.getElementById("course-desc").innerText = course.desc;
+            renderLessonList();
+            updateLessonView();
+        }
+
+        function renderLessonList() {
+            const container = document.getElementById("lessons-container");
+            container.innerHTML = "";
+            const course = courses[currentCourseIndex];
+
+            course.lessons.forEach((lesson, idx) => {
+                const isCurrent = idx === currentLessonIndex;
+                const isDone = completedLessons[`${currentCourseIndex}-${idx}`];
+
+                container.innerHTML += `
+                    <div onclick="selectLesson(${idx})" class="p-4 rounded-2xl border text-sm flex items-center justify-between cursor-pointer transition ${isCurrent ? 'border-indigo-300 bg-indigo-50/70 font-semibold text-indigo-950 shadow-sm' : 'border-slate-100 bg-white hover:bg-slate-50 text-slate-700'}">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'}">
+                                ${isDone ? '✓' : idx + 1}
+                            </span>
+                            <span>${lesson.title}</span>
+                        </div>
+                        <span class="text-xs text-indigo-600 font-medium">${isCurrent ? 'Үзэж байна' : ''}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function selectLesson(idx) {
+            currentLessonIndex = idx;
+            renderLessonList();
+            updateLessonView();
+        }
+
+        function updateLessonView() {
+            const course = courses[currentCourseIndex];
+            const lesson = course.lessons[currentLessonIndex];
+            
+            document.getElementById("lesson-current-title").innerText = lesson.title;
+            document.getElementById("lesson-subtitle-desc").innerText = lesson.sub;
+            document.getElementById("lesson-counter").innerText = `Хичээл ${currentLessonIndex + 1} / ${course.lessons.length}`;
+            document.getElementById("lesson-video-iframe").src = lesson.videoUrl;
+            
+            const key = `${currentCourseIndex}-${currentLessonIndex}`;
+            document.getElementById("task-checkbox").checked = !!completedLessons[key];
+        }
+
+        function nextLesson() {
+            const course = courses[currentCourseIndex];
+            if (currentLessonIndex < course.lessons.length - 1) {
+                currentLessonIndex++;
+                renderLessonList();
+                updateLessonView();
+            }
+        }
+
+        function prevLesson() {
+            if (currentLessonIndex > 0) {
+                currentLessonIndex--;
+                renderLessonList();
+                updateLessonView();
+            }
+        }
+
+        function toggleTaskCompletion() {
+            const isChecked = document.getElementById("task-checkbox").checked;
+            const key = `${currentCourseIndex}-${currentLessonIndex}`;
+            completedLessons[key] = isChecked;
+            localStorage.setItem('academy_completed_lessons', JSON.stringify(completedLessons));
+            
+            let total = 0, done = 0;
+            courses.forEach((c, cI) => c.lessons.forEach((_, lI) => {
+                total++;
+                if(completedLessons[`${cI}-${lI}`]) done++;
+            }));
+            document.getElementById("overall-progress-text").innerText = `${Math.round((done/total)*100)}%`;
+            renderLessonList();
+        }
+
+        function resetAllProgress() {
+            if(confirm("Явцыг шинэчлэх үү?")) {
+                completedLessons = {};
+                localStorage.removeItem('academy_completed_lessons');
+                initApp();
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
 
     // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО
     function addSideHustle() {
