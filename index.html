@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Төлөвлөгч-2026</title>
   
-  <!-- Firebase CDN сангууд -->
+  <!-- Firebase SDK v8 CDN -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -498,16 +498,16 @@
   </div>
 
   <script>
-    // 🌐 FIREBASE ОНЛАЙН САНГИЙН ТОХИРГОО
+    // 🌐 FIREBASE ОНЛАЙН САНГИЙН ТОХИРГОО (Realtime Database URL)
     const firebaseConfig = {
-      databaseURL: "https://planner-2026-default-rtdb.asia-southeast1.firebasedatabase.app"
+      databaseURL: "https://planner-2026-6d487-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     // 1. ХЭРЭГЛЭГЧИЙН БАЗА
     const usersDatabase = {
-      "99563946": { name: "Баярчимэг", package: "VIP" },
+      "99563946": { name: "Түвшинбаяр Баярчимэг", package: "VIP" },
       "99392981": { name: "Мэндбаяр", package: "MASTER" },
       "95335368": { name: "Баяраа", package: "BASIC" }
     };
@@ -543,11 +543,10 @@
     document.getElementById('fin-date').valueAsDate = new Date();
     document.getElementById('item-date').valueAsDate = new Date();
 
-    // 3. FIREBASE СҮНЖЭЭГЭЭР МЭДЭЭЛЭЛ АВАХ БА ХАДГАЛАХ
+    // 3. FIREBASE СҮЛЖЭЭГЭЭР МЭДЭЭЛЭЛ АВАХ БА ХАДГАЛАХ
     function syncWithFirebase(phone) {
       const userRef = database.ref('users/' + phone);
       
-      // Сүлжээнээс мэдээлэл өөрчлөгдөх тухай бүрт шууд шинэчилнэ
       userRef.on('value', (snapshot) => {
         const val = snapshot.val();
         if (val) {
