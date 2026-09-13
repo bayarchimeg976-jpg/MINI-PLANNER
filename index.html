@@ -24,6 +24,20 @@
     </div>
   </div>
 
+  <!-- 1 ЖИЛИЙН НЭВТРЭХ ЭРХ ДУУССАН ҮЕД ХАРАГДАХ ЦОНХ -->
+  <div id="expired-screen" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50 p-4 hidden">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full text-center">
+      <div class="text-5xl mb-4">🔒</div>
+      <h2 class="text-2xl font-bold text-red-600 mb-2">Ашиглах эрхийн хугацаа дууссан!</h2>
+      <p class="text-sm text-gray-600 mb-6">Таны 1 жилийн ашиглах эрхийн хугацаа дууссан байна. Төлбөрөө төлж эрхээ дахин 1 жилээр сунгана уу.</p>
+      
+      <input type="text" id="renew-code-input" placeholder="Сунгалтын нууц код..." class="w-full text-center text-lg px-4 py-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:border-amber-500">
+      
+      <button onclick="renewSubscription()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-md transition mb-3">Эрх сунгах</button>
+      <p id="renew-error" class="text-red-500 text-xs mb-3 hidden">⚠️ Сунгалтын код буруу байна!</p>
+    </div>
+  </div>
+
   <!-- ҮНДСЭН АПП -->
   <div id="app-content" class="max-w-5xl mx-auto hidden">
 
@@ -74,23 +88,60 @@
   </div>
 
   <script>
-    // -----------------------------------------------------------------
-    // ХУДАЛДАН АВСАН ХЭРЭГЛЭГЧДИЙН УТАСНЫ ДУГААРЫН ЖАГСААЛТ
-    // -----------------------------------------------------------------
     const allowedPhones = [
       "99563946" // ТАНЫ ДУГААР (АДМИН)
     ];
+
+    // СУНГАЛТЫН ПИН КОД (Та хэрэглэгчид өгч 1 жилээр сунгана)
+    const RENEW_PIN_CODE = "20279956";
 
     function checkPhoneAccess() {
       const inputPhone = document.getElementById('phone-input').value.trim();
       
       if (allowedPhones.includes(inputPhone)) {
         localStorage.setItem('userPhoneAuth', inputPhone);
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app-content').classList.remove('hidden');
-        render();
+        
+        // Анх удаа нэвтэрч байгаа бол 1 жилийн хугацаа эхлүүлнэ
+        if (!localStorage.getItem('userExpiryDate')) {
+          const oneYearLater = new Date();
+          oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+          localStorage.setItem('userExpiryDate', oneYearLater.getTime());
+        }
+
+        verifySubscription();
       } else {
         document.getElementById('error-msg').classList.remove('hidden');
+      }
+    }
+
+    function verifySubscription() {
+      const expiry = Number(localStorage.getItem('userExpiryDate'));
+      const now = new Date().getTime();
+
+      if (expiry && now > expiry) {
+        // Хугацаа дууссан
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-content').classList.add('hidden');
+        document.getElementById('expired-screen').classList.remove('hidden');
+      } else {
+        // Эрх хэвийн
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('expired-screen').classList.add('hidden');
+        document.getElementById('app-content').classList.remove('hidden');
+        render();
+      }
+    }
+
+    function renewSubscription() {
+      const inputCode = document.getElementById('renew-code-input').value.trim();
+      if (inputCode === RENEW_PIN_CODE) {
+        // Дахин 1 жилээр сунгах
+        const oneYearLater = new Date();
+        oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+        localStorage.setItem('userExpiryDate', oneYearLater.getTime());
+        verifySubscription();
+      } else {
+        document.getElementById('renew-error').classList.remove('hidden');
       }
     }
 
@@ -493,13 +544,10 @@
     document.addEventListener('DOMContentLoaded', () => {
       const savedPhone = localStorage.getItem('userPhoneAuth');
       if (savedPhone && allowedPhones.includes(savedPhone)) {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app-content').classList.remove('hidden');
-        render();
+        verifySubscription();
       }
     });
 
-    // ИНТЕРНЭТГҮЙ ҮЕД АЖИЛЛУУЛАХ SERVICE WORKER
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         const swCode = `
