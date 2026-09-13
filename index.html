@@ -1,920 +1,338 @@
-<!DOCTYPE html>
-<html lang="mn">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Төлөвлөгч-2026</title>
-  
-  <!-- Firebase SDK v8 CDN -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-  <style>
-    :root {
-      --primary: #2b6cb0;
-      --accent: #d69e2e;
-      --bg: #faf9f6;
-      --card-bg: #ffffff;
-      --text: #2d3748;
-      --gray: #e2e8f0;
-      --success: #38a169;
-      --danger: #e53e3e;
-      --purple: #805ad5;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-    }
-
-    #login-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 350px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 12px 0;
-      border: 1px solid #cbd5e0;
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 16px;
-      text-align: center;
-    }
-    .login-box button {
-      width: 100%;
-      padding: 10px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .app-container {
-      max-width: 850px;
-      margin: 0 auto;
-      padding: 15px;
-    }
-
-    .time-bar {
-      background: #2d3748;
-      color: #fff;
-      padding: 8px 15px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-    
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--gray);
-    }
-    .user-badge {
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-      color: white;
-    }
-    .badge-BASIC { background: #718096; }
-    .badge-MASTER { background: #d69e2e; }
-    .badge-VIP { background: #805ad5; }
-
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      margin: 15px 0;
-      overflow-x: auto;
-    }
-    .tab-btn {
-      padding: 10px 14px;
-      border: none;
-      background: #edf2f7;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      white-space: nowrap;
-      color: #4a5568;
-    }
-    .tab-btn.active {
-      background: var(--primary);
-      color: white;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 10px;
-      padding: 18px;
-      margin-bottom: 15px;
-      border: 1px solid var(--gray);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    .input-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-    .input-row input, .input-row select {
-      padding: 8px 12px;
-      border: 1px solid #cbd5e0;
-      border-radius: 6px;
-      font-size: 14px;
-      flex: 1;
-      min-width: 130px;
-    }
-    .btn-add {
-      background: var(--success);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .progress-container {
-      background: #edf2f7;
-      border-radius: 8px;
-      height: 18px;
-      width: 100%;
-      overflow: hidden;
-      margin: 8px 0;
-    }
-    .progress-bar {
-      background: var(--success);
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s ease;
-      text-align: center;
-      color: white;
-      font-size: 11px;
-      line-height: 18px;
-      font-weight: bold;
-    }
-
-    .task-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--gray);
-    }
-    .task-item.completed span.task-title {
-      text-decoration: line-through;
-      color: #a0aec0;
-    }
-    .priority-badge {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: white;
-      margin-left: 8px;
-      font-weight: bold;
-    }
-    .p-urgent { background: var(--danger); }
-    .p-important { background: var(--accent); }
-
-    .btn-del {
-      background: none;
-      border: none;
-      color: #e53e3e;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .fin-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .fin-card {
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      color: white;
-      font-weight: bold;
-    }
-    .fc-inc { background: #38a169; }
-    .fc-exp { background: #e53e3e; }
-    .fc-debt { background: #dd6b20; }
-    .fc-sav { background: #3182ce; }
-
-    .habit-item {
-      border: 1px solid var(--gray);
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      background: #fff;
-    }
-    .habit-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
-      gap: 4px;
-      margin-top: 10px;
-    }
-    .day-box {
-      border: 1px solid #cbd5e0;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 11px;
-      user-select: none;
-    }
-    .day-box.done {
-      background: var(--success);
-      color: white;
-      border-color: var(--success);
-      font-weight: bold;
-    }
-
-    .locked-card {
-      background: #f7fafc;
-      border: 1px dashed #cbd5e0;
-    }
-    .lock-overlay {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 15px;
-      text-align: center;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-    .upgrade-btn {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      margin-top: 6px;
-      font-size: 12px;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- 🔑 НЭВТРЭХ ЦОНХ -->
-  <div id="login-overlay">
-    <div class="login-box">
-      <h2>Төлөвлөгч-2026</h2>
-      <p>Нэвтрэх утасны дугаараа оруулна уу:</p>
-      <input type="tel" id="login-phone" placeholder="Утасны дугаар" />
-      <button onclick="handleLogin()">Нэвтрэх</button>
-      <p id="login-error" style="color: red; display: none; margin-top: 10px; font-size: 13px;">Бүртгэлгүй дугаар байна!</p>
-    </div>
-  </div>
-
-  <!-- 📱 ҮНДСЭН АПП -->
-  <div class="app-container">
-    
-    <div class="time-bar">
-      <span id="live-date">2026-00-00</span>
-      <span id="live-clock">00:00:00</span>
-    </div>
-
-    <div class="header">
-      <div>
-        <h3 id="user-display-name" style="margin: 0;">Хэрэглэгч</h3>
-        <span id="user-display-phone" style="font-size: 12px; color: #718096;">-</span>
-      </div>
-      <div>
-        <span id="user-pkg-badge" class="user-badge"></span>
-        <button onclick="logout()" style="margin-left: 8px; padding: 4px 8px; font-size: 11px;">Гарах</button>
+<span id="user-pkg-badge" class="user-badge"></span>
+        <button onclick="logout()" style="margin-left: 8px; padding: 4px 8px; border: 1px solid #cbd5e0; background: #fff; border-radius: 4px; cursor: pointer; font-size: 11px;">Гарах</button>
       </div>
     </div>
 
-    <!-- ТАБ ЦЭСҮҮД -->
+    <!-- Навигацийн Таб-ууд -->
     <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
-      <button class="tab-btn" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
-      <button class="tab-btn" onclick="switchTab(event, 'finance')">💰 Санхүү</button>
-      <button class="tab-btn" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
-      <button class="tab-btn" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
-      <button class="tab-btn" onclick="switchTab(event, 'courses')">🧠 Сургалт (MASTER)</button>
-      <button class="tab-btn" onclick="switchTab(event, 'vip')">👑 VIP Клуб</button>
+      <button class="tab-btn active" onclick="switchTab('tasks')">📅 Өдрийн төлөвлөгөө</button>
+      <button class="tab-btn" onclick="switchTab('finance')">💰 Санхүү</button>
+      <button class="tab-btn" onclick="switchTab('habits')">🔄 Дадал хэвшил</button>
+      <button class="tab-btn" onclick="switchTab('vision')">🎯 Зорилго / VIP</button>
     </div>
 
-    <!-- 1. ӨДРИЙН АЖИЛ -->
-    <div id="daily-sec" class="tab-content">
+    <!-- 1. ӨДРИЙН ТӨЛӨВЛӨГӨӨ -->
+    <div id="tab-tasks" class="tab-content">
       <div class="card">
-        <h4>📝 Өдрийн ажлын төлөвлөгөө</h4>
+        <h3>Өнөөдрийн ажил нэмэх</h3>
         <div class="input-row">
-          <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." />
-          <select id="daily-priority">
-            <option value="p-urgent">🔴 Нэн чухал</option>
-            <option value="p-important">🟡 Чухал</option>
+          <input type="text" id="task-title" placeholder="Ажлын нэр..." />
+          <select id="task-priority">
+            <option value="normal">Энгийн</option>
+            <option value="important">Чухал</option>
+            <option value="urgent">Яаралтай</option>
           </select>
-          <button class="btn-add" onclick="addTask('daily')">Нэмэх</button>
+          <button class="btn-add" onclick="addTask()">Нэмэх</button>
         </div>
-
         <div>
-          <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold;">
-            <span>Гүйцэтгэлийн ахиц:</span>
-            <span id="daily-percent">0%</span>
-          </div>
+          <span>Гүйцэтгэл:</span>
           <div class="progress-container">
-            <div id="daily-bar" class="progress-bar">0%</div>
+            <div id="task-progress-bar" class="progress-bar">0%</div>
           </div>
         </div>
-
-        <div id="daily-list" style="margin-top: 15px;"></div>
+      </div>
+      <div class="card">
+        <h3>Миний жагсаалт</h3>
+        <div id="task-list"></div>
       </div>
     </div>
 
-    <!-- 2. 7 ХОНОГИЙН АЖИЛ -->
-    <div id="weekly-sec" class="tab-content" style="display:none;">
+    <!-- 2. САНХҮҮ -->
+    <div id="tab-finance" class="tab-content" style="display: none;">
       <div class="card">
-        <h4>🗓️ 7 хоногийн ажлын төлөвлөгөө</h4>
-        <div class="input-row">
-          <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." />
-          <select id="weekly-priority">
-            <option value="p-urgent">🔴 Нэн чухал</option>
-            <option value="p-important">🟡 Чухал</option>
-          </select>
-          <button class="btn-add" onclick="addTask('weekly')">Нэмэх</button>
+        <h3>Санхүүгийн тойм</h3>
+        <div class="fin-summary">
+          <div class="fin-card fc-inc">Ологоо: <span id="fin-total-inc">0₮</span></div>
+          <div class="fin-card fc-exp">Зарлага: <span id="fin-total-exp">0₮</span></div>
+          <div class="fin-card fc-sav">Хэмнэлт: <span id="fin-total-sav">0₮</span></div>
         </div>
-
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold;">
-            <span>Гүйцэтгэлийн ахиц:</span>
-            <span id="weekly-percent">0%</span>
-          </div>
-          <div class="progress-container">
-            <div id="weekly-bar" class="progress-bar">0%</div>
-          </div>
-        </div>
-
-        <div id="weekly-list" style="margin-top: 15px;"></div>
       </div>
-    </div>
-
-    <!-- 3. САНХҮҮГИЙН МОДУЛЬ -->
-    <div id="finance-sec" class="tab-content" style="display:none;">
       <div class="card">
-        <h4>💰 Санхүүгийн бүртгэл ба Тооцоолол</h4>
-        
+        <h3>Гүйлгээ бүртгэх</h3>
         <div class="input-row">
-          <input type="date" id="fin-date" />
-          <select id="fin-cat">
-            <option value="inc">🟩 Орлого</option>
-            <option value="exp">🟥 Зардал</option>
-            <option value="debt">🟧 Өр зээл</option>
-            <option value="sav">🟦 Хуримтлал</option>
+          <select id="fin-type">
+            <option value="income">Орлого</option>
+            <option value="expense">Зарлага</option>
           </select>
-          <input type="text" id="fin-source" placeholder="Эх үүсвэр / Ямар гүйлгээ..." />
-          <input type="number" id="fin-amount" placeholder="Дүн (₮)..." />
+          <input type="text" id="fin-desc" placeholder="Гүйлгээний утга..." />
+          <input type="number" id="fin-amount" placeholder="Дүн (₮)" />
           <button class="btn-add" onclick="addFinance()">Бүртгэх</button>
         </div>
-
-        <div class="fin-summary">
-          <div class="fin-card fc-inc">Орлого<br><span id="total-inc">0 ₮</span></div>
-          <div class="fin-card fc-exp">Зардал<br><span id="total-exp">0 ₮</span></div>
-          <div class="fin-card fc-debt">Өр зээл<br><span id="total-debt">0 ₮</span></div>
-          <div class="fin-card fc-sav">Хуримтлал<br><span id="total-sav">0 ₮</span></div>
-        </div>
-
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold;">
-            <span>Зардлын эзлэх хувь (Орлогоос):</span>
-            <span id="fin-ratio-text">0%</span>
-          </div>
-          <div class="progress-container">
-            <div id="fin-ratio-bar" class="progress-bar" style="background: var(--danger);">0%</div>
-          </div>
-        </div>
-
-        <div id="finance-list" style="margin-top: 15px;"></div>
+      </div>
+      <div class="card">
+        <h3>Сүүлийн гүйлгээ</h3>
+        <div id="fin-list"></div>
       </div>
     </div>
 
-    <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС -->
-    <div id="items-sec" class="tab-content" style="display:none;">
+    <!-- 3. ДАДАЛ ХЭВШИЛ -->
+    <div id="tab-habits" class="tab-content" style="display: none;">
       <div class="card">
-        <h4>🤝 Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
+        <h3>Шинэ дадал нэмэх</h3>
         <div class="input-row">
-          <input type="date" id="item-date" />
-          <select id="item-type">
-            <option value="given">📤 Өгсөн (Хүнд зээлүүлсэн/өгсөн)</option>
-            <option value="taken">📥 Авсан (Хүнээс ашиглахаар авсан)</option>
-          </select>
-          <input type="text" id="item-person" placeholder="Хүний нэр..." />
-          <input type="text" id="item-name" placeholder="Юу өгсөн/авсан (Ном, Мөнгө, Багаж...)" />
-          <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" />
-          <button class="btn-add" onclick="addItem()">Бүртгэх</button>
-        </div>
-
-        <div id="items-list" style="margin-top: 15px;"></div>
-      </div>
-    </div>
-
-    <!-- 5. ДАДАЛ ЗУРШИЛ -->
-    <div id="habits-sec" class="tab-content" style="display:none;">
-      <div class="card">
-        <h4>🔄 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
-        <div class="input-row">
-          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." />
+          <input type="text" id="habit-name" placeholder="Жишээ: 1.5л ус уух..." />
           <button class="btn-add" onclick="addHabit()">Дадал нэмэх</button>
         </div>
-        <div id="habits-container"></div>
       </div>
+      <div id="habit-container"></div>
     </div>
 
-    <!-- 6. МАСТЕР БАГЦЫН СУРГАЛТУУД -->
-    <div id="courses-sec" class="tab-content" style="display:none;">
-      <h3>🧠 Мастер Багцын Онлайн Хичээлүүд</h3>
-      
-      <div class="card">
-        <h4>💛 "Аз жаргалтай мөнгө" Хичээл</h4>
-        <p style="font-size: 13px;">Мөнгөтэй харьцах сэтгэл зүй, ариун ба эерэг энергийн мөн чанарыг ойлгох гарын авлага.</p>
-        <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--primary);">📘 PDF Гарын авлага үзэх</a></div>
-      </div>
-
-      <div class="card">
-        <h4>✨ "Талархлын ач холбогдол ба Хүч"</h4>
-        <p style="font-size: 13px;">Талархлын дадлаар амьдралаа өөрчлөх практик дасгал, видео хичээл.</p>
-        <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--success);">🎥 Хичээл үзэх & Ажлын хуудас</a></div>
-      </div>
-
-      <div class="card">
-        <h4>🔥 "21 Хоногийн Дадал Челленж"</h4>
-        <p style="font-size: 13px;">Өдөр бүр дадлаа хэвшүүлж, далд ухамсараа дахин програмчлах 21 хоногийн хөтөч.</p>
-        <div class="content-box">
-          <a href="#" class="upgrade-btn" style="background:var(--purple);">🎧 Челленжийн аудио хөтөч сонсох</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <h4>📘 "Далд ухамсарын хүч" PDF Гарын авлага</h4>
-        <p style="font-size: 13px;">Далд ухамсараа дахин програмчилж, зорилгодоо хүрэх гарын авлага.</p>
-        <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--primary);">📄 Татах (PDF)</a></div>
-      </div>
-    </div>
-
-    <!-- 7. VIP БАГЦ & ОРЛОГО ОЛОХ БОЛОМЖ -->
-    <div id="vip-sec" class="tab-content" style="display:none;">
-      <h3>👑 VIP Мастер Клуб & Орлого олох боломж</h3>
-      
-      <div class="card">
-        <h4>💻 1. Дижитал бүтээгдэхүүн борлуулах (Canva & E-book)</h4>
-        <p style="font-size: 13px;">Өөрийн мэдлэг туршлагаар цахим ном, төлөвлөгч эсвэл Canva загвар хийж онлайн орчинд борлуулж байнгын орлого олох гарын авлага.</p>
-        <div class="content-box">
-          <a href="#" class="upgrade-btn" style="background:#805ad5;">📘 Дижитал бүтээгдэхүүн хийх аргачлал</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <h4>🤝 2. Affiliate (Шимтгэлтэй борлуулалтын) хөтөлбөр</h4>
-        <p style="font-size: 13px;">Манай бүтээгдэхүүн, сургалтуудыг бусдад санал болгож борлуулалт бүрээс нь өндөр хувийн урамшуулал хожих боломж.</p>
-        <div class="content-box">
-          <a href="#" class="upgrade-btn" style="background:var(--success);">🔗 Рефераль линк авах & Бүртгүүлэх</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <h4>🎯 3. 1:1 Ганцаарчилсан зөвлөгөө & Менторшип</h4>
-        <p style="font-size: 13px;">Зорилгоо тодорхойлох, төлөвлөгөөгөө амжилттай хэрэгжүүлэхэд чиглэл өгөх хаалттай зөвлөгөө авах хүсэлт илгээх.</p>
-        <div class="content-box">
-          <a href="#" class="upgrade-btn" style="background:var(--primary);">📅 Зөвлөгөө авах цаг захиалах</a>
-        </div>
+    <!-- 4. ЗОРИЛГО / VIP -->
+    <div id="tab-vision" class="tab-content" style="display: none;">
+      <div id="vip-content-wrapper">
+        <!-- VIP биш бол түгжигдэнэ -->
       </div>
     </div>
 
   </div>
 
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // 🌐 FIREBASE ОНЛАЙН САНГИЙН ТОХИРГОО (Realtime Database URL)
+    // Firebase тохиргоо (Өөрийн төслийн мэдээллээр солих шаардлагатай)
     const firebaseConfig = {
-      databaseURL: "https://planner-2026-6d487-default-rtdb.asia-southeast1.firebasedatabase.app"
+      databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com"
     };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // 1. ХЭРЭГЛЭГЧИЙН БАЗА
-    const usersDatabase = {
-      "99563946": { name: "Түвшинбаяр Баярчимэг", package: "VIP" },
-      "99392981": { name: "Мэндбаяр", package: "MASTER" },
-      "95335368": { name: "Баяраа", package: "BASIC" }
-    };
-
-    let currentPhone = null;
-    let currentUser = null;
-    let userData = {
-      taskData: { daily: [], weekly: [] },
-      finData: [],
-      itemsData: [],
-      habitsData: []
-    };
-
-    // 2. ОГНОО БА ЦАГ
-    function updateClock() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const date = String(now.getDate()).padStart(2, '0');
-      const days = ['Ням', 'Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба'];
-      const dayName = days[now.getDay()];
-
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-
-      document.getElementById('live-date').innerText = `${year}-${month}-${date} (${dayName})`;
-      document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    const db = firebase.database();
 
-    document.getElementById('fin-date').valueAsDate = new Date();
-    document.getElementById('item-date').valueAsDate = new Date();
+    let currentUser = null; // { phone, name, package }
 
-    // 3. FIREBASE СҮЛЖЭЭГЭЭР МЭДЭЭЛЭЛ АВАХ БА ХАДГАЛАХ
-    function syncWithFirebase(phone) {
-      const userRef = database.ref('users/' + phone);
-      
-      userRef.on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          userData = val;
-          if (!userData.taskData) userData.taskData = { daily: [], weekly: [] };
-          if (!userData.finData) userData.finData = [];
-          if (!userData.itemsData) userData.itemsData = [];
-          if (!userData.habitsData) userData.habitsData = [];
+    // Цаг хугацаа шинэчлэх
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('live-date').innerText = now.toISOString().split('T')[0];
+      document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
+    }, 1000);
+
+    // Нэвтрэх хэсэг
+    function handleLogin() {
+      const phone = document.getElementById('login-phone').value.trim();
+      if (!phone) return;
+
+      // Firebase-с хэрэглэгчийг шалгах
+      db.ref('users/' + phone).once('value').then(snapshot => {
+        const userData = snapshot.val();
+        if (userData) {
+          currentUser = { phone, ...userData };
+          localStorage.setItem('planner_phone', phone);
+          initApp();
         } else {
-          userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [] };
+          // Хэрэв бүртгэлгүй бол демо байдлаар шууд үүсгэх эсвэл алдаа гаргах
+          document.getElementById('login-error').style.display = 'block';
         }
-        renderAll();
       });
     }
 
-    function saveUserData() {
-      if (currentPhone) {
-        database.ref('users/' + currentPhone).set(userData);
+    // Автоматаар өмнө нь орсон эсэхийг шалгах
+    window.onload = function() {
+      const savedPhone = localStorage.getItem('planner_phone');
+      if (savedPhone) {
+        db.ref('users/' + savedPhone).once('value').then(snapshot => {
+          if (snapshot.val()) {
+            currentUser = { phone: savedPhone, ...snapshot.val() };
+            initApp();
+          }
+        });
       }
-    }
+    };
 
-    // 4. НЭВТРЭХ & СЕСШН
-    function handleLogin() {
-      const phoneInput = document.getElementById("login-phone").value.trim();
-      if (usersDatabase[phoneInput]) {
-        localStorage.setItem("planner_user_phone", phoneInput);
-        initApp(phoneInput);
-      } else {
-        document.getElementById("login-error").style.display = "block";
-      }
+    function initApp() {
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('user-display-name').innerText = currentUser.name || 'Хэрэглэгч';
+      document.getElementById('user-display-phone').innerText = currentUser.phone;
+      
+      const badge = document.getElementById('user-pkg-badge');
+      const pkg = currentUser.package || 'BASIC';
+      badge.innerText = pkg;
+      badge.className = 'user-badge badge-' + pkg;
+
+      loadTasks();
+      loadFinance();
+      loadHabits();
+      setupVisionTab();
     }
 
     function logout() {
-      localStorage.removeItem("planner_user_phone");
+      localStorage.removeItem('planner_phone');
       location.reload();
     }
 
-    function initApp(phone) {
-      currentPhone = phone;
-      currentUser = usersDatabase[phone];
-      document.getElementById("login-overlay").style.display = "none";
-      document.getElementById("user-display-name").innerText = currentUser.name;
-      document.getElementById("user-display-phone").innerText = phone;
+    // Таб шилжүүлэгч
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       
-      const badge = document.getElementById("user-pkg-badge");
-      badge.innerText = currentUser.package + " БАГЦ";
-      badge.className = "user-badge badge-" + currentUser.package;
-
-      applyPermissions();
-      syncWithFirebase(phone);
+      document.getElementById('tab-' + tabName).style.display = 'block';
+      event.currentTarget.classList.add('active');
     }
 
-    function renderAll() {
-      renderTasks('daily');
-      renderTasks('weekly');
-      renderFinance();
-      renderItems();
-      renderHabits();
+    // 1. ТӨЛӨВЛӨГӨӨНИЙ ФУНКЦҮҮД
+    function addTask() {
+      const title = document.getElementById('task-title').value.trim();
+      const priority = document.getElementById('task-priority').value;
+      if (!title) return;
+
+      const taskRef = db.ref(`tasks/${currentUser.phone}`).push();
+      taskRef.set({ title, priority, completed: false }, () => {
+        document.getElementById('task-title').value = '';
+        loadTasks();
+      });
     }
 
-    function applyPermissions() {
-      if (currentUser.package === "BASIC") {
-        lockSection("courses-sec", "Мастер", "29,000 ₮");
-        lockSection("vip-sec", "VIP", "49,000 ₮");
-      } else if (currentUser.package === "MASTER") {
-        lockSection("vip-sec", "VIP", "49,000 ₮");
-      }
-    }
+    function loadTasks() {
+      db.ref(`tasks/${currentUser.phone}`).on('value', snapshot => {
+        const list = document.getElementById('task-list');
+        list.innerHTML = '';
+        let total = 0, completedCount = 0;
 
-    function lockSection(sectionId, packageName, price) {
-      const cards = document.querySelectorAll(`#${sectionId} .card`);
-      cards.forEach(card => {
-        card.classList.add("locked-card");
-        const box = card.querySelector(".content-box");
-        if (box) {
-          box.innerHTML = `
-            <div class="lock-overlay">
-              <span>🔒 Энэхүү агуулга <b>${packageName}</b> багцад нээгдэнэ.</span><br>
-              <a href="https://m.me/yourfacebookpage" target="_blank" class="upgrade-btn">
-                ${packageName} (${price}) руу ахиулах
-              </a>
+        snapshot.forEach(child => {
+          total++;
+          const val = child.val();
+          if (val.completed) completedCount++;
+
+          const pClass = val.priority === 'urgent' ? 'p-urgent' : (val.priority === 'important' ? 'p-important' : '');
+          
+          list.innerHTML += `
+            <div class="task-item ${val.completed ? 'completed' : ''}">
+              <div style="display: flex; align-items: center;">
+                <input type="checkbox" ${val.completed ? 'checked' : ''} onchange="toggleTask('${child.key}', ${!val.completed})" style="margin-right: 10px;" />
+                <span class="task-title">${val.title}</span>
+                ${pClass ? `<span class="priority-badge ${pClass}">${val.priority}</span>` : ''}
+              </div>
+              <button class="btn-del" onclick="deleteTask('${child.key}')">×</button>
             </div>
           `;
-        }
+        });
+
+        const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+        const bar = document.getElementById('task-progress-bar');
+        bar.style.width = percent + '%';
+        bar.innerText = percent + '%';
       });
     }
 
-    function switchTab(evt, tabName) {
-      document.querySelectorAll(".tab-content").forEach(el => el.style.display = "none");
-      document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
-      document.getElementById(tabName + "-sec").style.display = "block";
-      evt.currentTarget.classList.add("active");
+    function toggleTask(id, status) {
+      db.ref(`tasks/${currentUser.phone}/${id}`).update({ completed: status });
     }
 
-    // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ
-    function addTask(type) {
-      const input = document.getElementById(`${type}-input`);
-      const priority = document.getElementById(`${type}-priority`).value;
-      if (!input.value.trim()) return;
-
-      if (!userData.taskData[type]) userData.taskData[type] = [];
-
-      userData.taskData[type].push({
-        text: input.value.trim(),
-        priority: priority,
-        completed: false
-      });
-
-      input.value = "";
-      saveUserData();
+    function deleteTask(id) {
+      db.ref(`tasks/${currentUser.phone}/${id}`).remove();
     }
 
-    function toggleTask(type, index) {
-      userData.taskData[type][index].completed = !userData.taskData[type][index].completed;
-      saveUserData();
-    }
-
-    function deleteTask(type, index) {
-      userData.taskData[type].splice(index, 1);
-      saveUserData();
-    }
-
-    function renderTasks(type) {
-      const listContainer = document.getElementById(`${type}-list`);
-      listContainer.innerHTML = "";
-      
-      let completedCount = 0;
-      const tasks = userData.taskData ? (userData.taskData[type] || []) : [];
-      
-      tasks.forEach((task, idx) => {
-        if (task.completed) completedCount++;
-        const pText = task.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал';
-        
-        const div = document.createElement("div");
-        div.className = `task-item ${task.completed ? 'completed' : ''}`;
-        div.innerHTML = `
-          <div>
-            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})">
-            <span class="task-title" style="margin-left: 8px;">${task.text}</span>
-            <span class="priority-badge ${task.priority}">${pText}</span>
-          </div>
-          <button class="btn-del" onclick="deleteTask('${type}', ${idx})">✕</button>
-        `;
-        listContainer.appendChild(div);
-      });
-
-      const total = tasks.length;
-      const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
-      
-      document.getElementById(`${type}-percent`).innerText = percent + "%";
-      const bar = document.getElementById(`${type}-bar`);
-      bar.style.width = percent + "%";
-      bar.innerText = percent + "%";
-    }
-
-    // 6. САНХҮҮ
+    // 2. САНХҮҮГИЙН ФУНКЦҮҮД
     function addFinance() {
-      const date = document.getElementById("fin-date").value;
-      const cat = document.getElementById("fin-cat").value;
-      const source = document.getElementById("fin-source").value.trim();
-      const amount = parseFloat(document.getElementById("fin-amount").value);
+      const type = document.getElementById('fin-type').value;
+      const desc = document.getElementById('fin-desc').value.trim();
+      const amount = parseFloat(document.getElementById('fin-amount').value);
+      if (!desc || isNaN(amount)) return;
 
-      if (!date || !source || isNaN(amount)) return;
-
-      if (!userData.finData) userData.finData = [];
-
-      userData.finData.push({ date, cat, source, amount });
-      document.getElementById("fin-source").value = "";
-      document.getElementById("fin-amount").value = "";
-
-      saveUserData();
-    }
-
-    function deleteFinance(index) {
-      userData.finData.splice(index, 1);
-      saveUserData();
-    }
-
-    function renderFinance() {
-      const list = document.getElementById("finance-list");
-      list.innerHTML = "";
-
-      let totals = { inc: 0, exp: 0, debt: 0, sav: 0 };
-      const items = userData.finData || [];
-
-      items.forEach((item, idx) => {
-        totals[item.cat] += item.amount;
-        const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
-        const catColors = { inc: 'green', exp: 'red', debt: 'orange', sav: 'blue' };
-
-        const div = document.createElement("div");
-        div.className = "task-item";
-        div.innerHTML = `
-          <div>
-            <small style="color:#718096;">${item.date}</small> - 
-            <b>${item.source}</b>
-            <span style="color:${catColors[item.cat]}; font-size:12px; margin-left:5px;">(${catNames[item.cat]})</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-weight:bold; color:${catColors[item.cat]}">${item.amount.toLocaleString()} ₮</span>
-            <button class="btn-del" onclick="deleteFinance(${idx})">✕</button>
-          </div>
-        `;
-        list.appendChild(div);
-      });
-
-      document.getElementById("total-inc").innerText = totals.inc.toLocaleString() + " ₮";
-      document.getElementById("total-exp").innerText = totals.exp.toLocaleString() + " ₮";
-      document.getElementById("total-debt").innerText = totals.debt.toLocaleString() + " ₮";
-      document.getElementById("total-sav").innerText = totals.sav.toLocaleString() + " ₮";
-
-      const expRatio = totals.inc === 0 ? 0 : Math.min(100, Math.round((totals.exp / totals.inc) * 100));
-      document.getElementById("fin-ratio-text").innerText = expRatio + "%";
-      const ratioBar = document.getElementById("fin-ratio-bar");
-      ratioBar.style.width = expRatio + "%";
-      ratioBar.innerText = expRatio + "%";
-    }
-
-    // 7. 🤝 ӨГСӨН / АВСАН ЗҮЙЛС
-    function addItem() {
-      const date = document.getElementById("item-date").value;
-      const type = document.getElementById("item-type").value;
-      const person = document.getElementById("item-person").value.trim();
-      const name = document.getElementById("item-name").value.trim();
-      const duedate = document.getElementById("item-duedate").value.trim();
-
-      if (!date || !person || !name) return;
-
-      if (!userData.itemsData) userData.itemsData = [];
-
-      userData.itemsData.push({
-        date, type, person, name, duedate, done: false
-      });
-
-      document.getElementById("item-person").value = "";
-      document.getElementById("item-name").value = "";
-      document.getElementById("item-duedate").value = "";
-
-      saveUserData();
-    }
-
-    function toggleItem(index) {
-      userData.itemsData[index].done = !userData.itemsData[index].done;
-      saveUserData();
-    }
-
-    function deleteItem(index) {
-      userData.itemsData.splice(index, 1);
-      saveUserData();
-    }
-
-    function renderItems() {
-      const list = document.getElementById("items-list");
-      list.innerHTML = "";
-
-      const items = userData.itemsData || [];
-
-      items.forEach((item, idx) => {
-        const isGiven = item.type === 'given';
-        const badgeText = isGiven ? '📤 Өгсөн' : '📥 Авсан';
-        const badgeColor = isGiven ? '#dd6b20' : '#3182ce';
-
-        const div = document.createElement("div");
-        div.className = `task-item ${item.done ? 'completed' : ''}`;
-        div.innerHTML = `
-          <div>
-            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})">
-            <span style="background:${badgeColor}; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:5px;">${badgeText}</span>
-            <small style="color:#718096; margin-left:5px;">${item.date}</small> - 
-            <b class="task-title">${item.person}: ${item.name}</b>
-            ${item.duedate ? `<span style="font-size:11px; color:#e53e3e; margin-left:5px;">(Буцаах: ${item.duedate})</span>` : ''}
-          </div>
-          <button class="btn-del" onclick="deleteItem(${idx})">✕</button>
-        `;
-        list.appendChild(div);
+      db.ref(`finance/${currentUser.phone}`).push({ type, desc, amount, date: new Date().toLocaleDateString() }, () => {
+        document.getElementById('fin-desc').value = '';
+        document.getElementById('fin-amount').value = '';
+        loadFinance();
       });
     }
 
-    // 8. ДАДАЛ ЗУРШИЛ
-    function addHabit() {
-      const input = document.getElementById("habit-input");
-      if (!input.value.trim()) return;
+    function loadFinance() {
+      db.ref(`finance/${currentUser.phone}`).on('value', snapshot => {
+        const list = document.getElementById('fin-list');
+        list.innerHTML = '';
+        let totalInc = 0, totalExp = 0;
 
-      if (!userData.habitsData) userData.habitsData = [];
+        snapshot.forEach(child => {
+          const val = child.val();
+          if (val.type === 'income') totalInc += val.amount;
+          else totalExp += val.amount;
 
-      userData.habitsData.push({
-        title: input.value.trim(),
-        days: new Array(31).fill(false)
-      });
-
-      input.value = "";
-      saveUserData();
-    }
-
-    function toggleHabitDay(habitIdx, dayIdx) {
-      userData.habitsData[habitIdx].days[dayIdx] = !userData.habitsData[habitIdx].days[dayIdx];
-      saveUserData();
-    }
-
-    function deleteHabit(index) {
-      userData.habitsData.splice(index, 1);
-      saveUserData();
-    }
-
-    function renderHabits() {
-      const container = document.getElementById("habits-container");
-      container.innerHTML = "";
-
-      const habits = userData.habitsData || [];
-
-      habits.forEach((habit, hIdx) => {
-        const habitDays = habit.days || new Array(31).fill(false);
-        const doneCount = habitDays.filter(Boolean).length;
-        const percent = Math.round((doneCount / 31) * 100);
-
-        const itemDiv = document.createElement("div");
-        itemDiv.className = "habit-item";
-
-        let gridHtml = `<div class="habit-grid">`;
-        for (let i = 0; i < 31; i++) {
-          const isDone = habitDays[i];
-          gridHtml += `
-            <div class="day-box ${isDone ? 'done' : ''}" onclick="toggleHabitDay(${hIdx}, ${i})">
-              ${i + 1}
+          list.innerHTML += `
+            <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 13px;">
+              <span>${val.date} - ${val.desc}</span>
+              <span style="color: ${val.type === 'income' ? 'green' : 'red'}; font-weight: bold;">
+                ${val.type === 'income' ? '+' : '-'}${val.amount.toLocaleString()}₮
+              </span>
             </div>
           `;
-        }
-        gridHtml += `</div>`;
+        });
 
-        itemDiv.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <b>📌 ${habit.title}</b>
-            <div>
-              <span style="font-size:12px; font-weight:bold; color:var(--success); margin-right:10px;">${doneCount}/31 өдөр (${percent}%)</span>
-              <button class="btn-del" onclick="deleteHabit(${hIdx})">✕</button>
-            </div>
-          </div>
-          ${gridHtml}
-        `;
-
-        container.appendChild(itemDiv);
+        document.getElementById('fin-total-inc').innerText = totalInc.toLocaleString() + '₮';
+        document.getElementById('fin-total-exp').innerText = totalExp.toLocaleString() + '₮';
+        document.getElementById('fin-total-sav').innerText = (totalInc - totalExp).toLocaleString() + '₮';
       });
     }
 
-    // Систем ачаалагдахад сесшн шалгах
-    window.onload = function() {
-      const savedPhone = localStorage.getItem("planner_user_phone");
-      if (savedPhone && usersDatabase[savedPhone]) {
-        initApp(savedPhone);
+    // 3. ДАДАЛ ХЭВШЛИЙН ФУНКЦҮҮД
+    function addHabit() {
+      const name = document.getElementById('habit-name').value.trim();
+      if (!name) return;
+
+      db.ref(`habits/${currentUser.phone}`).push({ name }, () => {
+        document.getElementById('habit-name').value = '';
+        loadHabits();
+      });
+    }
+
+    function loadHabits() {
+      db.ref(`habits/${currentUser.phone}`).on('value', snapshot => {
+        const container = document.getElementById('habit-container');
+        container.innerHTML = '';
+
+        snapshot.forEach(child => {
+          const val = child.val();
+          const habitId = child.key;
+          
+          let daysHtml = '';
+          for (let i = 1; i <= 30; i++) {
+            const isDone = val.days && val.days[i];
+            daysHtml += `<div class="day-box ${isDone ? 'done' : ''}" onclick="toggleHabitDay('${habitId}', ${i}, ${!isDone})">${i}</div>`;
+          }
+
+          container.innerHTML += `
+            <div class="habit-item">
+              <div style="font-weight: bold; font-size: 14px; display: flex; justify-content: space-between;">
+                <span>${val.name}</span>
+                <button class="btn-del" onclick="deleteHabit('${habitId}')">Устгах</button>
+              </div>
+              <div class="habit-grid">${daysHtml}</div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function toggleHabitDay(habitId, dayNum, status) {
+      db.ref(`habits/${currentUser.phone}/${habitId}/days/${dayNum}`).set(status);
+    }
+
+    function deleteHabit(habitId) {
+      db.ref(`habits/${currentUser.phone}/${habitId}`).remove();
+    }
+
+    // 4. VIP ЗОРИЛГЫН ХЭСЭГ (Хандалтын эрх шалгах)
+    function setupVisionTab() {
+      const wrapper = document.getElementById('vip-content-wrapper');
+      if (currentUser.package === 'VIP' || currentUser.package === 'MASTER') {
+        wrapper.innerHTML = `
+          <div class="card">
+            <h3>🎯 2026 оны Стратеги Зорилгууд (VIP Хэсэг)</h3>
+            <p>Та энэ хэсэгт өөрийн том зорилго, төлөвлөгөө болон Vision Board мэдээллээ хадгалах боломжтой.</p>
+            <textarea style="width:100%; height:120px; padding:10px; border-radius:6px; border:1px solid #cbd5e0;" placeholder="Энд зорилгоо бичнэ үү..."></textarea>
+            <button class="btn-add" style="margin-top: 10px;">Хадгалах</button>
+          </div>
+        `;
+      } else {
+        wrapper.innerHTML = `
+          <div class="card locked-card">
+            <div class="lock-overlay">
+              <h3>🔒 Түгжигдсэн хэсэг</h3>
+              <p>Энэхүү функц нь зөвхөн <b>MASTER</b> болон <b>VIP</b> эрхтэй хэрэглэгчдэд нээлттэй.</p>
+              <a href="#" class="upgrade-btn">Эрхээ ахиулах</a>
+            </div>
+          </div>
+        `;
       }
-    };
+    }
   </script>
 </body>
 </html>
