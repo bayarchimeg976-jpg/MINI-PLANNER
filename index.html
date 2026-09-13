@@ -3,56 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ажлын төлөвлөгөө дашборд</title>
+  <title>Ажлын төлөвлөгөө ба Санхүү Дашборд</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- График харуулах Chart.js сан -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen font-sans text-gray-800 p-4 md:p-6">
 
   <div class="max-w-5xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Ажлын төлөвлөгөө дашборд</h1>
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">Ажлын төлөвлөгөө & Санхүү Дашборд</h1>
 
     <!-- Картнуудын хэсэг -->
     <div id="cards-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6"></div>
 
-    <!-- Сонгосон ангиллын тойм -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex items-center gap-6">
-      <div id="progress-circle" class="w-20 h-20 rounded-full border-4 border-amber-500 flex items-center justify-center font-bold text-lg text-amber-600 shrink-0">
-        0%
-      </div>
-      <div>
-        <h2 id="current-category-title" class="text-xl font-bold text-gray-800">Өдөр</h2>
-        <p id="current-category-status" class="text-sm text-gray-500">0/0 ажил дууссан</p>
-      </div>
-    </div>
-
-    <!-- Шинэ ажил нэмэх хэсэг -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6 flex gap-2">
-      <input type="text" id="task-input" placeholder="Шинэ ажил нэмэх..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500">
-      <button onclick="addItem()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-lg transition">Нэмэх</button>
-    </div>
-
-    <!-- Ажлын жагсаалт -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-      <ul id="task-list" class="space-y-3"></ul>
-    </div>
+    <!-- Үндсэн агуулгын хэсэг -->
+    <div id="main-content"></div>
   </div>
 
   <script>
-    const defaultData = { day: [], week: [], month: [], habits: [], finance: [], courses: [] };
+    const defaultData = {
+      day: [], week: [], month: [], habits: [], courses: [],
+      finance: { income: 0, expense: 0, savings: 0, debt: 0 }
+    };
+
     const categories = [
       { id: 'day', name: 'Өдөр', icon: '📅' },
       { id: 'week', name: '7 хоног', icon: '🗓️' },
       { id: 'month', name: 'Сар', icon: '📊' },
       { id: 'habits', name: 'Дадал', icon: '✨' },
       { id: 'finance', name: 'Санхүү', icon: '💰' },
-      { id: 'courses', name: 'Онлайн курс', icon: '🎓' }
+      { id: 'courses', name: 'Курс', icon: '🎓' }
     ];
 
     let currentCategory = 'day';
     let plannerData = JSON.parse(localStorage.getItem('plannerData')) || defaultData;
+    if(!plannerData.finance) plannerData.finance = defaultData.finance;
 
     function saveData() {
       localStorage.setItem('plannerData', JSON.stringify(plannerData));
+      render();
+    }
+
+    function selectCategory(id) {
+      currentCategory = id;
       render();
     }
 
@@ -66,11 +59,7 @@
       `).join('');
     }
 
-    function selectCategory(id) {
-      currentCategory = id;
-      render();
-    }
-
+    // Төлөвлөгөө ба дадлын хэсэг
     function addItem() {
       const input = document.getElementById('task-input');
       const text = input.value.trim();
@@ -92,39 +81,139 @@
       saveData();
     }
 
-    function renderTaskList() {
-      const list = document.getElementById('task-list');
-      const items = plannerData[currentCategory] || [];
-      if (items.length === 0) {
-        list.innerHTML = `<li class="text-gray-400 text-center py-4">Одоогоор ажил бүртгэгдээгүй байна.</li>`;
-        return;
-      }
-      list.innerHTML = items.map((item, index) => `
-        <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-          <span onclick="toggleItem(${index})" class="cursor-pointer ${item.completed ? 'line-through text-gray-400' : 'text-gray-800'}">
-            ${item.completed ? '✅' : '⚪'} ${item.text}
-          </span>
-          <button onclick="deleteItem(${index})" class="text-red-500 font-bold px-2">✕</button>
-        </li>
-      `).join('');
+    // Санхүүгийн утга шинэчлэх
+    function updateFinance() {
+      plannerData.finance.income = Number(document.getElementById('fin-income').value) || 0;
+      plannerData.finance.expense = Number(document.getElementById('fin-expense').value) || 0;
+      plannerData.finance.savings = Number(document.getElementById('fin-savings').value) || 0;
+      plannerData.finance.debt = Number(document.getElementById('fin-debt').value) || 0;
+      saveData();
     }
 
-    function renderProgress() {
+    function renderTaskView() {
       const items = plannerData[currentCategory] || [];
       const total = items.length;
       const completed = items.filter(i => i.completed).length;
       const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-
       const catObj = categories.find(c => c.id === currentCategory);
-      document.getElementById('current-category-title').innerText = catObj ? catObj.name : '';
-      document.getElementById('current-category-status').innerText = `${completed}/${total} ажил дууссан`;
-      document.getElementById('progress-circle').innerText = `${percent}%`;
+
+      return `
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex items-center gap-6">
+          <div class="w-20 h-20 rounded-full border-4 border-amber-500 flex items-center justify-center font-bold text-lg text-amber-600 shrink-0">
+            ${percent}%
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">${catObj.name}</h2>
+            <p class="text-sm text-gray-500">${completed}/${total} ажил дууссан</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6 flex gap-2">
+          <input type="text" id="task-input" placeholder="Шинэ ажил нэмэх..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500">
+          <button onclick="addItem()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-lg transition">Нэмэх</button>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <ul class="space-y-3">
+            ${items.length === 0 ? '<li class="text-gray-400 text-center py-4">Одоогоор ажил бүртгэгдээгүй байна.</li>' : ''}
+            ${items.map((item, index) => `
+              <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <span onclick="toggleItem(${index})" class="cursor-pointer ${item.completed ? 'line-through text-gray-400' : 'text-gray-800'}">
+                  ${item.completed ? '✅' : '⚪'} ${item.text}
+                </span>
+                <button onclick="deleteItem(${index})" class="text-red-500 font-bold px-2">✕</button>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    function renderFinanceView() {
+      const fin = plannerData.finance;
+      const balance = fin.income - fin.expense;
+
+      // Автомат дүгнэлт хийх логик
+      let summary = "";
+      if (fin.income === 0 && fin.expense === 0) {
+        summary = "Санхүүгийн мэдээллээ оруулна уу.";
+      } else if (balance < 0) {
+        summary = "⚠️ Алдагдалтай байна! Зарлага чинь орлогоосоо давсан тул хэрэглээгээ хянаарай.";
+      } else if (fin.debt > fin.savings) {
+        summary = "💡 Анхаар: Өр зээлийн хэмжээ хадгаламжаас их байна. Илүүдэл орлогоо өр дарахад зориулах нь тохиромжтой.";
+      } else {
+        summary = "🎉 Санхүүгийн сайн баланстай байна! Боломжтой бол хадгаламжийн хэмжээгээ нэмэгдүүлээрэй.";
+      }
+
+      return `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <!-- Санхүүгийн форматилгээ -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-4">
+            <h2 class="text-lg font-bold text-gray-800 border-b pb-2">💰 Санхүүгийн бүртгэл</h2>
+            <div>
+              <label class="text-xs font-bold text-gray-500">Орлого (₮)</label>
+              <input type="number" id="fin-income" value="${fin.income}" onchange="updateFinance()" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-500">Зарлага (₮)</label>
+              <input type="number" id="fin-expense" value="${fin.expense}" onchange="updateFinance()" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-500">Хадгаламж (₮)</label>
+              <input type="number" id="fin-savings" value="${fin.savings}" onchange="updateFinance()" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-gray-500">Өр зээл (₮)</label>
+              <input type="number" id="fin-debt" value="${fin.debt}" onchange="updateFinance()" class="w-full p-2 border rounded-lg">
+            </div>
+          </div>
+
+          <!-- График ба Дүгнэлт -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">📊 Санхүүгийн харьцуулалт</h2>
+              <div class="w-full max-w-xs mx-auto">
+                <canvas id="financeChart"></canvas>
+              </div>
+            </div>
+            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900 font-medium">
+              ${summary}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function initChart() {
+      const ctx = document.getElementById('financeChart');
+      if (!ctx) return;
+      const fin = plannerData.finance;
+
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Орлого', 'Зарлага', 'Хадгаламж', 'Өр зээл'],
+          datasets: [{
+            data: [fin.income, fin.expense, fin.savings, fin.debt],
+            backgroundColor: ['#10B981', '#EF4444', '#3B82F6', '#F59E0B']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
     }
 
     function render() {
       renderCards();
-      renderTaskList();
-      renderProgress();
+      const main = document.getElementById('main-content');
+      if (currentCategory === 'finance') {
+        main.innerHTML = renderFinanceView();
+        initChart();
+      } else {
+        main.innerHTML = renderTaskView();
+      }
     }
 
     document.addEventListener('DOMContentLoaded', render);
