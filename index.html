@@ -12,7 +12,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f7f6; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     
-    /* Нэвтрэх хэсгийн Overlay */
     #login-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;
@@ -30,12 +29,10 @@
     }
     .login-box button:hover { background: #2b6cb0; }
 
-    /* Үндсэн контейнер */
     .app-container {
       width: 100%; max-width: 800px; background: #fff; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column;
     }
     
-    /* Header */
     .app-header {
       background: #2b6cb0; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
     }
@@ -47,14 +44,12 @@
     .badge-MASTER { background: #f6ad55; color: #744210; }
     .badge-VIP { background: #9f7aea; color: #fff; }
 
-    /* Навигацийн табууд */
     .nav-tabs { display: flex; background: #edf2f7; border-bottom: 1px solid #e2e8f0; }
     .tab-btn {
       flex: 1; padding: 12px; text-align: center; background: none; border: none; cursor: pointer; font-weight: 600; color: #4a5568; font-size: 13px;
     }
     .tab-btn.active { background: #fff; color: #2b6cb0; border-bottom: 2px solid #2b6cb0; }
 
-    /* Агуулга */
     .tab-content { padding: 20px; flex: 1; overflow-y: auto; }
     .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .card h3 { margin-bottom: 12px; font-size: 16px; color: #2d3748; }
@@ -66,7 +61,6 @@
     .btn-add { background: #3182ce; color: #fff; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-add:hover { background: #2b6cb0; }
 
-    /* Төлөвлөгөөний жагсаалт */
     .task-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #edf2f7; }
     .task-item.completed .task-title { text-decoration: line-through; color: #a0aec0; }
     .priority-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; color: #fff; }
@@ -74,14 +68,12 @@
     .p-important { background: #dd6b20; }
     .btn-del { background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 16px; }
 
-    /* Санхүүгийн картууд */
     .fin-summary { display: flex; gap: 10px; margin-bottom: 15px; }
     .fin-card { flex: 1; padding: 10px; border-radius: 6px; color: #fff; font-size: 13px; font-weight: bold; text-align: center; }
     .fc-inc { background: #38a169; }
     .fc-exp { background: #e53e3e; }
     .fc-sav { background: #3182ce; }
 
-    /* Дадал зуршил */
     .habit-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #edf2f7; }
     .habit-grid { display: flex; gap: 3px; overflow-x: auto; margin-top: 8px; padding-bottom: 5px; }
     .day-box {
@@ -90,11 +82,9 @@
     }
     .day-box.done { background: #38a169; color: #fff; border-color: #38a169; }
 
-    /* Явцын мөр */
     .progress-container { background: #e2e8f0; border-radius: 4px; height: 16px; width: 100%; margin-top: 5px; overflow: hidden; position: relative; }
     .progress-bar { background: #38a169; height: 100%; width: 0%; text-align: center; font-size: 10px; color: #fff; line-height: 16px; transition: width 0.3s; }
 
-    /* VIP Түгжээ */
     .locked-card { position: relative; min-height: 150px; background: #edf2f7; display: flex; justify-content: center; align-items: center; text-align: center; }
     .lock-overlay { padding: 20px; }
     .upgrade-btn { display: inline-block; margin-top: 10px; padding: 6px 15px; background: #9f7aea; color: #fff; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; }
@@ -102,21 +92,19 @@
 </head>
 <body>
 
-  <!-- НЭВТРЭХ ЦОНХ (Overlay) -->
+  <!-- НЭВТРЭХ ЦОНХ -->
   <div id="login-overlay">
     <div class="login-box">
       <h2>Төлөвлөгч-2026</h2>
       <p style="font-size: 13px; color: #718096; margin-bottom: 15px;">Утасны дугаараа оруулж нэвтэрнэ үү.</p>
       <input type="text" id="login-phone" placeholder="Утасны дугаар (Жнь: 99112233)" />
       <button onclick="handleLogin()">Нэвтрэх</button>
-      <p id="login-error" style="color: #e53e3e; font-size: 12px; margin-top: 10px; display: none;">Бүртгэлгүй дугаар байна!</p>
+      <p id="login-error" style="color: #e53e3e; font-size: 12px; margin-top: 10px; display: none;">Алдаа гарлаа!</p>
     </div>
   </div>
 
-  <!-- ҮНДСЭН АПП КОНТЕЙНЕР -->
+  <!-- ҮНДСЭН АПП -->
   <div class="app-container">
-    
-    <!-- Header -->
     <div class="app-header">
       <div>
         <h2 style="font-size: 18px;">✨ Төлөвлөгч 2026</h2>
@@ -129,7 +117,7 @@
       </div>
     </div>
 
-    <!-- Навигацийн Таб-ууд -->
+    <!-- ТАББ -->
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('tasks')">📅 Өдрийн төлөвлөгөө</button>
       <button class="tab-btn" onclick="switchTab('finance')">💰 Санхүү</button>
@@ -137,7 +125,7 @@
       <button class="tab-btn" onclick="switchTab('vision')">🎯 Зорилго / VIP</button>
     </div>
 
-    <!-- 1. ӨДРИЙН ТӨЛӨВЛӨГӨӨ -->
+    <!-- 1. ТӨЛӨВЛӨГӨӨ -->
     <div id="tab-tasks" class="tab-content">
       <div class="card">
         <h3>Өнөөдрийн ажил нэмэх</h3>
@@ -205,19 +193,16 @@
 
     <!-- 4. ЗОРИЛГО / VIP -->
     <div id="tab-vision" class="tab-content" style="display: none;">
-      <div id="vip-content-wrapper">
-        <!-- VIP эрх шалгах хэсэг -->
-      </div>
+      <div id="vip-content-wrapper"></div>
     </div>
-
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Firebase тохиргоо 
+    // Firebase тохиргоо холбогдсон
     const firebaseConfig = {
-      databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com"
+      databaseURL: "https://planner-2026-6d487-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
+
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
@@ -225,14 +210,12 @@
 
     let currentUser = null; 
 
-    // Цаг хугацаа шинэчлэх
     setInterval(() => {
       const now = new Date();
       document.getElementById('live-date').innerText = now.toISOString().split('T')[0];
       document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
     }, 1000);
 
-    // Нэвтрэх хэсэг
     function handleLogin() {
       const phone = document.getElementById('login-phone').value.trim();
       if (!phone) return;
@@ -244,8 +227,7 @@
           localStorage.setItem('planner_phone', phone);
           initApp();
         } else {
-          // Хэрэв датабааз дээр байхгүй бол шууд BASIC эрхтэйгээр автоматаар бүртгэж нэвтрүүлэх (Тест хийхэд хялбар байх үүднээс)
-          const defaultUser = { name: "Хэрэглэгч", package: "BASIC" };
+          const defaultUser = { name: "Хэрэглэгч", package: "VIP" };
           db.ref('users/' + phone).set(defaultUser, () => {
             currentUser = { phone, ...defaultUser };
             localStorage.setItem('planner_phone', phone);
@@ -258,7 +240,6 @@
       });
     }
 
-    // Автоматаар өмнө нь орсон эсэхийг шалгах
     window.onload = function() {
       const savedPhone = localStorage.getItem('planner_phone');
       if (savedPhone) {
@@ -292,7 +273,6 @@
       location.reload();
     }
 
-    // Таб шилжүүлэгч
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -301,7 +281,6 @@
       event.currentTarget.classList.add('active');
     }
 
-    // 1. ТӨЛӨВЛӨГӨӨНИЙ ФУНКЦҮҮД
     function addTask() {
       const title = document.getElementById('task-title').value.trim();
       const priority = document.getElementById('task-priority').value;
@@ -354,7 +333,6 @@
       db.ref(`tasks/${currentUser.phone}/${id}`).remove();
     }
 
-    // 2. САНХҮҮГИЙН ФУНКЦҮҮД
     function addFinance() {
       const type = document.getElementById('fin-type').value;
       const desc = document.getElementById('fin-desc').value.trim();
@@ -395,7 +373,6 @@
       });
     }
 
-    // 3. ДАДАЛ ХЭВШЛИЙН ФУНКЦҮҮД
     function addHabit() {
       const name = document.getElementById('habit-name').value.trim();
       if (!name) return;
@@ -442,7 +419,6 @@
       db.ref(`habits/${currentUser.phone}/${habitId}`).remove();
     }
 
-    // 4. VIP ЗОРИЛГЫН ХЭСЭГ 
     function setupVisionTab() {
       const wrapper = document.getElementById('vip-content-wrapper');
       if (currentUser.package === 'VIP' || currentUser.package === 'MASTER') {
@@ -450,10 +426,16 @@
           <div class="card">
             <h3>🎯 2026 оны Стратеги Зорилгууд (VIP Хэсэг)</h3>
             <p style="font-size: 13px; color: #718096; margin-bottom: 10px;">Та энэ хэсэгт өөрийн том зорилго, төлөвлөгөө болон Vision Board мэдээллээ хадгалах боломжтой.</p>
-            <textarea style="width:100%; height:120px; padding:10px; border-radius:6px; border:1px solid #cbd5e0; font-size: 14px;" placeholder="Энд зорилгоо бичнэ үү..."></textarea>
-            <button class="btn-add" style="margin-top: 10px; padding: 8px 15px;">Хадгалах</button>
+            <textarea id="vision-text" style="width:100%; height:120px; padding:10px; border-radius:6px; border:1px solid #cbd5e0; font-size: 14px;" placeholder="Энд зорилгоо бичнэ үү..."></textarea>
+            <button class="btn-add" style="margin-top: 10px; padding: 8px 15px;" onclick="saveVision()">Хадгалах</button>
           </div>
         `;
+        // Өмнө хадгалсан утгыг татах
+        db.ref(`vision/${currentUser.phone}/text`).once('value').then(snapshot => {
+          if (snapshot.val()) {
+            document.getElementById('vision-text').value = snapshot.val();
+          }
+        });
       } else {
         wrapper.innerHTML = `
           <div class="card locked-card">
@@ -465,6 +447,13 @@
           </div>
         `;
       }
+    }
+
+    function saveVision() {
+      const text = document.getElementById('vision-text').value;
+      db.ref(`vision/${currentUser.phone}`).set({ text }, () => {
+        alert('Амжилттай хадгалагдлаа!');
+      });
     }
   </script>
 </body>
