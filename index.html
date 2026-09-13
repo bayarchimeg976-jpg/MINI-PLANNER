@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ухаалаг Төлөвлөгч-2026</title>
+  <title>Ухаалаг Төлөвлөгч & Онлайн Сургалт-2026</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -23,13 +23,13 @@
   <!-- 🔑 НЭВТРЭХ ЦОНХ (АЮУЛГҮЙ БАЙДЛЫН ХЭСЭГ) -->
   <div id="login-overlay" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white p-8 rounded-2xl w-full max-w-sm text-center shadow-2xl">
-      <div class="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+      <div class="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-xl font-bold">
         <i class="fa-solid fa-lock"></i>
       </div>
       <h2 class="text-2xl font-bold mb-2">Төлөвлөгч-2026</h2>
       <p class="text-sm text-gray-500 mb-6">Нэвтрэх утасны дугаараа оруулна уу:</p>
-      <input type="tel" id="login-phone" placeholder="Утасны дугаар (жишээ: 99563946)" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <button onclick="handleLogin()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-md">Нэвтрэх</button>
+      <input type="tel" id="login-phone" placeholder="Утасны дугаар (жишээ: 99563946)" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition shadow-md">Нэвтрэх</button>
       <p id="login-error" class="text-red-500 text-xs mt-3 hidden">Бүртгэлгүй эсвэл буруу дугаар байна!</p>
     </div>
   </div>
@@ -57,26 +57,27 @@
 
     <!-- ТАБ ЦЭСҮҮД -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
-      <button class="tab-btn px-4 py-2.5 bg-blue-600 text-white rounded-lg font-bold text-sm whitespace-nowrap shadow-sm transition" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-bold text-sm whitespace-nowrap shadow-sm transition" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'finance')">💰 Санхүү</button>
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
       <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
+      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
+      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'sidehustle')">💡 Нэмэлт орлого</button>
     </div>
 
     <!-- 1. ӨДРИЙН АЖИЛ -->
     <div id="daily-sec" class="tab-content space-y-4">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-blue-600"></i> Өдрийн ажлын төлөвлөгөө</h4>
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-indigo-600"></i> Өдрийн ажлын төлөвлөгөө</h4>
         <div class="flex flex-wrap gap-2 mb-4">
-          <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           <select id="daily-priority" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
             <option value="p-urgent">🔴 Нэн чухал</option>
             <option value="p-important">🟡 Чухал</option>
           </select>
           <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition" onclick="addTask('daily')">Нэмэх</button>
         </div>
-
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Гүйцэтгэлийн ахиц:</span>
@@ -86,7 +87,6 @@
             <div id="daily-bar" class="bg-emerald-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
-
         <div id="daily-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
@@ -94,16 +94,15 @@
     <!-- 2. 7 ХОНОГИЙН АЖИЛ -->
     <div id="weekly-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-blue-600"></i> 7 хоногийн ажлын төлөвлөгөө</h4>
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-indigo-600"></i> 7 хоногийн ажлын төлөвлөгөө</h4>
         <div class="flex flex-wrap gap-2 mb-4">
-          <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           <select id="weekly-priority" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
             <option value="p-urgent">🔴 Нэн чухал</option>
             <option value="p-important">🟡 Чухал</option>
           </select>
           <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition" onclick="addTask('weekly')">Нэмэх</button>
         </div>
-
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Гүйцэтгэлийн ахиц:</span>
@@ -113,7 +112,6 @@
             <div id="weekly-bar" class="bg-emerald-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
-
         <div id="weekly-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
@@ -121,8 +119,7 @@
     <!-- 3. САНХҮҮГИЙН МОДУЛЬ -->
     <div id="finance-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-wallet text-blue-600"></i> Санхүүгийн бүртгэл ба Тооцоолол</h4>
-        
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-wallet text-indigo-600"></i> Санхүүгийн бүртгэл ба Тооцоолол</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <input type="date" id="fin-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white" />
           <select id="fin-cat" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
@@ -135,14 +132,12 @@
           <input type="number" id="fin-amount" placeholder="Дүн (₮)..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
         </div>
         <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addFinance()">Бүртгэх</button>
-
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           <div class="p-3 bg-emerald-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Орлого<br><span id="total-inc" class="text-base">0 ₮</span></div>
           <div class="p-3 bg-rose-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Зардал<br><span id="total-exp" class="text-base">0 ₮</span></div>
           <div class="p-3 bg-amber-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Өр зээл<br><span id="total-debt" class="text-base">0 ₮</span></div>
-          <div class="p-3 bg-blue-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Хуримтлал<br><span id="total-sav" class="text-base">0 ₮</span></div>
+          <div class="p-3 bg-indigo-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Хуримтлал<br><span id="total-sav" class="text-base">0 ₮</span></div>
         </div>
-
         <div class="mb-4">
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Зардлын эзлэх хувь (Орлогоос):</span>
@@ -152,7 +147,6 @@
             <div id="fin-ratio-bar" class="bg-rose-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
-
         <div id="finance-list" class="space-y-2"></div>
       </div>
     </div>
@@ -160,7 +154,7 @@
     <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС -->
     <div id="items-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake text-blue-600"></i> Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake text-indigo-600"></i> Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
           <input type="date" id="item-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white" />
           <select id="item-type" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
@@ -172,7 +166,6 @@
           <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
         </div>
         <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addItem()">Бүртгэх</button>
-
         <div id="items-list" class="space-y-2"></div>
       </div>
     </div>
@@ -180,12 +173,42 @@
     <!-- 5. ДАДАЛ ЗУРШИЛ -->
     <div id="habits-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-rotate text-blue-600"></i> 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-rotate text-indigo-600"></i> 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
         <div class="flex gap-2 mb-4">
-          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition" onclick="addHabit()">Дадал нэмэх</button>
         </div>
         <div id="habits-container" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- 6. 🎓 ОНЛАЙН КУРСУУД -->
+    <div id="courses-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-indigo-600"></i> Онлайн курс & Суралцах явц хянагч</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <input type="text" id="course-name" placeholder="Курсын нэр (Жишээ нь: Python сургалт)..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="number" id="course-lessons" placeholder="Нийт хичээлийн тоо..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+        </div>
+        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addCourse()">Курс нэмэх</button>
+        <div id="courses-list" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- 7. 💡 НЭМЭЛТ ОРЛОГО ОЛОХ БОЛОМЖТОЙ САНААНУУД -->
+    <div id="sidehustle-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-lightbulb text-amber-500"></i> Нэмэлт орлого олох боломжтой санаанууд (Side Hustle Ideas)</h4>
+        <p class="text-xs text-gray-500 mb-4">Өөрийн хийж чадах чөлөөт цагаараа нэмэлт орлого олох санаануудаа бүртгэж, хэрэгжүүлэлтээ хянаарай.</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <input type="text" id="sh-title" placeholder="Санааны нэр (Жишээ нь: График дизайн)..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="text" id="sh-potential" placeholder="Тооцоолсон орлого (₮)..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+        </div>
+        <textarea id="sh-desc" placeholder="Хэрэгжүүлэх төлөвлөгөө болон шаардлагатай алхмууд..." rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addSideHustle()">Санаа нэмэх</button>
+        
+        <div id="sidehustle-list" class="space-y-3"></div>
       </div>
     </div>
 
@@ -205,7 +228,9 @@
       taskData: { daily: [], weekly: [] },
       finData: [],
       itemsData: [],
-      habitsData: []
+      habitsData: [],
+      coursesData: [],
+      sideHustleData: []
     };
 
     // 2. ОГНОО БА ЦАГ
@@ -248,11 +273,13 @@
       if (saved) {
         try {
           userData = JSON.parse(saved);
+          if(!userData.coursesData) userData.coursesData = [];
+          if(!userData.sideHustleData) userData.sideHustleData = [];
         } catch(e) {
-          userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [] };
+          userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
         }
       } else {
-        userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [] };
+        userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
       }
       renderAll();
     }
@@ -300,17 +327,19 @@
       renderFinance();
       renderItems();
       renderHabits();
+      renderCourses();
+      renderSideHustles();
     }
 
     function switchTab(evt, tabName) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(el => {
-        el.classList.remove("bg-blue-600", "text-white");
+        el.classList.remove("bg-indigo-600", "text-white");
         el.classList.add("bg-gray-100", "text-gray-600");
       });
       document.getElementById(tabName + "-sec").classList.remove("hidden");
       evt.currentTarget.classList.remove("bg-gray-100", "text-gray-600");
-      evt.currentTarget.classList.add("bg-blue-600", "text-white");
+      evt.currentTarget.classList.add("bg-indigo-600", "text-white");
     }
 
     // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ (Өдөр & 7 хоног)
@@ -361,7 +390,7 @@
         div.className = `flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-2xs ${task.completed ? 'opacity-60 line-through' : ''}`;
         div.innerHTML = `
           <div class="flex items-center gap-2 overflow-hidden">
-            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})" class="w-4 h-4 text-blue-600 rounded cursor-pointer">
+            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
             <span class="text-sm text-gray-800 truncate">${task.text}</span>
             <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase ${pBadgeClass}">${pText}</span>
           </div>
@@ -390,7 +419,6 @@
       const amount = parseFloat(document.getElementById("fin-amount").value);
 
       if (!date || !source || isNaN(amount)) return;
-
       if (!userData.finData) userData.finData = [];
 
       userData.finData.push({ date, cat, source, amount });
@@ -418,7 +446,7 @@
       items.forEach((item, idx) => {
         totals[item.cat] += item.amount;
         const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
-        const catColors = { inc: 'text-emerald-600', exp: 'text-rose-600', debt: 'text-amber-600', sav: 'text-blue-600' };
+        const catColors = { inc: 'text-emerald-600', exp: 'text-rose-600', debt: 'text-amber-600', sav: 'text-indigo-600' };
 
         const div = document.createElement("div");
         div.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg text-sm shadow-2xs";
@@ -459,11 +487,9 @@
       const duedate = document.getElementById("item-duedate").value.trim();
 
       if (!date || !person || !name) return;
-
       if (!userData.itemsData) userData.itemsData = [];
 
       userData.itemsData.push({ date, type, person, name, duedate, done: false });
-
       document.getElementById("item-person").value = "";
       document.getElementById("item-name").value = "";
       document.getElementById("item-duedate").value = "";
@@ -490,17 +516,16 @@
       list.innerHTML = "";
 
       const items = userData.itemsData || [];
-
       items.forEach((item, idx) => {
         const isGiven = item.type === 'given';
         const badgeText = isGiven ? '📤 Өгсөн' : '📥 Авсан';
-        const badgeColor = isGiven ? 'bg-amber-600 text-white' : 'bg-blue-600 text-white';
+        const badgeColor = isGiven ? 'bg-amber-600 text-white' : 'bg-indigo-600 text-white';
 
         const div = document.createElement("div");
         div.className = `flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg text-sm shadow-2xs ${item.done ? 'opacity-60 line-through' : ''}`;
         div.innerHTML = `
           <div class="flex items-center gap-2 overflow-hidden">
-            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})" class="w-4 h-4 text-blue-600 rounded cursor-pointer">
+            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
             <span class="text-[10px] px-2 py-0.5 rounded font-bold ${badgeColor}">${badgeText}</span>
             <span class="text-xs text-gray-400">${item.date}</span>
             <b class="text-gray-800 truncate">${item.person}: ${item.name}</b>
@@ -516,7 +541,6 @@
     function addHabit() {
       const input = document.getElementById("habit-input");
       if (!input.value.trim()) return;
-
       if (!userData.habitsData) userData.habitsData = [];
 
       userData.habitsData.push({
@@ -547,7 +571,6 @@
       container.innerHTML = "";
 
       const habits = userData.habitsData || [];
-
       habits.forEach((habit, hIdx) => {
         const habitDays = habit.days || new Array(31).fill(false);
         const doneCount = habitDays.filter(Boolean).length;
@@ -577,8 +600,149 @@
           </div>
           ${gridHtml}
         `;
-
         container.appendChild(itemDiv);
+      });
+    }
+
+    // 9. 🎓 ОНЛАЙН КУРСУУД (Online Course Tracker)
+    function addCourse() {
+      const name = document.getElementById("course-name").value.trim();
+      const lessons = parseInt(document.getElementById("course-lessons").value);
+
+      if (!name || isNaN(lessons) || lessons <= 0) return;
+      if (!userData.coursesData) userData.coursesData = [];
+
+      userData.coursesData.push({
+        name: name,
+        totalLessons: lessons,
+        completedLessons: 0
+      });
+
+      document.getElementById("course-name").value = "";
+      document.getElementById("course-lessons").value = "";
+
+      saveUserData();
+      renderCourses();
+    }
+
+    function updateCourseProgress(index, change) {
+      let course = userData.coursesData[index];
+      course.completedLessons += change;
+      if (course.completedLessons < 0) course.completedLessons = 0;
+      if (course.completedLessons > course.totalLessons) course.completedLessons = course.totalLessons;
+
+      saveUserData();
+      renderCourses();
+    }
+
+    function deleteCourse(index) {
+      userData.coursesData.splice(index, 1);
+      saveUserData();
+      renderCourses();
+    }
+
+    function renderCourses() {
+      const container = document.getElementById("courses-list");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const courses = userData.coursesData || [];
+      courses.forEach((course, idx) => {
+        const percent = Math.round((course.completedLessons / course.totalLessons) * 100);
+
+        const div = document.createElement("div");
+        div.className = "p-4 bg-white border border-gray-200 rounded-xl space-y-2 shadow-2xs";
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <b class="text-sm text-gray-800">📖 ${course.name}</b>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-indigo-600">${course.completedLessons} / ${course.totalLessons} хичээл (${percent}%)</span>
+              <button class="text-red-500 hover:text-red-700 font-bold text-sm" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+              <div class="bg-indigo-600 h-full transition-all duration-300" style="width: ${percent}%"></div>
+            </div>
+            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 text-xs font-bold rounded transition">+ Хичээл дуусгах</button>
+            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded transition">- Хасах</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // 10. 💡 НЭМЭЛТ ОРЛОГО ОЛОХ БОЛОМЖТОЙ САНААНУУД (Side Hustles)
+    function addSideHustle() {
+      const title = document.getElementById("sh-title").value.trim();
+      const potential = document.getElementById("sh-potential").value.trim();
+      const desc = document.getElementById("sh-desc").value.trim();
+
+      if (!title) return;
+      if (!userData.sideHustleData) userData.sideHustleData = [];
+
+      userData.sideHustleData.push({
+        title: title,
+        potential: potential || 'Тодорхойгүй',
+        desc: desc || 'Тэмдэглэл байхгүй',
+        status: 'pending'
+      });
+
+      document.getElementById("sh-title").value = "";
+      document.getElementById("sh-potential").value = "";
+      document.getElementById("sh-desc").value = "";
+
+      saveUserData();
+      renderSideHustles();
+    }
+
+    function toggleSideHustleStatus(index) {
+      let sh = userData.sideHustleData[index];
+      if (sh.status === 'pending') sh.status = 'active';
+      else if (sh.status === 'active') sh.status = 'completed';
+      else sh.status = 'pending';
+
+      saveUserData();
+      renderSideHustles();
+    }
+
+    function deleteSideHustle(index) {
+      userData.sideHustleData.splice(index, 1);
+      saveUserData();
+      renderSideHustles();
+    }
+
+    function renderSideHustles() {
+      const container = document.getElementById("sidehustle-list");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const items = userData.sideHustleData || [];
+      items.forEach((sh, idx) => {
+        let statusBadge = '';
+        if (sh.status === 'pending') statusBadge = '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">⏳ Төлөвлөж буй</span>';
+        else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold">🚀 Хэрэгжүүлж буй</span>';
+        else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold">✅ Ашиг олж эхэлсэн</span>';
+
+        const div = document.createElement("div");
+        div.className = "p-4 bg-white border border-gray-200 rounded-xl space-y-2 shadow-2xs";
+        div.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <b class="text-sm text-gray-800">${sh.title}</b>
+                ${statusBadge}
+              </div>
+              <p class="text-xs text-gray-600 mb-1">${sh.desc}</p>
+              <span class="text-xs text-emerald-600 font-bold">💰 Тооцоолсон орлого: ${sh.potential}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="toggleSideHustleStatus(${idx})" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded transition" title="Төлөв өөрчлөх">Төлөв солих</button>
+              <button class="text-red-500 hover:text-red-700 font-bold text-sm px-2" onclick="deleteSideHustle(${idx})"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
       });
     }
   </script>
