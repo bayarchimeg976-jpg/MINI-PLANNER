@@ -190,9 +190,9 @@
     <div class="login-box">
       <h2>Төлөвлөгч-2026</h2>
       <p>Нэвтрэх утасны дугаараа оруулна уу:</p>
-      <input type="tel" id="login-phone" placeholder="Утасны дугаар (дээж: 99563946)" />
+      <input type="tel" id="login-phone" placeholder="Утасны дугаар" />
       <button onclick="handleLogin()">Нэвтрэх</button>
-      <p id="login-error" style="color: red; display: none; margin-top: 10px; font-size: 13px;">Дугаар олдсонгүй!</p>
+      <p id="login-error" style="color: red; display: none; margin-top: 10px; font-size: 13px;">Бүртгэлгүй дугаар байна!</p>
     </div>
   </div>
 
@@ -287,12 +287,12 @@
 
   <script>
     // ------------------------------------------------------------------
-    // 1. БҮРТГЭЛТЭЙ УТАСНЫ ДУГААРЫН БАЗА (ЭДГЭЭРИЙГ ӨӨРЧЛӨЖ ТОХИРУУЛНА)
+    // 1. БҮРТГЭЛТЭЙ УТАСНЫ ДУГААРЫН БАЗА
     // ------------------------------------------------------------------
     const usersDatabase = {
-      "99563946": { name: "Түвшинбаяр", package: "VIP" },
-      "88112233": { name: "Болд", package: "MASTER" },
-      "99001122": { name: "Сараа", package: "BASIC" }
+      "99563946": { name: "Баярчимэг", package: "VIP" },
+      "99392981": { name: "Мэндбаяр", package: "MASTER" },
+      "95335368": { name: "Баяраа", package: "BASIC" }
     };
 
     let currentUser = null;
