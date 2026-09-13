@@ -9,6 +9,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SheetJS (Excel Export Library) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     body {
@@ -43,7 +45,7 @@
       <span id="live-clock">00:00:00</span>
     </div>
 
-    <!-- Header & Backup/Restore Options -->
+    <!-- Header & Excel Export/Import Options -->
     <div class="flex flex-wrap justify-between items-center pb-3 border-b-2 border-gray-200 mb-4 gap-2">
       <div>
         <h3 id="user-display-name" class="text-lg font-bold m-0 text-gray-800">Хэрэглэгч</h3>
@@ -52,11 +54,11 @@
       <div class="flex items-center gap-2 flex-wrap">
         <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-600">VIP</span>
         
-        <!-- 💾 НӨӨЦЛӨХ БОЛОН СЭРГЭЭХ ТОВЧЛУУРУУД -->
-        <button onclick="exportData()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold transition" title="Датагаа файл болгон татаж авах"><i class="fa-solid fa-download"></i> Нөөцлөх</button>
-        <label class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-semibold transition cursor-pointer" title="Нөөцөлсөн файлаа буцааж оруулах">
+        <!-- 📊 EXCEL НӨӨЦЛӨХ БОЛОН СЭРГЭЭХ ТОВЧЛУУРУУД -->
+        <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold transition" title="Датагаа Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
+        <label class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-semibold transition cursor-pointer" title="Нөөцөлсөн Excel файлаа буцааж оруулах">
           <i class="fa-solid fa-upload"></i> Сэргээх
-          <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
+          <input type="file" id="import-file" accept=".xlsx, .xls" onchange="importFromExcel(event)" class="hidden">
         </label>
 
         <button onclick="logout()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-xs font-semibold transition">Гарах</button>
@@ -275,7 +277,7 @@
       }
     });
 
-    // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ (Хэрэглэгч тус бүрээр тусгаарлагдсан)
+    // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ
     function loadUserDataFromStorage(phone) {
       const saved = localStorage.getItem("planner_data_" + phone);
       if (saved) {
@@ -298,39 +300,166 @@
       }
     }
 
-    // 💾 ДАТА НӨӨЦЛӨХ (EXPORT JSON)
-    function exportData() {
+    // 📊 EXCEL РУҮ НӨӨЦЛӨХ (EXPORT TO EXCEL)
+    function exportToExcel() {
       if (!currentPhone) return;
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userData, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `planner_backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      const wb = XLSX.utils.book_new();
+
+      // 1. Өдрийн ажил
+      const dailyRows = (userData.taskData.daily || []).map((t, i) => ({
+        "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
+      }));
+      const wsDaily = XLSX.utils.json_to_sheet(dailyRows.length ? dailyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsDaily, "Өдрийн ажил");
+
+      // 2. 7 Хоногийн ажил
+      const weeklyRows = (userData.taskData.weekly || []).map((t, i) => ({
+        "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
+      }));
+      const wsWeekly = XLSX.utils.json_to_sheet(weeklyRows.length ? weeklyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsWeekly, "7 хоногийн ажил");
+
+      // 3. Санхүү
+      const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
+      const finRows = (userData.finData || []).map((f, i) => ({
+        "№": i + 1, "Огноо": f.date, "Ангилал": catNames[f.cat] || f.cat, "Эх үүсвэр": f.source, "Дүн (₮)": f.amount
+      }));
+      const wsFin = XLSX.utils.json_to_sheet(finRows.length ? finRows : [{"№": "", "Огноо": "", "Ангилал": "", "Эх үүсвэр": "", "Дүн (₮)": 0}]);
+      XLSX.utils.book_append_sheet(wb, wsFin, "Санхүү");
+
+      // 4. Өгсөн / Авсан
+      const itemRows = (userData.itemsData || []).map((it, i) => ({
+        "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцааж авсан/өгсөн' : 'Хүлээгдэж буй'
+      }));
+      const wsItems = XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{"№": "", "Огноо": "", "Төрөл": "", "Хүний нэр": "", "Эд зүйл": "", "Буцаах хугацаа": "", "Төлөв": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsItems, "Өгсөн-Авсан");
+
+      // 5. Дадал зуршил
+      const habitRows = (userData.habitsData || []).map((h, i) => {
+        let obj = { "№": i + 1, "Дадал зуршил": h.title };
+        (h.days || []).forEach((d, dIdx) => {
+          obj[`Өдөр ${dIdx + 1}`] = d ? 'Тийм' : 'Үгүй';
+        });
+        return obj;
+      });
+      const wsHabits = XLSX.utils.json_to_sheet(habitRows.length ? habitRows : [{"№": "", "Дадал зуршил": "Хоосон байна"}]);
+      XLSX.utils.book_append_sheet(wb, wsHabits, "Дадал зуршил");
+
+      // 6. Онлайн курс
+      const courseRows = (userData.coursesData || []).map((c, i) => ({
+        "№": i + 1, "Курсын нэр": c.name, "Нийт хичээл": c.totalLessons, "Үзсэн хичээл": c.completedLessons, "Гүйцэтгэл (%)": Math.round((c.completedLessons/c.totalLessons)*100) + '%'
+      }));
+      const wsCourses = XLSX.utils.json_to_sheet(courseRows.length ? courseRows : [{"№": "", "Курсын нэр": "Хоосон байна", "Нийт хичээл": 0, "Үзсэн хичээл": 0, "Гүйцэтгэл (%)": "0%"}]);
+      XLSX.utils.book_append_sheet(wb, wsCourses, "Онлайн курс");
+
+      // 7. Нэмэлт орлогын санаанууд
+      const shRows = (userData.sideHustleData || []).map((sh, i) => ({
+        "№": i + 1, "Санааны нэр": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
+      }));
+      const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Санааны нэр": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsSh, "Нэмэлт орлого");
+
+        // Файл татаж авах
+      XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 
-    // 📥 ДАТА СЭРГЭЭХ (IMPORT JSON)
-    function importData(event) {
-      const fileReader = new FileReader();
-      if (event.target.files[0]) {
-        fileReader.readAsText(event.target.files[0], "UTF-8");
-        fileReader.onload = function(e) {
-          try {
-            const parsedData = JSON.parse(e.target.result);
-            if (parsedData && parsedData.taskData) {
-              userData = parsedData;
-              saveUserData();
-              renderAll();
-              alert("Датаг амжилттай сэргээлээ!");
-            } else {
-              alert("Файлын формат буруу байна!");
-            }
-          } catch (error) {
-            alert("Файлыг уншихад алдаа гарлаа!");
+    // 📥 EXCEL ФАЙЛААС СЭРГЭЭХ (IMPORT FROM EXCEL)
+    function importFromExcel(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+
+          // Шинэ дата объект бэлтгэх
+          let newUserData = {
+            taskData: { daily: [], weekly: [] },
+            finData: [],
+            itemsData: [],
+            habitsData: [],
+            coursesData: [],
+            sideHustleData: []
+          };
+
+          // 1. Өдрийн ажил унших
+          if (workbook.Sheets["Өдрийн ажил"]) {
+            const jsonDaily = XLSX.utils.sheet_to_json(workbook.Sheets["Өдрийн ажил"]);
+            newUserData.taskData.daily = jsonDaily.map(row => ({
+              text: row["Ажил"] || "",
+              priority: row["Төрөл"] === 'Нэн чухал' ? 'p-urgent' : 'p-important',
+              completed: row["Төлөв"] === 'Дууссан'
+            })).filter(t => t.text && t.text !== "Хоосон байна");
           }
-        };
-      }
+
+          // 2. 7 хоногийн ажил унших
+          if (workbook.Sheets["7 хоногийн ажил"]) {
+            const jsonWeekly = XLSX.utils.sheet_to_json(workbook.Sheets["7 хоногийн ажил"]);
+            newUserData.taskData.weekly = jsonWeekly.map(row => ({
+              text: row["Ажил"] || "",
+              priority: row["Төрөл"] === 'Нэн чухал' ? 'p-urgent' : 'p-important',
+              completed: row["Төлөв"] === 'Дууссан'
+            })).filter(t => t.text && t.text !== "Хоосон байна");
+          }
+
+          // 3. Санхүү унших
+          if (workbook.Sheets["Санхүү"]) {
+            const jsonFin = XLSX.utils.sheet_to_json(workbook.Sheets["Санхүү"]);
+            const revCat = { 'Орлого': 'inc', 'Зардал': 'exp', 'Өр зээл': 'debt', 'Хуримтлал': 'sav' };
+            newUserData.finData = jsonFin.map(row => ({
+              date: row["Огноо"] || new Date().toISOString().slice(0,10),
+              cat: revCat[row["Ангилал"]] || 'exp',
+              source: row["Эх үүсвэр"] || "",
+              amount: parseFloat(row["Дүн (₮)"]) || 0
+            })).filter(f => f.source);
+          }
+
+          // 4. Өгсөн / Авсан унших
+          if (workbook.Sheets["Өгсөн-Авсан"]) {
+            const jsonItems = XLSX.utils.sheet_to_json(workbook.Sheets["Өгсөн-Авсан"]);
+            newUserData.itemsData = jsonItems.map(row => ({
+              date: row["Огноо"] || "",
+              type: row["Төрөл"] === 'Өгсөн' ? 'given' : 'taken',
+              person: row["Хүний нэр"] || "",
+              name: row["Эд зүйл"] || "",
+              duedate: row["Буцаах хугацаа"] === '-' ? '' : row["Буцаах хугацаа"],
+              done: row["Төлөв"] === 'Буцаж авсан/өгсөн'
+            })).filter(i => i.person);
+          }
+
+          // 5. Онлайн курс унших
+          if (workbook.Sheets["Онлайн курс"]) {
+            const jsonCourses = XLSX.utils.sheet_to_json(workbook.Sheets["Онлайн курс"]);
+            newUserData.coursesData = jsonCourses.map(row => ({
+              name: row["Курсын нэр"] || "",
+              totalLessons: parseInt(row["Нийт хичээл"]) || 1,
+              completedLessons: parseInt(row["Үзсэн хичээл"]) || 0
+            })).filter(c => c.name && c.name !== "Хоосон байна");
+          }
+
+          // 6. Нэмэлт орлого унших
+          if (workbook.Sheets["Нэмэлт орлого"]) {
+            const jsonSh = XLSX.utils.sheet_to_json(workbook.Sheets["Нэмэлт орлого"]);
+            newUserData.sideHustleData = jsonSh.map(row => ({
+              title: row["Санааны нэр"] || "",
+              potential: row["Тооцоолсон орлого"] || "",
+              desc: row["Тэмдэглэл"] || "",
+              status: row["Төлөв"] || "pending"
+            })).filter(sh => sh.title && sh.title !== "Хоосон байна");
+          }
+
+          userData = newUserData;
+          saveUserData();
+          renderAll();
+          alert("Excel файлаас датаг амжилттай сэргээлээ!");
+        } catch (err) {
+          console.error(err);
+          alert("Excel файлыг уншихад алдаа гарлаа! Файлын формат зөв эсэхийг шалгана уу.");
+        }
+      };
+      reader.readAsArrayBuffer(file);
     }
 
     // 4. НЭВТРЭХ & СЕСШН ЛОГИК
@@ -647,7 +776,7 @@
       });
     }
 
-    // 9. 🎓 ОНЛАЙН КУРСУУД (Online Course Tracker)
+    // 9. 🎓 ОНЛАЙН КУРСУУД
     function addCourse() {
       const name = document.getElementById("course-name").value.trim();
       const lessons = parseInt(document.getElementById("course-lessons").value);
@@ -715,7 +844,7 @@
       });
     }
 
-    // 10. 💡 НЭМЭЛТ ОРЛОГО ОЛОХ БОЛОМЖТОЙ САНААНУУД (Side Hustles)
+    // 10. 💡 НЭМЭЛТ ОРЛОГО ОЛОХ БОЛОМЖТОЙ САНААНУУД
     function addSideHustle() {
       const title = document.getElementById("sh-title").value.trim();
       const potential = document.getElementById("sh-potential").value.trim();
