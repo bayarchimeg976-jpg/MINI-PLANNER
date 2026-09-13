@@ -14,7 +14,6 @@
       --gray: #e2e8f0;
       --success: #38a169;
       --danger: #e53e3e;
-      --info: #3182ce;
     }
 
     body {
@@ -25,7 +24,6 @@
       padding: 0;
     }
 
-    /* 🔑 Нэвтрэх цонх */
     #login-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -66,14 +64,12 @@
       cursor: pointer;
     }
 
-    /* 📱 Апп Контейнер */
     .app-container {
       max-width: 850px;
       margin: 0 auto;
       padding: 15px;
     }
 
-    /* Цаг болон толгой хэсэг */
     .time-bar {
       background: #2d3748;
       color: #fff;
@@ -105,7 +101,6 @@
     .badge-MASTER { background: #d69e2e; }
     .badge-VIP { background: #805ad5; }
 
-    /* Таб Цэс */
     .nav-tabs {
       display: flex;
       gap: 8px;
@@ -127,7 +122,6 @@
       color: white;
     }
 
-    /* Карт ба Элементүүд */
     .card {
       background: var(--card-bg);
       border-radius: 10px;
@@ -160,7 +154,6 @@
       font-weight: bold;
     }
 
-    /* График & Прогресс бар */
     .progress-container {
       background: #edf2f7;
       border-radius: 8px;
@@ -181,7 +174,6 @@
       font-weight: bold;
     }
 
-    /* Жагсаалт ба Тэмдэглэгээ */
     .task-item {
       display: flex;
       align-items: center;
@@ -189,7 +181,7 @@
       padding: 8px 10px;
       border-bottom: 1px solid var(--gray);
     }
-    .task-item.completed span {
+    .task-item.completed span.task-title {
       text-decoration: line-through;
       color: #a0aec0;
     }
@@ -204,7 +196,15 @@
     .p-urgent { background: var(--danger); }
     .p-important { background: var(--accent); }
 
-    /* Санхүүгийн картууд */
+    .btn-del {
+      background: none;
+      border: none;
+      color: #e53e3e;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
     .fin-summary {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -223,7 +223,6 @@
     .fc-debt { background: #dd6b20; }
     .fc-sav { background: #3182ce; }
 
-    /* Дадал тоолуурын сүлжээ */
     .habit-item {
       border: 1px solid var(--gray);
       padding: 12px;
@@ -255,7 +254,6 @@
       font-weight: bold;
     }
 
-    /* Цоожтой Хэсэг */
     .locked-card {
       background: #f7fafc;
       border: 1px dashed #cbd5e0;
@@ -296,7 +294,6 @@
   <!-- 📱 ҮНДСЭН АПП -->
   <div class="app-container">
     
-    <!-- 🕒 ОДООГИЙН ОГНОО БА ЦАГ -->
     <div class="time-bar">
       <span id="live-date">2026-00-00</span>
       <span id="live-clock">00:00:00</span>
@@ -395,7 +392,6 @@
           <button class="btn-add" onclick="addFinance()">Бүртгэх</button>
         </div>
 
-        <!-- Нэгтгэсэн дүнгийн картууд -->
         <div class="fin-summary">
           <div class="fin-card fc-inc">Орлого<br><span id="total-inc">0 ₮</span></div>
           <div class="fin-card fc-exp">Зардал<br><span id="total-exp">0 ₮</span></div>
@@ -403,7 +399,6 @@
           <div class="fin-card fc-sav">Хуримтлал<br><span id="total-sav">0 ₮</span></div>
         </div>
 
-        <!-- Орлого Зардлын харьцаа График -->
         <div>
           <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold;">
             <span>Зардлын эзлэх хувь (Орлогоос):</span>
@@ -418,27 +413,27 @@
       </div>
     </div>
 
-    <!-- 4. ДАДАЛ ЗУРШИЛ (31 хоног) -->
+    <!-- 4. ДАДАЛ ЗУРШИЛ -->
     <div id="habits-sec" class="tab-content" style="display:none;">
       <div class="card">
         <h4>🔄 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
         <div class="input-row">
-          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх (жишээ нь: Ном уших, Ус уух)..." />
+          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." />
           <button class="btn-add" onclick="addHabit()">Дадал нэмэх</button>
         </div>
         <div id="habits-container"></div>
       </div>
     </div>
 
-    <!-- 5. МАСТЕР БАГЦЫН СУРГАЛТУУД -->
+    <!-- 5. МАСТЕР БАГЦ -->
     <div id="courses-sec" class="tab-content" style="display:none;">
       <h3>🧠 Мастер Багцын Дижитал Хичээлүүд</h3>
-      <div class="card" id="card-course-1">
+      <div class="card">
         <h4>📘 "Далд ухамсарын хүч" PDF Гарын авлага</h4>
         <p style="font-size: 13px;">Далд ухамсараа дахин програмчилж, зорилгодоо хүрэх гарын авлага.</p>
         <div class="content-box"><a href="#" class="upgrade-btn" style="background:var(--primary);">📄 Татах (PDF)</a></div>
       </div>
-      <div class="card" id="card-course-2">
+      <div class="card">
         <h4>🎧 "Далд ухамсарын медитаци" Аудио</h4>
         <p style="font-size: 13px;">Өглөө ба оройд сонсох бясалгалын аудио хичээл.</p>
         <div class="content-box">
@@ -449,10 +444,10 @@
       </div>
     </div>
 
-    <!-- 6. VIP БАГЦЫН ХЭСЭГ -->
+    <!-- 6. VIP БАГЦ -->
     <div id="vip-sec" class="tab-content" style="display:none;">
       <h3>👑 VIP Мастер Клуб</h3>
-      <div class="card" id="card-vip-content">
+      <div class="card">
         <h4>👥 VIP Мессенжер & Телеграм Бүлэг</h4>
         <p style="font-size: 13px;">Ганцаарчилсан зөвлөгөө авч, сар бүрийн 21 хоногийн чаленжид оролцох холбоос.</p>
         <div class="content-box">
@@ -471,12 +466,15 @@
       "95335368": { name: "Баяраа", package: "BASIC" }
     };
 
+    let currentPhone = null;
     let currentUser = null;
-    let taskData = { daily: [], weekly: [] };
-    let finData = [];
-    let habitsData = [];
+    let userData = {
+      taskData: { daily: [], weekly: [] },
+      finData: [],
+      habitsData: []
+    };
 
-    // 2. ЦАГ БА ОГНОО
+    // 2. ОГНОО БА ЦАГ
     function updateClock() {
       const now = new Date();
       const year = now.getFullYear();
@@ -494,11 +492,32 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-
-    // Today's date default for finance
     document.getElementById('fin-date').valueAsDate = new Date();
 
-    // 3. НЭВТРЭХ & СЕСШН
+    // 3. STORAGE ХАДГАЛАХ ЖУРАМ
+    function loadUserData(phone) {
+      const saved = localStorage.getItem("planner_data_" + phone);
+      if (saved) {
+        try {
+          userData = JSON.parse(saved);
+          if (!userData.taskData) userData.taskData = { daily: [], weekly: [] };
+          if (!userData.finData) userData.finData = [];
+          if (!userData.habitsData) userData.habitsData = [];
+        } catch(e) {
+          userData = { taskData: { daily: [], weekly: [] }, finData: [], habitsData: [] };
+        }
+      } else {
+        userData = { taskData: { daily: [], weekly: [] }, finData: [], habitsData: [] };
+      }
+    }
+
+    function saveUserData() {
+      if (currentPhone) {
+        localStorage.setItem("planner_data_" + currentPhone, JSON.stringify(userData));
+      }
+    }
+
+    // 4. НЭВТРЭХ & СЕСШН
     function handleLogin() {
       const phoneInput = document.getElementById("login-phone").value.trim();
       if (usersDatabase[phoneInput]) {
@@ -515,6 +534,7 @@
     }
 
     function initApp(phone) {
+      currentPhone = phone;
       currentUser = usersDatabase[phone];
       document.getElementById("login-overlay").style.display = "none";
       document.getElementById("user-display-name").innerText = currentUser.name;
@@ -524,10 +544,15 @@
       badge.innerText = currentUser.package + " БАГЦ";
       badge.className = "user-badge badge-" + currentUser.package;
 
+      loadUserData(phone);
       applyPermissions();
+
+      renderTasks('daily');
+      renderTasks('weekly');
+      renderFinance();
+      renderHabits();
     }
 
-    // 4. БАГЦЫН ЭРХ ИНТЕГРАЦИ
     function applyPermissions() {
       if (currentUser.package === "BASIC") {
         lockSection("courses-sec", "Мастер", "29,000 ₮");
@@ -562,24 +587,32 @@
       evt.currentTarget.classList.add("active");
     }
 
-    // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ (Өдөр / 7 хоног)
+    // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ
     function addTask(type) {
       const input = document.getElementById(`${type}-input`);
       const priority = document.getElementById(`${type}-priority`).value;
       if (!input.value.trim()) return;
 
-      taskData[type].push({
+      userData.taskData[type].push({
         text: input.value.trim(),
         priority: priority,
         completed: false
       });
 
       input.value = "";
+      saveUserData();
       renderTasks(type);
     }
 
     function toggleTask(type, index) {
-      taskData[type][index].completed = !taskData[type][index].completed;
+      userData.taskData[type][index].completed = !userData.taskData[type][index].completed;
+      saveUserData();
+      renderTasks(type);
+    }
+
+    function deleteTask(type, index) {
+      userData.taskData[type].splice(index, 1);
+      saveUserData();
       renderTasks(type);
     }
 
@@ -588,10 +621,10 @@
       listContainer.innerHTML = "";
       
       let completedCount = 0;
+      const tasks = userData.taskData[type] || [];
       
-      taskData[type].forEach((task, idx) => {
+      tasks.forEach((task, idx) => {
         if (task.completed) completedCount++;
-
         const pText = task.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал';
         
         const div = document.createElement("div");
@@ -599,15 +632,15 @@
         div.innerHTML = `
           <div>
             <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})">
-            <span style="margin-left: 8px;">${task.text}</span>
+            <span class="task-title" style="margin-left: 8px;">${task.text}</span>
             <span class="priority-badge ${task.priority}">${pText}</span>
           </div>
+          <button class="btn-del" onclick="deleteTask('${type}', ${idx})">✕</button>
         `;
         listContainer.appendChild(div);
       });
 
-      // Хувь бодож График шинэчлэх
-      const total = taskData[type].length;
+      const total = tasks.length;
       const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
       
       document.getElementById(`${type}-percent`).innerText = percent + "%";
@@ -616,7 +649,7 @@
       bar.innerText = percent + "%";
     }
 
-    // 6. САНХҮҮГИЙН ФУНКЦ
+    // 6. САНХҮҮ
     function addFinance() {
       const date = document.getElementById("fin-date").value;
       const cat = document.getElementById("fin-cat").value;
@@ -625,11 +658,17 @@
 
       if (!date || !source || isNaN(amount)) return;
 
-      finData.push({ date, cat, source, amount });
-
+      userData.finData.push({ date, cat, source, amount });
       document.getElementById("fin-source").value = "";
       document.getElementById("fin-amount").value = "";
 
+      saveUserData();
+      renderFinance();
+    }
+
+    function deleteFinance(index) {
+      userData.finData.splice(index, 1);
+      saveUserData();
       renderFinance();
     }
 
@@ -638,10 +677,10 @@
       list.innerHTML = "";
 
       let totals = { inc: 0, exp: 0, debt: 0, sav: 0 };
+      const items = userData.finData || [];
 
-      finData.forEach(item => {
+      items.forEach((item, idx) => {
         totals[item.cat] += item.amount;
-
         const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
         const catColors = { inc: 'green', exp: 'red', debt: 'orange', sav: 'blue' };
 
@@ -653,8 +692,9 @@
             <b>${item.source}</b>
             <span style="color:${catColors[item.cat]}; font-size:12px; margin-left:5px;">(${catNames[item.cat]})</span>
           </div>
-          <div style="font-weight:bold; color:${catColors[item.cat]}">
-            ${item.amount.toLocaleString()} ₮
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-weight:bold; color:${catColors[item.cat]}">${item.amount.toLocaleString()} ₮</span>
+            <button class="btn-del" onclick="deleteFinance(${idx})">✕</button>
           </div>
         `;
         list.appendChild(div);
@@ -665,7 +705,6 @@
       document.getElementById("total-debt").innerText = totals.debt.toLocaleString() + " ₮";
       document.getElementById("total-sav").innerText = totals.sav.toLocaleString() + " ₮";
 
-      // Зардлын хувь бодох
       const expRatio = totals.inc === 0 ? 0 : Math.min(100, Math.round((totals.exp / totals.inc) * 100));
       document.getElementById("fin-ratio-text").innerText = expRatio + "%";
       const ratioBar = document.getElementById("fin-ratio-bar");
@@ -673,22 +712,30 @@
       ratioBar.innerText = expRatio + "%";
     }
 
-    // 7. ДАДАЛ ЗУРШИЛ (31 хоног)
+    // 7. ДАДАЛ ЗУРШИЛ
     function addHabit() {
       const input = document.getElementById("habit-input");
       if (!input.value.trim()) return;
 
-      habitsData.push({
+      userData.habitsData.push({
         title: input.value.trim(),
         days: new Array(31).fill(false)
       });
 
       input.value = "";
+      saveUserData();
       renderHabits();
     }
 
     function toggleHabitDay(habitIdx, dayIdx) {
-      habitsData[habitIdx].days[dayIdx] = !habitsData[habitIdx].days[dayIdx];
+      userData.habitsData[habitIdx].days[dayIdx] = !userData.habitsData[habitIdx].days[dayIdx];
+      saveUserData();
+      renderHabits();
+    }
+
+    function deleteHabit(index) {
+      userData.habitsData.splice(index, 1);
+      saveUserData();
       renderHabits();
     }
 
@@ -696,7 +743,9 @@
       const container = document.getElementById("habits-container");
       container.innerHTML = "";
 
-      habitsData.forEach((habit, hIdx) => {
+      const habits = userData.habitsData || [];
+
+      habits.forEach((habit, hIdx) => {
         const doneCount = habit.days.filter(Boolean).length;
         const percent = Math.round((doneCount / 31) * 100);
 
@@ -717,7 +766,10 @@
         itemDiv.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <b>📌 ${habit.title}</b>
-            <span style="font-size:12px; font-weight:bold; color:var(--success);">${doneCount}/31 өдөр (${percent}%)</span>
+            <div>
+              <span style="font-size:12px; font-weight:bold; color:var(--success); margin-right:10px;">${doneCount}/31 өдөр (${percent}%)</span>
+              <button class="btn-del" onclick="deleteHabit(${hIdx})">✕</button>
+            </div>
           </div>
           ${gridHtml}
         `;
