@@ -9,7 +9,20 @@
 </head>
 <body class="bg-gray-100 min-h-screen font-sans text-gray-800 p-4 md:p-6">
 
-  <div class="max-w-5xl mx-auto">
+  <!-- НУУЦ ҮГ ОРУУЛАХ ЦОНХ (LOCK SCREEN) -->
+  <div id="auth-screen" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50 p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full text-center">
+      <div class="text-5xl mb-4">🔐</div>
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">Төлөвлөгч-2026</h2>
+      <p class="text-sm text-gray-500 mb-6">Системд нэвтрэхийн тулд худалдаж авсан Нэвтрэх Пин кодоо оруулна уу.</p>
+      <input type="password" id="pass-input" placeholder="Нэвтрэх код..." class="w-full text-center text-xl tracking-widest px-4 py-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:border-amber-500">
+      <button onclick="checkPassword()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow-md transition">Нэвтрэх</button>
+      <p id="error-msg" class="text-red-500 text-xs mt-3 hidden">⚠️ Нэвтрэх код буруу байна!</p>
+    </div>
+  </div>
+
+  <!-- ҮНДСЭН АПП (НУУЦ ҮГ ЗӨВ ҮЕД ИДЭВХЖИХ) -->
+  <div id="app-content" class="max-w-5xl mx-auto hidden">
 
     <!-- ХЭРЭГЛЭГЧИЙН ПРОФАЙЛ БОЛОН ЦАГ, КАЛИНДАР, МӨНГӨНИЙ ХЭСЭГ -->
     <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -20,7 +33,6 @@
           <input type="file" id="avatar-input" accept="image/*" onchange="uploadAvatar(event)" class="absolute inset-0 opacity-0 cursor-pointer" title="Зураг өөрчлөх">
         </div>
         <div>
-          <!-- ЕРӨНХИЙ НЭР: ТӨЛӨВЛӨГЧ-2026 -->
           <input type="text" id="profile-name-input" onchange="saveProfileName()" class="text-xl font-bold text-gray-800 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-amber-500 focus:outline-none" value="Төлөвлөгч-2026" placeholder="Нэрээ оруулна уу">
           <p class="text-xs text-gray-400">Зураг болон нэр дээр даран солиж болно</p>
         </div>
@@ -59,6 +71,21 @@
   </div>
 
   <script>
+    // ТАНЫ НЭВТРЭХ НУУЦ ҮГ (Эндээс солиж болно)
+    const ACCESS_CODE = "2026";
+
+    function checkPassword() {
+      const entered = document.getElementById('pass-input').value;
+      if (entered === ACCESS_CODE) {
+        localStorage.setItem('isPlannerAuth', 'true');
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-content').classList.remove('hidden');
+        render();
+      } else {
+        document.getElementById('error-msg').classList.remove('hidden');
+      }
+    }
+
     const defaultCourseMaterials = {
       subconscious: [
         { title: "🧠 Далд ухамсарын хүч гарын авлага (PDF)", url: "https://drive.google.com" },
@@ -455,8 +482,13 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', render);
-    render();
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('isPlannerAuth') === 'true') {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-content').classList.remove('hidden');
+        render();
+      }
+    });
   </script>
 </body>
 </html>
