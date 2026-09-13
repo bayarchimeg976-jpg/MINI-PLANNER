@@ -20,8 +20,8 @@
           <input type="file" id="avatar-input" accept="image/*" onchange="uploadAvatar(event)" class="absolute inset-0 opacity-0 cursor-pointer" title="Зураг өөрчлөх">
         </div>
         <div>
-          <h1 class="text-xl font-bold text-gray-800">МИНИЙ ТӨЛӨВЛӨЛТ</h1>
-          <p class="text-xs text-gray-400">Зураг дээр дарж өөрчилнө үү</p>
+          <input type="text" id="profile-name-input" onchange="saveProfileName()" class="text-xl font-bold text-gray-800 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-amber-500 focus:outline-none" value="Баян ээжийн дадал" placeholder="Нэрээ оруулна уу">
+          <p class="text-xs text-gray-400">Зураг болон нэр дээр даран солиж болно</p>
         </div>
       </div>
 
@@ -58,15 +58,26 @@
   </div>
 
   <script>
+    // ТА ЭНЭ ХЭСЭГТ ӨӨРИЙН ФАЙЛ БОЛОН ЛИНКҮҮДИЙГ ШУУД ХОЛБОЖ ӨГНӨ
+    const defaultCourseMaterials = {
+      subconscious: [
+        { title: "🧠 Далд ухамсарын хүч гарын авлага (PDF)", url: "https://drive.google.com" },
+        { title: "🎧 Далд ухамсарт зориулсан медитаци (Аудио)", url: "https://youtube.com" }
+      ],
+      gratitude: [
+        { title: "🙏 21 хоногийн Талархлын тэмдэглэл (PDF)", url: "https://drive.google.com" }
+      ],
+      happyMoney: [
+        { title: "💎 Аз жаргалтай мөнгөний хууль (PDF)", url: "https://drive.google.com" },
+        { title: "📊 Мөнгө татах дасгал ажил", url: "https://drive.google.com" }
+      ]
+    };
+
     const defaultData = {
       day: [], week: [], month: [], habits: [], courses: [],
       financeTransactions: [],
       avatar: '',
-      courseMaterials: {
-        subconscious: [],
-        gratitude: [],
-        happyMoney: []
-      }
+      userName: 'Баян ээжийн дадал'
     };
 
     const categories = [
@@ -80,7 +91,7 @@
 
     let currentCategory = 'day';
     let plannerData = JSON.parse(localStorage.getItem('plannerData')) || defaultData;
-    if(!plannerData.courseMaterials) plannerData.courseMaterials = defaultData.courseMaterials;
+    if(!plannerData.userName) plannerData.userName = 'Баян ээжийн дадал';
 
     function saveData() {
       localStorage.setItem('plannerData', JSON.stringify(plannerData));
@@ -92,7 +103,12 @@
       render();
     }
 
-    // Профайл зураг ачаалах
+    function saveProfileName() {
+      const input = document.getElementById('profile-name-input');
+      plannerData.userName = input.value;
+      saveData();
+    }
+
     function uploadAvatar(e) {
       const file = e.target.files[0];
       if (file) {
@@ -106,12 +122,10 @@
     }
 
     function renderHeaderWidgets() {
-      // Огноо цаг
       const now = new Date();
       document.getElementById('widget-date').innerText = now.toLocaleDateString('mn-MN');
       document.getElementById('widget-time').innerText = now.toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' });
 
-      // Баланс бодох
       let inc = 0, exp = 0;
       (plannerData.financeTransactions || []).forEach(t => {
         if(t.type === 'income') inc += t.amount;
@@ -119,13 +133,17 @@
       });
       document.getElementById('widget-balance').innerText = `₮${(inc - exp).toLocaleString()}`;
 
-      // Зураг харуулах
       const imgTag = document.getElementById('profile-img-tag');
       const placeholder = document.getElementById('profile-placeholder');
       if (plannerData.avatar) {
         imgTag.src = plannerData.avatar;
         imgTag.classList.remove('hidden');
         placeholder.classList.add('hidden');
+      }
+
+      const nameInput = document.getElementById('profile-name-input');
+      if (nameInput && plannerData.userName) {
+        nameInput.value = plannerData.userName;
       }
     }
 
@@ -139,7 +157,6 @@
       `).join('');
     }
 
-    // --- 1. АЖИЛ БҮРТГЭЛ ---
     function addItem() {
       const input = document.getElementById('task-input');
       const priority = document.getElementById('task-priority').value;
@@ -212,48 +229,31 @@
       `;
     }
 
-    // --- 2. ОНЛАЙН КУРС ХЭСЭГ ---
-    function addCourseMaterial(subKey) {
-      const title = prompt("Материал/Хичээлийн нэр:");
-      const url = prompt("Файлын эсвэл линкний холбоос (Drive/PDF/Video URL):");
-      if (title && url) {
-        if(!plannerData.courseMaterials[subKey]) plannerData.courseMaterials[subKey] = [];
-        plannerData.courseMaterials[subKey].push({ title, url });
-        saveData();
-      }
-    }
-
-    function deleteCourseMaterial(subKey, index) {
-      plannerData.courseMaterials[subKey].splice(index, 1);
-      saveData();
-    }
-
+    // --- СУРГАЛТЫН МАТЕРИАЛЫГ ХАРУУЛАХ ХЭСЭГ (ЗӨВХӨН ҮЗЭХ/ТАТАЖ АВАХ БОЛОМЖТОЙ) ---
     function renderCoursesView() {
       const courseTypes = [
-        { key: 'subconscious', title: '🧠 Далд ухамсар ба эрүүл мэнд', icon: '✨' },
-        { key: 'gratitude', title: '🙏 Талархал', icon: '💖' },
-        { key: 'happyMoney', title: '💰 Аз жаргалтай мөнгө', icon: '💎' }
+        { key: 'subconscious', title: '🧠 Далд ухамсар ба эрүүл мэнд' },
+        { key: 'gratitude', title: '🙏 Талархал' },
+        { key: 'happyMoney', title: '💰 Аз жаргалтай мөнгө' }
       ];
 
       return `
         <div class="space-y-6">
           ${courseTypes.map(c => {
-            const list = plannerData.courseMaterials[c.key] || [];
+            const list = defaultCourseMaterials[c.key] || [];
             return `
               <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <div class="border-b pb-3 mb-4">
                   <h2 class="text-lg font-bold text-gray-800">${c.title}</h2>
-                  <button onclick="addCourseMaterial('${c.key}')" class="bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-lg">+ Файл/Линк нэмэх</button>
                 </div>
-                <ul class="space-y-2">
-                  ${list.length === 0 ? '<li class="text-xs text-gray-400">Одоогоор файл эсвэл материал нэмэгдээгүй байна.</li>' : ''}
-                  ${list.map((item, i) => `
-                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                <ul class="space-y-3">
+                  ${list.map((item) => `
+                    <li class="flex justify-between items-center p-3 bg-amber-50 rounded-lg border border-amber-200">
                       <div class="flex items-center gap-2">
-                        <span>📄</span>
-                        <a href="${item.url}" target="_blank" class="text-amber-600 font-bold hover:underline text-sm">${item.title}</a>
+                        <span>📥</span>
+                        <span class="font-bold text-gray-800 text-sm">${item.title}</span>
                       </div>
-                      <button onclick="deleteCourseMaterial('${c.key}', ${i})" class="text-red-400 text-xs font-bold">Устгах</button>
+                      <a href="${item.url}" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Үзэх / Татах</a>
                     </li>
                   `).join('')}
                 </ul>
@@ -264,11 +264,11 @@
       `;
     }
 
-    // --- 3. 31 ХОНОГИЙН ДАДАЛ ЧЕЛЛЕНЖ ---
     function addHabit() {
       const input = document.getElementById('habit-input');
       const text = input.value.trim();
       if(text) {
+        if(!plannerData.habits) plannerData.habits = [];
         plannerData.habits.push({ name: text, days: Array(31).fill(false) });
         input.value = '';
         saveData();
@@ -286,6 +286,7 @@
     }
 
     function renderHabitView() {
+      const habits = plannerData.habits || [];
       return `
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6 flex gap-2">
           <input type="text" id="habit-input" placeholder="Шинэ дадал нэмэх..." class="flex-1 px-4 py-2 border rounded-lg">
@@ -293,7 +294,7 @@
         </div>
 
         <div class="space-y-6">
-          ${plannerData.habits.map((habit, hIdx) => `
+          ${habits.map((habit, hIdx) => `
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-lg text-gray-800">✨ ${habit.name}</h3>
@@ -312,7 +313,6 @@
       `;
     }
 
-    // --- 4. САНХҮҮГИЙН ДЭЛГЭРЭНГҮЙ БҮРТГЭЛ ---
     function addTransaction() {
       const date = document.getElementById('fin-date').value;
       const type = document.getElementById('fin-type').value;
