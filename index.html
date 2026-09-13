@@ -91,7 +91,7 @@
 
     let currentCategory = 'day';
     let plannerData = JSON.parse(localStorage.getItem('plannerData')) || defaultData;
-    if(!plannerData.userName) plannerData.userName = 'Баян ээжийн дадал';
+    if(!plannerData.userName) plannerData.userName = 'ТӨЛӨВЛӨЛТ-2026';
 
     function saveData() {
       localStorage.setItem('plannerData', JSON.stringify(plannerData));
