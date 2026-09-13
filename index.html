@@ -3,14 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ажлын төлөвлөгөө ба Санхүү Дашборд</title>
+  <title>Ажлын төлөвлөгөө ба Санхүү</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen font-sans text-gray-800 p-4 md:p-6">
 
   <div class="max-w-5xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Ажлын төлөвлөгөө & Санхүү Дашборд</h1>
+
+    <!-- ХЭРЭГЛЭГЧИЙН ПРОФАЙЛ БОЛОН ЦАГ, КАЛИНДАР, МӨНГӨНИЙ ХЭСЭГ -->
+    <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500 bg-gray-100 flex items-center justify-center shrink-0">
+          <img id="profile-img-tag" src="" class="w-full h-full object-cover hidden">
+          <span id="profile-placeholder" class="text-2xl">👤</span>
+          <input type="file" id="avatar-input" accept="image/*" onchange="uploadAvatar(event)" class="absolute inset-0 opacity-0 cursor-pointer" title="Зураг өөрчлөх">
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-800">Ирээдүйн Баян Ээж</h1>
+          <p class="text-xs text-gray-400">Зураг дээр дарж өөрчилнө үү</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4 text-sm">
+        <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-center gap-2">
+          <span class="text-xl">📅</span>
+          <div>
+            <div class="text-xs text-amber-700 font-bold">Өнөөдөр</div>
+            <div id="widget-date" class="font-bold text-gray-800">--.--.--</div>
+          </div>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center gap-2">
+          <span class="text-xl">⏰</span>
+          <div>
+            <div class="text-xs text-blue-700 font-bold">Цаг</div>
+            <div id="widget-time" class="font-bold text-gray-800">00:00</div>
+          </div>
+        </div>
+        <div class="bg-green-50 border border-green-200 p-3 rounded-xl flex items-center gap-2">
+          <span class="text-xl">💰</span>
+          <div>
+            <div class="text-xs text-green-700 font-bold">Цэвэр баланс</div>
+            <div id="widget-balance" class="font-bold text-green-800">₮0</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Картнуудын хэсэг -->
     <div id="cards-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6"></div>
@@ -21,9 +59,14 @@
 
   <script>
     const defaultData = {
-      day: [], week: [], month: [], courses: [],
-      habits: [], // { name: '', days: [false,...31] }
-      financeTransactions: [] // { date: '', type: '', desc: '', amount: 0 }
+      day: [], week: [], month: [], habits: [], courses: [],
+      financeTransactions: [],
+      avatar: '',
+      courseMaterials: {
+        subconscious: [],
+        gratitude: [],
+        happyMoney: []
+      }
     };
 
     const categories = [
@@ -32,13 +75,12 @@
       { id: 'month', name: 'Сар', icon: '📊' },
       { id: 'habits', name: '31 Хоног Дадал', icon: '✨' },
       { id: 'finance', name: 'Санхүү', icon: '💰' },
-      { id: 'courses', name: 'Курс', icon: '🎓' }
+      { id: 'courses', name: 'Онлайн курс', icon: '🎓' }
     ];
 
     let currentCategory = 'day';
     let plannerData = JSON.parse(localStorage.getItem('plannerData')) || defaultData;
-    if(!plannerData.financeTransactions) plannerData.financeTransactions = [];
-    if(!plannerData.habits) plannerData.habits = [];
+    if(!plannerData.courseMaterials) plannerData.courseMaterials = defaultData.courseMaterials;
 
     function saveData() {
       localStorage.setItem('plannerData', JSON.stringify(plannerData));
@@ -48,6 +90,43 @@
     function selectCategory(id) {
       currentCategory = id;
       render();
+    }
+
+    // Профайл зураг ачаалах
+    function uploadAvatar(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          plannerData.avatar = evt.target.result;
+          saveData();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderHeaderWidgets() {
+      // Огноо цаг
+      const now = new Date();
+      document.getElementById('widget-date').innerText = now.toLocaleDateString('mn-MN');
+      document.getElementById('widget-time').innerText = now.toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' });
+
+      // Баланс бодох
+      let inc = 0, exp = 0;
+      (plannerData.financeTransactions || []).forEach(t => {
+        if(t.type === 'income') inc += t.amount;
+        if(t.type === 'expense') exp += t.amount;
+      });
+      document.getElementById('widget-balance').innerText = `₮${(inc - exp).toLocaleString()}`;
+
+      // Зураг харуулах
+      const imgTag = document.getElementById('profile-img-tag');
+      const placeholder = document.getElementById('profile-placeholder');
+      if (plannerData.avatar) {
+        imgTag.src = plannerData.avatar;
+        imgTag.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      }
     }
 
     function renderCards() {
@@ -60,7 +139,7 @@
       `).join('');
     }
 
-    // --- 1. АЖИЛ БҮРТГЭЛ & ЗЭРЭГЛЭЛ ---
+    // --- 1. АЖИЛ БҮРТГЭЛ ---
     function addItem() {
       const input = document.getElementById('task-input');
       const priority = document.getElementById('task-priority').value;
@@ -98,9 +177,7 @@
 
       return `
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex items-center gap-6">
-          <div class="w-20 h-20 rounded-full border-4 border-amber-500 flex items-center justify-center font-bold text-lg text-amber-600 shrink-0">
-            ${percent}%
-          </div>
+          <div class="w-20 h-20 rounded-full border-4 border-amber-500 flex items-center justify-center font-bold text-lg text-amber-600 shrink-0">${percent}%</div>
           <div>
             <h2 class="text-xl font-bold text-gray-800">${catObj.name}</h2>
             <p class="text-sm text-gray-500">${completed}/${total} ажил дууссан</p>
@@ -108,13 +185,13 @@
         </div>
 
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-2">
-          <input type="text" id="task-input" placeholder="Шинэ ажил нэмэх..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500">
+          <input type="text" id="task-input" placeholder="Шинэ ажил нэмэх..." class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:border-amber-500">
           <select id="task-priority" class="px-3 py-2 border rounded-lg bg-gray-50 text-sm">
             <option value="high">🔴 Нэн чухал</option>
             <option value="medium" selected>🟡 Чухал</option>
             <option value="low">🟢 Чухал биш</option>
           </select>
-          <button onclick="addItem()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-lg transition">Нэмэх</button>
+          <button onclick="addItem()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-lg">Нэмэх</button>
         </div>
 
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
@@ -135,7 +212,59 @@
       `;
     }
 
-    // --- 2. 31 ХОНОГИЙН ДАДАЛ ЧЕЛЛЕНЖ ---
+    // --- 2. ОНЛАЙН КУРС ХЭСЭГ ---
+    function addCourseMaterial(subKey) {
+      const title = prompt("Материал/Хичээлийн нэр:");
+      const url = prompt("Файлын эсвэл линкний холбоос (Drive/PDF/Video URL):");
+      if (title && url) {
+        if(!plannerData.courseMaterials[subKey]) plannerData.courseMaterials[subKey] = [];
+        plannerData.courseMaterials[subKey].push({ title, url });
+        saveData();
+      }
+    }
+
+    function deleteCourseMaterial(subKey, index) {
+      plannerData.courseMaterials[subKey].splice(index, 1);
+      saveData();
+    }
+
+    function renderCoursesView() {
+      const courseTypes = [
+        { key: 'subconscious', title: '🧠 Далд ухамсар ба эрүүл мэнд', icon: '✨' },
+        { key: 'gratitude', title: '🙏 Талархал', icon: '💖' },
+        { key: 'happyMoney', title: '💰 Аз жаргалтай мөнгө', icon: '💎' }
+      ];
+
+      return `
+        <div class="space-y-6">
+          ${courseTypes.map(c => {
+            const list = plannerData.courseMaterials[c.key] || [];
+            return `
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                  <h2 class="text-lg font-bold text-gray-800">${c.title}</h2>
+                  <button onclick="addCourseMaterial('${c.key}')" class="bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-lg">+ Файл/Линк нэмэх</button>
+                </div>
+                <ul class="space-y-2">
+                  ${list.length === 0 ? '<li class="text-xs text-gray-400">Одоогоор файл эсвэл материал нэмэгдээгүй байна.</li>' : ''}
+                  ${list.map((item, i) => `
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <div class="flex items-center gap-2">
+                        <span>📄</span>
+                        <a href="${item.url}" target="_blank" class="text-amber-600 font-bold hover:underline text-sm">${item.title}</a>
+                      </div>
+                      <button onclick="deleteCourseMaterial('${c.key}', ${i})" class="text-red-400 text-xs font-bold">Устгах</button>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // --- 3. 31 ХОНОГИЙН ДАДАЛ ЧЕЛЛЕНЖ ---
     function addHabit() {
       const input = document.getElementById('habit-input');
       const text = input.value.trim();
@@ -159,7 +288,7 @@
     function renderHabitView() {
       return `
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6 flex gap-2">
-          <input type="text" id="habit-input" placeholder="Шинэ дадал нэмэх (Жишээ нь: Ном унших)..." class="flex-1 px-4 py-2 border rounded-lg">
+          <input type="text" id="habit-input" placeholder="Шинэ дадал нэмэх..." class="flex-1 px-4 py-2 border rounded-lg">
           <button onclick="addHabit()" class="bg-amber-500 text-white font-bold px-6 py-2 rounded-lg">Нэмэх</button>
         </div>
 
@@ -183,7 +312,7 @@
       `;
     }
 
-    // --- 3. САНХҮҮГИЙН ДЭЛГЭРЭНГҮЙ БҮРТГЭЛ ---
+    // --- 4. САНХҮҮГИЙН ДЭЛГЭРЭНГҮЙ БҮРТГЭЛ ---
     function addTransaction() {
       const date = document.getElementById('fin-date').value;
       const type = document.getElementById('fin-type').value;
@@ -202,7 +331,7 @@
     }
 
     function renderFinanceView() {
-      const txs = plannerData.financeTransactions;
+      const txs = plannerData.financeTransactions || [];
       let inc = 0, exp = 0, sav = 0, dbt = 0;
 
       txs.forEach(t => {
@@ -220,7 +349,6 @@
       else summary = "🎉 Санхүүгийн сайн баланстай байна! Хадгаламжаа улам нэмэгдүүлээрэй.";
 
       return `
-        <!-- Нийт дүнгийн самбар -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div class="bg-white p-4 rounded-xl border border-gray-200 text-center"><div class="text-xs text-gray-500">Орлого</div><div class="text-xl font-bold text-green-600">₮${inc.toLocaleString()}</div></div>
           <div class="bg-white p-4 rounded-xl border border-gray-200 text-center"><div class="text-xs text-gray-500">Зарлага</div><div class="text-xl font-bold text-red-500">₮${exp.toLocaleString()}</div></div>
@@ -229,7 +357,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <!-- Гүйлгээ нэмэх Форм -->
           <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-3">
             <h2 class="font-bold text-gray-800 border-b pb-2">➕ Шинэ гүйлгээ бүртгэх</h2>
             <input type="date" id="fin-date" value="${new Date().toISOString().split('T')[0]}" class="w-full p-2 border rounded-lg">
@@ -239,24 +366,20 @@
               <option value="savings">Хадгаламж (💾)</option>
               <option value="debt">Өр зээл (💳)</option>
             </select>
-            <input type="text" id="fin-desc" placeholder="Хаанаас / Юунд (Тайлбар)..." class="w-full p-2 border rounded-lg">
+            <input type="text" id="fin-desc" placeholder="Тайлбар..." class="w-full p-2 border rounded-lg">
             <input type="number" id="fin-amount" placeholder="Дүн (₮)..." class="w-full p-2 border rounded-lg">
             <button onclick="addTransaction()" class="w-full bg-amber-500 text-white font-bold py-2 rounded-lg">Бүртгэх</button>
           </div>
 
-          <!-- График болон Дүгнэлт -->
           <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
             <div>
               <h2 class="font-bold text-gray-800 border-b pb-2 mb-4">📊 Санхүүгийн Харьцуулалт</h2>
               <div class="w-full max-w-xs mx-auto"><canvas id="financeChart"></canvas></div>
             </div>
-            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900 font-medium">
-              ${summary}
-            </div>
+            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900 font-medium">${summary}</div>
           </div>
         </div>
 
-        <!-- Гүйлгээний жагсаалт -->
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h2 class="font-bold text-gray-800 border-b pb-3 mb-4">📜 Гүйлгээний түүх</h2>
           <div class="overflow-x-auto">
@@ -293,7 +416,7 @@
     function initChart() {
       const ctx = document.getElementById('financeChart');
       if (!ctx) return;
-      const txs = plannerData.financeTransactions;
+      const txs = plannerData.financeTransactions || [];
       let inc = 0, exp = 0, sav = 0, dbt = 0;
       txs.forEach(t => {
         if(t.type === 'income') inc += t.amount;
@@ -316,6 +439,7 @@
     }
 
     function render() {
+      renderHeaderWidgets();
       renderCards();
       const main = document.getElementById('main-content');
       if (currentCategory === 'finance') {
@@ -323,6 +447,8 @@
         initChart();
       } else if (currentCategory === 'habits') {
         main.innerHTML = renderHabitView();
+      } else if (currentCategory === 'courses') {
+        main.innerHTML = renderCoursesView();
       } else {
         main.innerHTML = renderTaskView();
       }
