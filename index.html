@@ -1,309 +1,1073 @@
 <!DOCTYPE html>
 <html lang="mn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Хувь Хүний Хөгжлийн Онлайн Академи - Pro Version</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ухаалаг Төлөвлөгч & Онлайн Сургалт-2026</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SheetJS (Excel Export Library) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #fdfafb; /* Зөөлөн эмэгтэйлэг цайвар дэвсгэр */
+      color: #3b2e35;
+    }
+    /* Өнгөний палитр: Шар өнгө болон ягаан-лавандера хослол */
+    .btn-primary {
+      background-color: #d946ef;
+    }
+    .btn-primary:hover {
+      background-color: #c026d3;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-[#fdfafb] text-[#3b2e35] min-h-screen flex flex-col">
 
-    <!-- Header Navigation -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-indigo-600 to-violet-600 text-white p-3 rounded-2xl font-bold text-xl shadow-md">🌟</div>
-                <div>
-                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Хөгжлийн Академи</h1>
-                    <p class="text-xs text-slate-500 font-medium">Бясалгал, Эрүүл Мэнд & Санхүүгийн Эрх Чөлөө</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <!-- Registered User Profile & Phone Widget -->
-                <div class="hidden sm:flex items-center space-x-3 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-2xl">
-                    <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">ТБ</div>
-                    <div class="text-left">
-                        <span class="text-xs text-slate-400 block font-medium">Бүртгэлтэй утас</span>
-                        <span class="text-xs font-bold text-indigo-700">99563946</span>
-                    </div>
-                </div>
+  <!-- 🔑 НЭВТРЭХ ЦОНХ -->
+  <div id="login-overlay" class="fixed inset-0 bg-[#3b2e35]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-3xl w-full max-w-sm text-center shadow-xl border border-pink-100">
+      <div class="w-14 h-14 bg-gradient-to-tr from-pink-500 to-rose-400 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-md shadow-pink-200">
+        <i class="fa-solid fa-heart"></i>
+      </div>
+      <h2 class="text-2xl font-bold mb-2 text-gray-800">Миний Төлөвлөгч</h2>
+      <p class="text-xs text-gray-500 mb-6">Бүртгэлтэй утасны дугаар эсвэл имэйл хаягаараа нэвтэрнэ үү:</p>
+      
+      <input type="text" id="login-identifier" placeholder="Утас (жишээ: 00000000) эсвэл Имэйл" class="w-full px-4 py-3 border border-pink-200 rounded-xl text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/30" />
+      
+      <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl transition shadow-md shadow-pink-200 text-sm">Нэвтрэх</button>
+      <p id="login-error" class="text-rose-500 text-xs mt-3 hidden font-medium">Бүртгэлгүй эсвэл буруу утга байна!</p>
+    </div>
+  </div>
 
-                <div class="flex items-center space-x-3 bg-slate-100 border border-slate-200 px-4 py-2 rounded-2xl">
-                    <div class="text-right">
-                        <span class="text-xs text-slate-500 block">Нийт явц</span>
-                        <span id="overall-progress-text" class="text-sm font-bold text-indigo-600">0%</span>
-                    </div>
-                </div>
-                <button onclick="resetAllProgress()" class="text-xs text-rose-500 hover:text-rose-700 font-semibold bg-rose-50 px-3 py-2 rounded-xl transition border border-rose-100">
-                    🔄 Шинэчлэх
-                </button>
-            </div>
-        </div>
-    </header>
+  <!-- 📱 ҮНДСЭН АПП -->
+  <div id="app-container" class="hidden max-w-4xl mx-auto w-full p-4 flex-1 flex flex-col">
+    
+    <!-- Цаг болон огноо мэдээлэл -->
+    <div class="bg-gradient-to-r from-rose-400 to-pink-500 text-white px-4 py-2.5 rounded-2xl flex justify-between items-center text-xs font-bold mb-3 shadow-sm">
+      <span id="live-date">2026-00-00</span>
+      <span id="live-clock">00:00:00</span>
+    </div>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+    <!-- Header & Excel Export/Import Options -->
+    <div class="flex flex-wrap justify-between items-center pb-3 border-b-2 border-pink-100 mb-4 gap-2">
+      <div>
+        <h3 id="user-display-name" class="text-lg font-bold m-0 text-gray-800">Хэрэглэгч</h3>
+        <span id="user-display-phone" class="text-xs text-gray-500">-</span>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-500">БАЗА</span>
         
-        <!-- Left Sidebar: Modules & Lessons List (4 cols) -->
-        <div class="lg:col-span-4 space-y-6">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <!-- Mobile Profile Info Card -->
-                <div class="sm:hidden mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">ТБ</div>
-                    <div>
-                        <span class="text-xs text-slate-500 block">Бүртгэлтэй дугаар:</span>
-                        <span class="text-sm font-bold text-indigo-700">99563946</span>
-                    </div>
-                </div>
+        <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-2xs" title="Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
+        <label class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer shadow-2xs" title="Excel файлаас сэргээх">
+          <i class="fa-solid fa-upload"></i> Сэргээх
+          <input type="file" id="import-file" accept=".xlsx, .xls" onchange="importFromExcel(event)" class="hidden">
+        </label>
 
-                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center">
-                    <span class="mr-2 p-1.5 bg-indigo-100 text-indigo-600 rounded-xl text-xs">📚</span> Сургалтын Модулиуд
-                </h2>
-                <div class="space-y-3" id="course-list-container">
-                    <!-- Dynamic Modules -->
-                </div>
-            </div>
+        <button onclick="logout()" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition">Гарах</button>
+      </div>
+    </div>
+
+    <!-- ТАБ ЦЭСҮҮД -->
+    <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+      <button class="tab-btn px-4 py-2.5 bg-pink-500 text-white rounded-xl font-bold text-sm whitespace-nowrap shadow-sm transition" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'finance')">💰 Санхүү & Тайлан</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
+    </div>
+
+    <!-- 1. ӨДРИЙН АЖИЛ -->
+    <div id="daily-sec" class="tab-content space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-pink-500"></i> Өдрийн ажлын төлөвлөгөө</h4>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." class="flex-1 min-w-[200px] px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
+          <select id="daily-priority" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
+            <option value="p-urgent">🔴 Нэн чухал</option>
+            <option value="p-important">🟡 Чухал</option>
+          </select>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addTask('daily')">Нэмэх</button>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
+            <span>Гүйцэтгэлийн ахиц:</span>
+            <span id="daily-percent">0%</span>
+          </div>
+          <div class="bg-pink-50 rounded-full h-4 overflow-hidden">
+            <div id="daily-bar" class="bg-pink-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
+          </div>
+        </div>
+        <div id="daily-list" class="mt-4 space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- 2. 7 ХОНОГИЙН АЖИЛ -->
+    <div id="weekly-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-pink-500"></i> 7 хоногийн ажлын төлөвлөгөө</h4>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." class="flex-1 min-w-[200px] px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
+          <select id="weekly-priority" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
+            <option value="p-urgent">🔴 Нэн чухал</option>
+            <option value="p-important">🟡 Чухал</option>
+          </select>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addTask('weekly')">Нэмэх</button>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
+            <span>Гүйцэтгэлийн ахиц:</span>
+            <span id="weekly-percent">0%</span>
+          </div>
+          <div class="bg-pink-50 rounded-full h-4 overflow-hidden">
+            <div id="weekly-bar" class="bg-pink-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
+          </div>
+        </div>
+        <div id="weekly-list" class="mt-4 space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- 3. САНХҮҮГИЙН МОДУЛЬ & АВТОМАТ САРИЙН ТАЙЛАН -->
+    <div id="finance-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm space-y-5">
+        <h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-wallet text-pink-500"></i> Санхүүгийн бүртгэл ба Тооцоолол</h4>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <input type="date" id="fin-date" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <select id="fin-cat" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
+            <option value="inc">🟩 Орлого</option>
+            <option value="exp">🟥 Зардал</option>
+            <option value="debt">🟧 Өр зээл</option>
+            <option value="sav">🟦 Хуримтлал</option>
+          </select>
+          <input type="text" id="fin-source" placeholder="Эх үүсвэр / Ямар гүйлгээ..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="number" id="fin-amount" placeholder="Дүн (₮)..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+        </div>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addFinance()">Бүртгэх</button>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="p-3.5 bg-emerald-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Орлого<br><span id="total-inc" class="text-base">0 ₮</span></div>
+          <div class="p-3.5 bg-rose-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Зардал<br><span id="total-exp" class="text-base">0 ₮</span></div>
+          <div class="p-3.5 bg-amber-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Өр зээл<br><span id="total-debt" class="text-base">0 ₮</span></div>
+          <div class="p-3.5 bg-indigo-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Хуримтлал<br><span id="total-sav" class="text-base">0 ₮</span></div>
         </div>
 
-        <!-- Right Content & Real Video Player Area (8 cols) -->
-        <div class="lg:col-span-8 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
+            <span>Зардлын эзлэх хувь (Орлогоос):</span>
+            <span id="fin-ratio-text">0%</span>
+          </div>
+          <div class="bg-pink-50 rounded-full h-4 overflow-hidden">
+            <div id="fin-ratio-bar" class="bg-rose-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
+          </div>
+        </div>
+
+        <!-- 📊 АВТОМАТ САРИЙН ТАЙЛАНГИЙН БЛОК -->
+        <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-4 rounded-2xl border border-pink-200 space-y-3">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <h5 class="font-bold text-pink-700 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Сарын эцсийн автомат тайлан</h5>
+            <div class="flex items-center gap-2">
+              <select id="report-month" onchange="renderFinance()" class="px-2.5 py-1 border border-pink-300 rounded-lg text-xs bg-white font-medium">
+                <!-- Javascript автоматаар саруудыг үүсгэнэ -->
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-2xs">
+              <span class="text-gray-500 block mb-1">Тухайн сарын нийт орлого:</span>
+              <b id="rep-inc" class="text-emerald-600 text-sm">0 ₮</b>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-2xs">
+              <span class="text-gray-500 block mb-1">Тухайн сарын нийт зардал:</span>
+              <b id="rep-exp" class="text-rose-600 text-sm">0 ₮</b>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-2xs">
+              <span class="text-gray-500 block mb-1">Цэвэр үлдэгдэл / Хэмнэлт:</span>
+              <b id="rep-net" class="text-indigo-600 text-sm">0 ₮</b>
+            </div>
+          </div>
+          <p id="rep-comment" class="text-xs text-gray-600 italic font-medium bg-white/60 p-2.5 rounded-lg border border-pink-100">
+            ✨ Санхүүгийн сахилга бат бол амжилттай амьдралын үндэс юм.
+          </p>
+        </div>
+
+        <div id="finance-list" class="space-y-2 pt-2"></div>
+      </div>
+    </div>
+
+    <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС -->
+    <div id="items-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake text-pink-500"></i> Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+          <input type="date" id="item-date" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <select id="item-type" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
+            <option value="given">📤 Өгсөн (Зээлүүлсэн/Өгсөн)</option>
+            <option value="taken">📥 Авсан (Хүнээс авсан)</option>
+          </select>
+          <input type="text" id="item-person" placeholder="Хүний нэр..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="text" id="item-name" placeholder="Юу өгсөн/авсан (Ном, Мөнгө...)" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+        </div>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addItem()">Бүртгэх</button>
+        <div id="items-list" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- 5. ДАДАЛ ЗУРШИЛ -->
+    <div id="habits-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-rotate text-pink-500"></i> 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
+        <div class="flex gap-2 mb-4">
+          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." class="flex-1 px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addHabit()">Дадал нэмэх</button>
+        </div>
+        <div id="habits-container" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- 6. 🎓 ОНЛАЙН КУРСУУД -->
+    <div id="courses-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-pink-500"></i> Онлайн курс & Суралцах явц хянагч</h4>
+        <p id="course-lock-msg" class="text-xs text-rose-500 mb-4 hidden">⚠️ Энэхүү эксклюзив сургалтуудыг үзэх болон нэмэх эрх зөвхөн <b>МАСТЕР БАГЦ (29,900₮)</b>-д нээгдэнэ.</p>
+        <p id="course-master-notice" class="text-xs text-pink-600 mb-4 font-medium">✨ Мастер багцын тусгай курсууд болон ахиц хянагч:</p>
+        
+        <div id="course-form-box" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <input type="text" id="course-name" placeholder="Курсын нэр..." class="sm:col-span-2 px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="number" id="course-lessons" placeholder="Нийт хичээлийн тоо..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+        </div>
+        <button id="course-add-btn" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addCourse()">Курс нэмэх</button>
+        
+        <div id="courses-list" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- 7. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО -->
+    <div id="sidehustle-sec" class="tab-content space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-pink-500"></i> Аффилэт болон Нэмэлт Орлого Олох Боломж</h4>
+        <p class="text-xs text-gray-500 mb-4">Өөрийн аффилэт линк, санал болгох бүтээгдэхүүнүүд болон нэмэлт орлогын урсгалаа бүртгэж, тооцооллоо хянаарай.</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <input type="text" id="sh-title" placeholder="Бүтээгдэхүүн / Аффилэт санаа..." class="sm:col-span-2 px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="text" id="sh-potential" placeholder="Тооцоолсон орлого (₮)..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+        </div>
+        <textarea id="sh-desc" placeholder="Аффилэт линк, сурталчилгаа хийх суваг болон хэрэгжүүлэх төлөвлөгөө..." rows="2" class="w-full px-3 py-2 border border-pink-200 rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20"></textarea>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addSideHustle()">Орлогын эх үүсвэр нэмэх</button>
+        
+        <div id="sidehustle-list" class="space-y-3"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. ХЭРЭГЛЭГЧИЙН БАЗА
+    const usersDatabase = {
+      "00000000": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", email: "master@planner.mn" },
+      "master@planner.mn": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", phone: "00000000" },
+
+      "11111111": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", email: "basic@planner.mn" },
+      "basic@planner.mn": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", phone: "11111111" },
+
+      "99563900": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", email: "tuvshinbayar@planner.mn" },
+      "tuvshinbayar@planner.mn": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", phone: "99563900" },
+
+      "99392911": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", email: "mendbayar@planner.mn" },
+      "mendbayar@planner.mn": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", phone: "99392911" }
+    };
+
+    let currentPhone = null;
+    let currentUser = null;
+    let userData = {
+      taskData: { daily: [], weekly: [] },
+      finData: [],
+      itemsData: [],
+      habitsData: [],
+      coursesData: [],
+      sideHustleData: []
+    };
+
+    // 2. ОГНОО БА ЦАГ
+    function updateClock() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const date = String(now.getDate()).padStart(2, '0');
+      const days = ['Ням', 'Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба'];
+      const dayName = days[now.getDay()];
+
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const dateEl = document.getElementById('live-date');
+      const clockEl = document.getElementById('live-clock');
+      if (dateEl) dateEl.innerText = `${year}-${month}-${date} (${dayName})`;
+      if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const finDate = document.getElementById('fin-date');
+      const itemDate = document.getElementById('item-date');
+      if (finDate) finDate.valueAsDate = new Date();
+      if (itemDate) itemDate.valueAsDate = new Date();
+
+      initMonthSelector();
+
+      const savedKey = localStorage.getItem("planner_user_key");
+      if (savedKey && usersDatabase[savedKey]) {
+        initApp(savedKey);
+      }
+    });
+
+    // Сарын сонгогчийг автоматаар үүсгэх
+    function initMonthSelector() {
+      const select = document.getElementById("report-month");
+      if (!select) return;
+      select.innerHTML = "";
+      
+      const now = new Date();
+      for (let i = 0; i < 12; i++) {
+        let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        let val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        let label = `${d.getFullYear()} оны ${d.getMonth() + 1}-р сар`;
+        let opt = document.createElement("option");
+        opt.value = val;
+        opt.innerText = label;
+        select.appendChild(opt);
+      }
+    }
+
+    // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ
+    function loadUserDataFromStorage(key) {
+      const saved = localStorage.getItem("planner_data_" + key);
+      if (saved) {
+        try {
+          userData = JSON.parse(saved);
+          if(!userData.coursesData) userData.coursesData = [];
+          if(!userData.sideHustleData) userData.sideHustleData = [];
+        } catch(e) {
+          userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
+        }
+      } else {
+        userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
+        
+        if (currentUser.package === 'MASTER') {
+          userData.coursesData = [
+            { name: "✨ Далд ухамсар ба эрүүл мэнд", totalLessons: 14, completedLessons: 0 },
+            { name: "💖 Талархалын шид", totalLessons: 7, completedLessons: 0 },
+            { name: "💰 Аз жаргалтай мөнгө", totalLessons: 21, completedLessons: 0 },
+            { name: "🚀 21 Өдрийн челленж", totalLessons: 21, completedLessons: 0 }
+          ];
+        }
+      }
+      renderAll();
+    }
+
+    function saveUserData() {
+      if (currentPhone) {
+        localStorage.setItem("planner_data_" + currentPhone, JSON.stringify(userData));
+      }
+    }
+
+    // 📊 EXCEL РУҮ НӨӨЦЛӨХ
+    function exportToExcel() {
+      if (!currentPhone) return;
+      const wb = XLSX.utils.book_new();
+
+      const dailyRows = (userData.taskData.daily || []).map((t, i) => ({
+        "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
+      }));
+      const wsDaily = XLSX.utils.json_to_sheet(dailyRows.length ? dailyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsDaily, "Өдрийн ажил");
+
+      const weeklyRows = (userData.taskData.weekly || []).map((t, i) => ({
+        "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
+      }));
+      const wsWeekly = XLSX.utils.json_to_sheet(weeklyRows.length ? weeklyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsWeekly, "7 хоногийн ажил");
+
+      const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
+      const finRows = (userData.finData || []).map((f, i) => ({
+        "№": i + 1, "Огноо": f.date, "Ангилал": catNames[f.cat] || f.cat, "Эх үүсвэр": f.source, "Дүн (₮)": f.amount
+      }));
+      const wsFin = XLSX.utils.json_to_sheet(finRows.length ? finRows : [{"№": "", "Огноо": "", "Ангилал": "", "Эх үүсвэр": "", "Дүн (₮)": 0}]);
+      XLSX.utils.book_append_sheet(wb, wsFin, "Санхүү");
+
+      const itemRows = (userData.itemsData || []).map((it, i) => ({
+        "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцаж авсан/өгсөн' : 'Хүлээгдэж буй'
+      }));
+      const wsItems = XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{"№": "", "Огноо": "", "Төрөл": "", "Хүний нэр": "", "Эд зүйл": "", "Буцаах хугацаа": "", "Төлөв": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsItems, "Өгсөн-Авсан");
+
+      const habitRows = (userData.habitsData || []).map((h, i) => {
+        let obj = { "№": i + 1, "Дадал зуршил": h.title };
+        (h.days || []).forEach((d, dIdx) => {
+          obj[`Өдөр ${dIdx + 1}`] = d ? 'Тийм' : 'Үгүй';
+        });
+        return obj;
+      });
+      const wsHabits = XLSX.utils.json_to_sheet(habitRows.length ? habitRows : [{"№": "", "Дадал зуршил": "Хоосон байна"}]);
+      XLSX.utils.book_append_sheet(wb, wsHabits, "Дадал зуршил");
+
+      const courseRows = (userData.coursesData || []).map((c, i) => ({
+        "№": i + 1, "Курсын нэр": c.name, "Нийт хичээл": c.totalLessons, "Үзсэн хичээл": c.completedLessons, "Гүйцэтгэл (%)": Math.round((c.completedLessons/c.totalLessons)*100) + '%'
+      }));
+      const wsCourses = XLSX.utils.json_to_sheet(courseRows.length ? courseRows : [{"№": "", "Курсын нэр": "Хоосон байна", "Нийт хичээл": 0, "Үзсэн хичээл": 0, "Гүйцэтгэл (%)": "0%"}]);
+      XLSX.utils.book_append_sheet(wb, wsCourses, "Онлайн курс");
+
+      const shRows = (userData.sideHustleData || []).map((sh, i) => ({
+        "№": i + 1, "Бүтээгдэхүүн/Санаа": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
+      }));
+      const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Бүтээгдэхүүн/Санаа": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
+      XLSX.utils.book_append_sheet(wb, wsSh, "Аффилэт ба Орлого");
+
+      XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+
+    // 📥 EXCEL ФАЙЛААС СЭРГЭЭХ
+    function importFromExcel(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+
+          let newUserData = {
+            taskData: { daily: [], weekly: [] },
+            finData: [],
+            itemsData: [],
+            habitsData: [],
+            coursesData: [],
+            sideHustleData: []
+          };
+
+          if (workbook.Sheets["Өдрийн ажил"]) {
+            const jsonDaily = XLSX.utils.sheet_to_json(workbook.Sheets["Өдрийн ажил"]);
+            newUserData.taskData.daily = jsonDaily.map(row => ({
+              text: row["Ажил"] || "",
+              priority: row["Төрөл"] === 'Нэн чухал' ? 'p-urgent' : 'p-important',
+              completed: row["Төлөв"] === 'Дууссан'
+            })).filter(t => t.text && t.text !== "Хоосон байна");
+          }
+
+          if (workbook.Sheets["7 хоногийн ажил"]) {
+            const jsonWeekly = XLSX.utils.sheet_to_json(workbook.Sheets["7 хоногийн ажил"]);
+            newUserData.taskData.weekly = jsonWeekly.map(row => ({
+              text: row["Ажил"] || "",
+              priority: row["Төрөл"] === 'Нэн чухал' ? 'p-urgent' : 'p-important',
+              completed: row["Төлөв"] === 'Дууссан'
+            })).filter(t => t.text && t.text !== "Хоосон байна");
+          }
+
+          if (workbook.Sheets["Санхүү"]) {
+            const jsonFin = XLSX.utils.sheet_to_json(workbook.Sheets["Санхүү"]);
+            const revCat = { 'Орлого': 'inc', 'Зардал': 'exp', 'Өр зээл': 'debt', 'Хуримтлал': 'sav' };
+            newUserData.finData = jsonFin.map(row => ({
+              date: row["Огноо"] || new Date().toISOString().slice(0,10),
+              cat: revCat[row["Ангилал"]] || 'exp',
+              source: row["Эх үүсвэр"] || "",
+              amount: parseFloat(row["Дүн (₮)"]) || 0
+            })).filter(f => f.source);
+          }
+
+          if (workbook.Sheets["Өгсөн-Авсан"]) {
+            const jsonItems = XLSX.utils.sheet_to_json(workbook.Sheets["Өгсөн-Авсан"]);
+            newUserData.itemsData = jsonItems.map(row => ({
+              date: row["Огноо"] || "",
+              type: row["Төрөл"] === 'Өгсөн' ? 'given' : 'taken',
+              person: row["Хүний нэр"] || "",
+              name: row["Эд зүйл"] || "",
+              duedate: row["Буцаах хугацаа"] === '-' ? '' : row["Буцаах хугацаа"],
+              done: row["Төлөв"] === 'Буцаж авсан/өгсөн'
+            })).filter(i => i.person);
+          }
+
+          if (workbook.Sheets["Онлайн курс"]) {
+            const jsonCourses = XLSX.utils.sheet_to_json(workbook.Sheets["Онлайн курс"]);
+            newUserData.coursesData = jsonCourses.map(row => ({
+              name: row["Курсын нэр"] || "",
+              totalLessons: parseInt(row["Нийт хичээл"]) || 1,
+              completedLessons: parseInt(row["Үзсэн хичээл"]) || 0
+            })).filter(c => c.name && c.name !== "Хоосон байна");
+          }
+
+          if (workbook.Sheets["Аффилэт ба Орлого"]) {
+            const jsonSh = XLSX.utils.sheet_to_json(workbook.Sheets["Аффилэт ба Орлого"]);
+            newUserData.sideHustleData = jsonSh.map(row => ({
+              title: row["Бүтээгдэхүүн/Санаа"] || "",
+              potential: row["Тооцоолсон орлого"] || "",
+              desc: row["Тэмдэглэл"] || "",
+              status: row["Төлөв"] || "pending"
+            })).filter(sh => sh.title && sh.title !== "Хоосон байна");
+          }
+
+          userData = newUserData;
+          saveUserData();
+          renderAll();
+          alert("Excel файлаас датаг амжилттай сэргээлээ!");
+        } catch (err) {
+          console.error(err);
+          alert("Excel файлыг уншихад алдаа гарлаа!");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // 4. НЭВТРЭХ & СЕСШН ЛОГИК
+    function handleLogin() {
+      const identifier = document.getElementById("login-identifier").value.trim().toLowerCase();
+      const errorEl = document.getElementById("login-error");
+      
+      let foundKey = null;
+      if (usersDatabase[identifier]) {
+        foundKey = identifier;
+      } else {
+        for (let key in usersDatabase) {
+          if (key.toLowerCase() === identifier || 
+              (usersDatabase[key].email && usersDatabase[key].email.toLowerCase() === identifier) ||
+              (usersDatabase[key].phone && usersDatabase[key].phone === identifier)) {
+            foundKey = key;
+            break;
+          }
+        }
+      }
+
+      if (foundKey) {
+        localStorage.setItem("planner_user_key", foundKey);
+        initApp(foundKey);
+      } else {
+        errorEl.style.display = "block";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("planner_user_key");
+      location.reload();
+    }
+
+    function initApp(key) {
+      currentPhone = key;
+      currentUser = usersDatabase[key];
+      document.getElementById("login-overlay").style.display = "none";
+      document.getElementById("app-container").classList.remove("hidden");
+      document.getElementById("user-display-name").innerText = currentUser.name;
+      document.getElementById("user-display-phone").innerText = currentUser.phone ? `Утас: ${currentUser.phone}` : `Имэйл: ${currentUser.email || key}`;
+      
+      const badge = document.getElementById("user-pkg-badge");
+      if (currentUser.package === 'MASTER') {
+        badge.innerText = `МАСТЕР БАГЦ (${currentUser.price || '29,900₮'})`;
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-500";
+      } else {
+        badge.innerText = `СУУРЬ БАГЦ (${currentUser.price || '19,900₮'})`;
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-pink-400";
+      }
+
+      loadUserDataFromStorage(key);
+    }
+
+    function renderAll() {
+      renderTasks('daily');
+      renderTasks('weekly');
+      renderFinance();
+      renderItems();
+      renderHabits();
+      renderCourses();
+      renderSideHustles();
+    }
+
+    function switchTab(evt, tabName) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".tab-btn").forEach(el => {
+        el.classList.remove("bg-pink-500", "text-white");
+        el.classList.add("bg-pink-50", "text-gray-600");
+      });
+      document.getElementById(tabName + "-sec").classList.remove("hidden");
+      evt.currentTarget.classList.remove("bg-pink-50", "text-gray-600");
+      evt.currentTarget.classList.add("bg-pink-500", "text-white");
+    }
+
+    // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ
+    function addTask(type) {
+      const input = document.getElementById(`${type}-input`);
+      const priority = document.getElementById(`${type}-priority`).value;
+      if (!input.value.trim()) return;
+
+      if (!userData.taskData[type]) userData.taskData[type] = [];
+
+      userData.taskData[type].push({
+        text: input.value.trim(),
+        priority: priority,
+        completed: false
+      });
+
+      input.value = "";
+      saveUserData();
+      renderTasks(type);
+    }
+
+    function toggleTask(type, index) {
+      userData.taskData[type][index].completed = !userData.taskData[type][index].completed;
+      saveUserData();
+      renderTasks(type);
+    }
+
+    function deleteTask(type, index) {
+      userData.taskData[type].splice(index, 1);
+      saveUserData();
+      renderTasks(type);
+    }
+
+    function renderTasks(type) {
+      const listContainer = document.getElementById(`${type}-list`);
+      if (!listContainer) return;
+      listContainer.innerHTML = "";
+      
+      let completedCount = 0;
+      const tasks = userData.taskData ? (userData.taskData[type] || []) : [];
+      
+      tasks.forEach((task, idx) => {
+        if (task.completed) completedCount++;
+        const pText = task.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал';
+        const pBadgeClass = task.priority === 'p-urgent' ? 'bg-rose-500 text-white' : 'bg-amber-400 text-white';
+        
+        const div = document.createElement("div");
+        div.className = `flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl shadow-2xs ${task.completed ? 'opacity-60 line-through' : ''}`;
+        div.innerHTML = `
+          <div class="flex items-center gap-2 overflow-hidden">
+            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})" class="w-4 h-4 text-pink-500 rounded cursor-pointer">
+            <span class="text-sm text-gray-800 truncate">${task.text}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase ${pBadgeClass}">${pText}</span>
+          </div>
+          <button class="text-rose-400 hover:text-rose-600 font-bold px-2 py-1 text-sm transition" onclick="deleteTask('${type}', ${idx})"><i class="fa-solid fa-xmark"></i></button>
+        `;
+        listContainer.appendChild(div);
+      });
+
+      const total = tasks.length;
+      const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+      
+      const percentEl = document.getElementById(`${type}-percent`);
+      if (percentEl) percentEl.innerText = percent + "%";
+      const bar = document.getElementById(`${type}-bar`);
+      if (bar) {
+        bar.style.width = percent + "%";
+        bar.innerText = percent + "%";
+      }
+    }
+
+    // 6. САНХҮҮ & САРИЙН АВТОМАТ ТАЙЛАН
+    function addFinance() {
+      const date = document.getElementById("fin-date").value;
+      const cat = document.getElementById("fin-cat").value;
+      const source = document.getElementById("fin-source").value.trim();
+      const amount = parseFloat(document.getElementById("fin-amount").value);
+
+      if (!date || !source || isNaN(amount)) return;
+      if (!userData.finData) userData.finData = [];
+
+      userData.finData.push({ date, cat, source, amount });
+      document.getElementById("fin-source").value = "";
+      document.getElementById("fin-amount").value = "";
+
+      saveUserData();
+      renderFinance();
+    }
+
+    function deleteFinance(index) {
+      userData.finData.splice(index, 1);
+      saveUserData();
+      renderFinance();
+    }
+
+    function renderFinance() {
+      const list = document.getElementById("finance-list");
+      if (!list) return;
+      list.innerHTML = "";
+
+      let totals = { inc: 0, exp: 0, debt: 0, sav: 0 };
+      const items = userData.finData || [];
+
+      // Сонгосон сарыг авах
+      const selectedMonthVal = document.getElementById("report-month") ? document.getElementById("report-month").value : "";
+      let monthlyInc = 0;
+      let monthlyExp = 0;
+
+      items.forEach((item, idx) => {
+        totals[item.cat] += item.amount;
+
+        // Тухайн сарын тайланд шүүж оруулах
+        if (selectedMonthVal && item.date && item.date.startsWith(selectedMonthVal)) {
+          if (item.cat === 'inc') monthlyInc += item.amount;
+          if (item.cat === 'exp') monthlyExp += item.amount;
+        }
+
+        const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
+        const catColors = { inc: 'text-emerald-600', exp: 'text-rose-600', debt: 'text-amber-600', sav: 'text-indigo-600' };
+
+        const div = document.createElement("div");
+        div.className = "flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl text-sm shadow-2xs";
+        div.innerHTML = `
+          <div>
+            <span class="text-xs text-gray-400 font-medium">${item.date}</span> - 
+            <b class="text-gray-800">${item.source}</b>
+            <span class="text-xs font-bold ml-1 ${catColors[item.cat]}">(${catNames[item.cat]})</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-bold ${catColors[item.cat]}">${item.amount.toLocaleString()} ₮</span>
+            <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteFinance(${idx})"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+
+      document.getElementById("total-inc").innerText = totals.inc.toLocaleString() + " ₮";
+      document.getElementById("total-exp").innerText = totals.exp.toLocaleString() + " ₮";
+      document.getElementById("total-debt").innerText = totals.debt.toLocaleString() + " ₮";
+      document.getElementById("total-sav").innerText = totals.sav.toLocaleString() + " ₮";
+
+      const expRatio = totals.inc === 0 ? 0 : Math.min(100, Math.round((totals.exp / totals.inc) * 100));
+      document.getElementById("fin-ratio-text").innerText = expRatio + "%";
+      const ratioBar = document.getElementById("fin-ratio-bar");
+      if (ratioBar) {
+        ratioBar.style.width = expRatio + "%";
+        ratioBar.innerText = expRatio + "%";
+      }
+
+      // Сарын автомат тайлангийн утгыг шинэчлэх
+      const monthlyNet = monthlyInc - monthlyExp;
+      document.getElementById("rep-inc").innerText = monthlyInc.toLocaleString() + " ₮";
+      document.getElementById("rep-exp").innerText = monthlyExp.toLocaleString() + " ₮";
+      document.getElementById("rep-net").innerText = monthlyNet.toLocaleString() + " ₮";
+
+      const commentEl = document.getElementById("rep-comment");
+      if (commentEl) {
+        if (monthlyInc === 0 && monthlyExp === 0) {
+          commentEl.innerText = "✨ Сонгосон сард санхүүгийн гүйлгээ бүртгэгдээгүй байна.";
+        } else if (monthlyNet > 0) {
+          commentEl.innerText = `🌸 Маш сайн байна! Та энэ сард ${monthlyNet.toLocaleString()} ₮-ийн цэвэр хэмнэлт / ашиг гаргажээ.`;
+        } else if (monthlyNet === 0) {
+          commentEl.innerText = "⚖️ Таны энэ сарын орлого болон зардал тэнцүү байна.";
+        } else {
+          commentEl.innerText = `⚠️ Анхаараарай! Энэ сард зардал орлогоосоо ${Math.abs(monthlyNet).toLocaleString()} ₮-өөр давсан байна. Төсвөө хянаарай.`;
+        }
+      }
+    }
+
+    // 7. 🤝 ӨГСӨН / АВСАН ЗҮЙЛС
+    function addItem() {
+      const date = document.getElementById("item-date").value;
+      const type = document.getElementById("item-type").value;
+      const person = document.getElementById("item-person").value.trim();
+      const name = document.getElementById("item-name").value.trim();
+      const duedate = document.getElementById("item-duedate").value.trim();
+
+      if (!date || !person || !name) return;
+      if (!userData.itemsData) userData.itemsData = [];
+
+      userData.itemsData.push({ date, type, person, name, duedate, done: false });
+      document.getElementById("item-person").value = "";
+      document.getElementById("item-name").value = "";
+      document.getElementById("item-duedate").value = "";
+
+      saveUserData();
+      renderItems();
+    }
+
+    function toggleItem(index) {
+      userData.itemsData[index].done = !userData.itemsData[index].done;
+      saveUserData();
+      renderItems();
+    }
+
+    function deleteItem(index) {
+      userData.itemsData.splice(index, 1);
+      saveUserData();
+      renderItems();
+    }
+
+    function renderItems() {
+      const list = document.getElementById("items-list");
+      if (!list) return;
+      list.innerHTML = "";
+
+      const items = userData.itemsData || [];
+      items.forEach((item, idx) => {
+        const isGiven = item.type === 'given';
+        const badgeText = isGiven ? '📤 Өгсөн' : '📥 Авсан';
+        const badgeColor = isGiven ? 'bg-amber-500 text-white' : 'bg-pink-500 text-white';
+
+        const div = document.createElement("div");
+        div.className = `flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl text-sm shadow-2xs ${item.done ? 'opacity-60 line-through' : ''}`;
+        div.innerHTML = `
+          <div class="flex items-center gap-2 overflow-hidden">
+            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})" class="w-4 h-4 text-pink-500 rounded cursor-pointer">
+            <span class="text-[10px] px-2 py-0.5 rounded font-bold ${badgeColor}">${badgeText}</span>
+            <span class="text-xs text-gray-400">${item.date}</span>
+            <b class="text-gray-800 truncate">${item.person}: ${item.name}</b>
+            ${item.duedate ? `<span class="text-xs text-rose-500 font-semibold">(Буцаах: ${item.duedate})</span>` : ''}
+          </div>
+          <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteItem(${idx})"><i class="fa-solid fa-xmark"></i></button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // 8. ДАДАЛ ЗУРШИЛ
+    function addHabit() {
+      const input = document.getElementById("habit-input");
+      if (!input.value.trim()) return;
+      if (!userData.habitsData) userData.habitsData = [];
+
+      userData.habitsData.push({
+        title: input.value.trim(),
+        days: new Array(31).fill(false)
+      });
+
+      input.value = "";
+      saveUserData();
+      renderHabits();
+    }
+
+    function toggleHabitDay(habitIdx, dayIdx) {
+      userData.habitsData[habitIdx].days[dayIdx] = !userData.habitsData[habitIdx].days[dayIdx];
+      saveUserData();
+      renderHabits();
+    }
+
+    function deleteHabit(index) {
+      userData.habitsData.splice(index, 1);
+      saveUserData();
+      renderHabits();
+    }
+
+    function renderHabits() {
+      const container = document.getElementById("habits-container");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const habits = userData.habitsData || [];
+      habits.forEach((habit, hIdx) => {
+        const habitDays = habit.days || new Array(31).fill(false);
+        const doneCount = habitDays.filter(Boolean).length;
+        const percent = Math.round((doneCount / 31) * 100);
+
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "bg-white p-4 rounded-2xl border border-pink-100 shadow-2xs space-y-3";
+
+        let gridHtml = `<div class="grid grid-cols-7 sm:grid-cols-11 gap-1.5 mt-2">`;
+        for (let i = 0; i < 31; i++) {
+          const isDone = habitDays[i];
+          gridHtml += `
+            <div class="h-8 flex items-center justify-center rounded-lg border border-pink-200 text-xs font-bold cursor-pointer select-none transition ${isDone ? 'bg-pink-500 text-white border-pink-500 shadow-2xs' : 'bg-pink-50/30 text-gray-600 hover:bg-pink-100'}" onclick="toggleHabitDay(${hIdx}, ${i})">
+              ${i + 1}
+            </div>
+          `;
+        }
+        gridHtml += `</div>`;
+
+        itemDiv.innerHTML = `
+          <div class="flex justify-between items-center">
+            <b class="text-sm text-gray-800">📌 ${habit.title}</b>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-pink-600">${doneCount}/31 өдөр (${percent}%)</span>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteHabit(${hIdx})"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          ${gridHtml}
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    // 9. 🎓 ОНЛАЙН КУРСУУД
+    function addCourse() {
+      if (currentUser.package !== 'MASTER') {
+        alert("Та Суурь багцтай байна. Энэхүү онлайн сургалтын модулийг ашиглахын тулд Мастер багц руу шилжинэ үү.");
+        return;
+      }
+      const name = document.getElementById("course-name").value.trim();
+      const lessons = parseInt(document.getElementById("course-lessons").value);
+
+      if (!name || isNaN(lessons) || lessons <= 0) return;
+      if (!userData.coursesData) userData.coursesData = [];
+
+      userData.coursesData.push({
+        name: name,
+        totalLessons: lessons,
+        completedLessons: 0
+      });
+
+      document.getElementById("course-name").value = "";
+      document.getElementById("course-lessons").value = "";
+
+      saveUserData();
+      renderCourses();
+    }
+
+    function updateCourseProgress(index, change) {
+      if (currentUser.package !== 'MASTER') return;
+      let course = userData.coursesData[index];
+      course.completedLessons += change;
+      if (course.completedLessons < 0) course.completedLessons = 0;
+      if (course.completedLessons > course.totalLessons) course.completedLessons = course.totalLessons;
+
+      saveUserData();
+      renderCourses();
+    }
+
+    function deleteCourse(index) {
+      if (currentUser.package !== 'MASTER') return;
+      userData.coursesData.splice(index, 1);
+      saveUserData();
+      renderCourses();
+    }
+
+    function renderCourses() {
+      const container = document.getElementById("courses-list");
+      const lockMsg = document.getElementById("course-lock-msg");
+      const masterNotice = document.getElementById("course-master-notice");
+      const formBox = document.getElementById("course-form-box");
+      const addBtn = document.getElementById("course-add-btn");
+
+      if (!container) return;
+
+      if (currentUser.package !== 'MASTER') {
+        lockMsg.classList.remove("hidden");
+        masterNotice.classList.add("hidden");
+        formBox.classList.add("hidden");
+        addBtn.classList.add("hidden");
+        container.innerHTML = `
+          <div class="p-6 bg-pink-50/40 border border-dashed border-pink-200 rounded-2xl text-center space-y-3">
+            <div class="text-3xl text-pink-500"><i class="fa-solid fa-lock"></i></div>
+            <h5 class="font-bold text-gray-800">Мастер багцын эксклюзив онлайн курсууд</h5>
+            <p class="text-xs text-gray-500 max-w-md mx-auto">
+              Энэхүү хэсэгт <b>Далд ухамсар ба эрүүл мэнд</b>, <b>Талархалын шид</b>, <b>Аз жаргалтай мөнгө</b>, <b>21 Өдрийн челленж</b> зэрэг курсууд багтдаг. Мастер багц (29,900₮)-аар эрхээ идэвхжүүлж бүх сургалтаа үзээрэй.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      lockMsg.classList.add("hidden");
+      masterNotice.classList.remove("hidden");
+      formBox.style.display = "grid";
+      addBtn.style.display = "block";
+      container.innerHTML = "";
+
+      const courses = userData.coursesData || [];
+      courses.forEach((course, idx) => {
+        const percent = Math.round((course.completedLessons / course.totalLessons) * 100);
+
+        const div = document.createElement("div");
+        div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <b class="text-sm text-gray-800">📖 ${course.name}</b>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-pink-600">${course.completedLessons} / ${course.totalLessons} хичээл (${percent}%)</span>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 bg-pink-50 rounded-full h-3 overflow-hidden">
+              <div class="bg-pink-500 h-full transition-all duration-300" style="width: ${percent}%"></div>
+            </div>
+            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-pink-100 text-pink-700 hover:bg-pink-200 text-xs font-bold rounded-lg transition">+ Хичээл дуусгах</button>
+            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded-lg transition">- Хасах</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО
+    function addSideHustle() {
+      const title = document.getElementById("sh-title").value.trim();
+      const potential = document.getElementById("sh-potential").value.trim();
+      const desc = document.getElementById("sh-desc").value.trim();
+
+      if (!title) return;
+      if (!userData.sideHustleData) userData.sideHustleData = [];
+
+      userData.sideHustleData.push({
+        title: title,
+        potential: potential || 'Тодорхойгүй',
+        desc: desc || 'Тэмдэглэл байхгүй',
+        status: 'pending'
+      });
+
+      document.getElementById("sh-title").value = "";
+      document.getElementById("sh-potential").value = "";
+      document.getElementById("sh-desc").value = "";
+
+      saveUserData();
+      renderSideHustles();
+    }
+
+    function toggleSideHustleStatus(index) {
+      let sh = userData.sideHustleData[index];
+      if (sh.status === 'pending') sh.status = 'active';
+      else if (sh.status === 'active') sh.status = 'completed';
+      else sh.status = 'pending';
+
+      saveUserData();
+      renderSideHustles();
+    }
+
+    function deleteSideHustle(index) {
+      userData.sideHustleData.splice(index, 1);
+      saveUserData();
+      renderSideHustles();
+    }
+
+    function renderSideHustles() {
+      const container = document.getElementById("sidehustle-list");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const items = userData.sideHustleData || [];
+      items.forEach((sh, idx) => {
+        let statusBadge = '';
+        if (sh.status === 'pending') statusBadge = '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">⏳ Төлөвлөж буй</span>';
+        else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-pink-100 text-pink-700 rounded-lg text-[10px] font-bold">🚀 Линк цацсан / Идэвхтэй</span>';
+        else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold">✅ Шимтгэл авсан</span>';
+
+        const div = document.createElement("div");
+        div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
+        div.innerHTML = `
+          <div class="flex justify-between items-start">
             <div>
-                <!-- Course Header Info -->
-                <div class="border-b border-slate-100 pb-6 mb-6">
-                    <span id="course-badge" class="text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-100">Модуль 1</span>
-                    <h2 id="course-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">Далд ухамсар ба эрүүл мэнд</h2>
-                    <p id="course-desc" class="text-slate-600 mt-2 text-sm sm:text-base leading-relaxed">Эрүүл мэндэд сөргөөр нөлөөлж буй далд ухамсрын түгжрэл, айдас, стрессийг анагаах болон зөв програмчлах арга техникүүд.</p>
-                </div>
-
-                <!-- Real Video Player Box -->
-                <div class="space-y-6">
-                    <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-xl aspect-video relative flex items-center justify-center">
-                        <iframe id="lesson-video-iframe" class="w-full h-full absolute inset-0" src="" title="Lesson Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-
-                    <!-- Current Lesson Info -->
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <h3 id="lesson-current-title" class="text-xl font-bold text-slate-900 tracking-tight">1-р хичээл: Далд ухамсрын хүч ба бие махбод</h3>
-                            <span id="lesson-counter" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl">Хичээл 1 / 4</span>
-                        </div>
-                        <p id="lesson-subtitle-desc" class="text-slate-600 text-sm mt-2 leading-relaxed">Хичээлийн тайлбар болон анхаарах зүйлс энд харагдана.</p>
-                    </div>
-
-                    <!-- Lesson Items Container -->
-                    <div class="border-t border-slate-100 pt-6">
-                        <h4 class="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Энэ модулийн хичээлүүд:</h4>
-                        <div id="lessons-container" class="space-y-3">
-                            <!-- Dynamic Lesson List -->
-                        </div>
-                    </div>
-
-                    <!-- Interactive Practice Task -->
-                    <div class="bg-indigo-50/60 border border-indigo-100 rounded-3xl p-5">
-                        <h4 class="font-bold text-indigo-950 mb-2 flex items-center text-sm sm:text-base">
-                            <span class="mr-2">📝</span> Хичээл үзэж дууссан эсэх сорил
-                        </h4>
-                        <label class="flex items-start space-x-3 cursor-pointer mt-2">
-                            <input type="checkbox" id="task-checkbox" onchange="toggleTaskCompletion()" class="w-5 h-5 mt-0.5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                            <span class="text-sm font-semibold text-slate-700">Энэ хичээлийг анхааралтай үзэж дууссан бөгөөд тэмдэглэл хөтөлсөн.</span>
-                        </label>
-                    </div>
-                </div>
+              <div class="flex items-center gap-2 mb-1">
+                <b class="text-sm text-gray-800">🔗 ${sh.title}</b>
+                ${statusBadge}
+              </div>
+              <p class="text-xs text-gray-600 mb-1">${sh.desc}</p>
+              <span class="text-xs text-pink-600 font-bold">💰 Тооцоолсон орлого: ${sh.potential}</span>
             </div>
-
-            <!-- Footer Navigation Controls -->
-            <div class="border-t border-slate-100 pt-6 mt-8 flex items-center justify-between">
-                <button onclick="prevLesson()" class="px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-2xl text-sm transition">← Өмнөх</button>
-                <button onclick="nextLesson()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-2xl text-sm transition shadow-md shadow-indigo-600/20">Дараах хичээл →</button>
+            <div class="flex items-center gap-1">
+              <button onclick="toggleSideHustleStatus(${idx})" class="px-2.5 py-1 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-semibold rounded-lg transition" title="Төлөв өөрчлөх">Төлөв солих</button>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm px-2" onclick="deleteSideHustle(${idx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-auto py-6 text-center text-xs text-slate-400">
-        <p>&copy; 2026 Хувь Хүний Хөгжлийн Онлайн Академи. Бүх эрх хуулиар хамгаалагдсан. Утас: 99563946</p>
-    </footer>
-
-    <!-- App JavaScript -->
-    <script>
-        const courses = [
-            {
-                title: "Далд ухамсар ба эрүүл мэнд",
-                badge: "Модуль 1",
-                desc: "Эрүүл мэндэд сөргөөр нөлөөлж буй далд ухамсрын түгжрэл, айдас, стрессийг анагаах болон зөв програмчлах арга техникүүд.",
-                lessons: [
-                    { title: "1-р хичээл: Далд ухамсрын хүч ба бие махбод", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Хүний бие болон далд ухамсрын холбоос хэрхэн ажилладаг тухай суурь ойлголт." },
-                    { title: "2-р хичээл: Сэтгэлзүйн түгжрэл ба биеийн өвчин", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Булчингийн болон эрхтний түгжрэлийг сэтгэлзүйгээр тайлах нь." },
-                    { title: "3-р хичээл: Эдгэрлийн тарни ба аялгуу терапи", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Альфа давалгаа болон эдгэрүүлэгч давтамжуудын үйлчлэл." },
-                    { title: "4-р хичээл: Эрүүл амьдралын шинэ дадал хэвшүүлэх нь", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Тогтвортой дадал суулгах 21 хоногийн систем." }
-                ]
-            },
-            {
-                title: "Талархалын хүч",
-                badge: "Модуль 2",
-                desc: "Талархал илэрхийлэх нь тархины бүтцийг өөрчилж, амьдралд эерэг боломжуудыг хэрхэн татах тухай практик сургалт.",
-                lessons: [
-                    { title: "1-р хичээл: Талархлын шинжлэх ухаан ба тархины өөрчлөлт", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Нейропластик чанар ба талархлын холбоос." },
-                    { title: "2-р хичээл: Өглөөний болон оройн талархлын дадал", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Өдрийг эрч хүчтэй эхлүүлэх болон үдшийн дүгнэлт." },
-                    { title: "3-р хичээл: Бэрхшээлийн өмнө талархах сэтгэлгээ", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Сорилтыг боломж болгон харах ухагдахуун." },
-                    { title: "4-р хичээл: 7 хоногийн талархлын эрчимжүүлсэн бясалгал", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Сэтгэл санааг бүрэн цэвэрлэх хүчирхэг бясалгал." }
-                ]
-            },
-            {
-                title: "Аз жаргалтай мөнгө",
-                badge: "Модуль 3",
-                desc: "Мөнгөтэй харилцах хандлагаа өөрчлөх, элбэг дэлбэг байдлыг татах санхүүгийн сэтгэлгээний хичээлүүд.",
-                lessons: [
-                    { title: "1-р хичээл: Мөнгөний энергийн хууль ба сэтгэлгээний блок", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Өвөг дээдсээс ирсэн хомсдолын сэтгэлгээнээс ангижрах." },
-                    { title: "2-р хичээл: Орлого зарлагаа баяр хөөртэйгөөр удирдах нь", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Санхүүгийн урсгалыг зөв төлөвлөх аргачлал." },
-                    { title: "3-р хичээл: Баялаг бүтээгчдийн дадал ба итгэл үнэмшил", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Саятан хүний өдөр тутмын сэтгэлгээний хэв маяг." },
-                    { title: "4-р хичээл: Санхүүгийн эрх чөлөөнд хүрэх алхамууд", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Идэвхгүй орлого болон хөрөнгө оруулалтын суурь." }
-                ]
-            },
-            {
-                title: "21 хоногийн челленж",
-                badge: "Модуль 4",
-                desc: "Шинэ дадал суулгах, тархиа шинээр програмчлах 21 хоногийн өдөр тутмын бататгах сорилт.",
-                lessons: [
-                    { title: "1-р долоо хоног: Суурь дадал ба сэтгэлгээг цэвэрлэх нь", videoUrl: "https://www.youtube.com/embed/5qap5aO4i9A", sub: "Хуучин хорт зуршлаасаа салж эхлэх үе шат." },
-                    { title: "2-р долоо хоног: Эрчим хүчээ нэмэгдүүлэх өдөр тутмын дасгалууд", videoUrl: "https://www.youtube.com/embed/jfKfPfyJRdk", sub: "Бие махбодын энергийг өндөрт барих практик." },
-                    { title: "3-р долоо хоног: Тогтвортой байдал ба өөрийгөө ялах нь", videoUrl: "https://www.youtube.com/embed/1ZYbU82GVz4", sub: "Залхуурал болон хойш тавих занг даван туулах." },
-                    { title: "Сүүлчийн өдөр: Шинэ хүн болж өөрчлөгдсөн нь", videoUrl: "https://www.youtube.com/embed/DWcJFNfaw9c", sub: "Үр дүнг дүгнэж, цаашдын амьдралын төлөвлөгөө гаргах." }
-                ]
-            }
-        ];
-
-        let currentCourseIndex = 0;
-        let currentLessonIndex = 0;
-        let completedLessons = {};
-
-        function initApp() {
-            const saved = localStorage.getItem('academy_completed_lessons_v2');
-            if(saved) completedLessons = JSON.parse(saved);
-            renderCourseList();
-            renderCourseDetails();
-        }
-
-        function renderCourseList() {
-            const container = document.getElementById("course-list-container");
-            container.innerHTML = "";
-            courses.forEach((course, index) => {
-                const isSelected = index === currentCourseIndex;
-                container.innerHTML += `
-                    <button onclick="selectCourse(${index})" class="w-full text-left p-4 rounded-2xl transition-all border ${isSelected ? 'border-indigo-500 bg-indigo-50/50 shadow-sm' : 'border-slate-100 hover:bg-slate-50 bg-white'}">
-                        <div class="font-bold text-slate-900 text-sm">${course.title}</div>
-                        <div class="text-xs text-slate-400 mt-1">Модуль ${index + 1}</div>
-                    </button>
-                `;
-            });
-        }
-
-        function selectCourse(index) {
-            currentCourseIndex = index;
-            currentLessonIndex = 0;
-            renderCourseList();
-            renderCourseDetails();
-        }
-
-        function renderCourseDetails() {
-            const course = courses[currentCourseIndex];
-            document.getElementById("course-badge").innerText = course.badge;
-            document.getElementById("course-title").innerText = course.title;
-            document.getElementById("course-desc").innerText = course.desc;
-            renderLessonList();
-            updateLessonView();
-        }
-
-        function renderLessonList() {
-            const container = document.getElementById("lessons-container");
-            container.innerHTML = "";
-            const course = courses[currentCourseIndex];
-
-            course.lessons.forEach((lesson, idx) => {
-                const isCurrent = idx === currentLessonIndex;
-                const isDone = completedLessons[`${currentCourseIndex}-${idx}`];
-
-                container.innerHTML += `
-                    <div onclick="selectLesson(${idx})" class="p-4 rounded-2xl border text-sm flex items-center justify-between cursor-pointer transition ${isCurrent ? 'border-indigo-300 bg-indigo-50/70 font-semibold text-indigo-950 shadow-sm' : 'border-slate-100 bg-white hover:bg-slate-50 text-slate-700'}">
-                        <div class="flex items-center space-x-3">
-                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'}">
-                                ${isDone ? '✓' : idx + 1}
-                            </span>
-                            <span>${lesson.title}</span>
-                        </div>
-                        <span class="text-xs text-indigo-600 font-medium">${isCurrent ? 'Үзэж байна' : ''}</span>
-                    </div>
-                `;
-            });
-        }
-
-        function selectLesson(idx) {
-            currentLessonIndex = idx;
-            renderLessonList();
-            updateLessonView();
-        }
-
-        function updateLessonView() {
-            const course = courses[currentCourseIndex];
-            const lesson = course.lessons[currentLessonIndex];
-            
-            document.getElementById("lesson-current-title").innerText = lesson.title;
-            document.getElementById("lesson-subtitle-desc").innerText = lesson.sub;
-            document.getElementById("lesson-counter").innerText = `Хичээл ${currentLessonIndex + 1} / ${course.lessons.length}`;
-            document.getElementById("lesson-video-iframe").src = lesson.videoUrl;
-            
-            const key = `${currentCourseIndex}-${currentLessonIndex}`;
-            document.getElementById("task-checkbox").checked = !!completedLessons[key];
-        }
-
-        function nextLesson() {
-            const course = courses[currentCourseIndex];
-            if (currentLessonIndex < course.lessons.length - 1) {
-                currentLessonIndex++;
-                renderLessonList();
-                updateLessonView();
-            }
-        }
-
-        function prevLesson() {
-            if (currentLessonIndex > 0) {
-                currentLessonIndex--;
-                renderLessonList();
-                updateLessonView();
-            }
-        }
-
-        function toggleTaskCompletion() {
-            const isChecked = document.getElementById("task-checkbox").checked;
-            const key = `${currentCourseIndex}-${currentLessonIndex}`;
-            completedLessons[key] = isChecked;
-            localStorage.setItem('academy_completed_lessons_v2', JSON.stringify(completedLessons));
-            
-            let total = 0, done = 0;
-            courses.forEach((c, cI) => c.lessons.forEach((_, lI) => {
-                total++;
-                if(completedLessons[`${cI}-${lI}`]) done++;
-            }));
-            document.getElementById("overall-progress-text").innerText = `${Math.round((done/total)*100)}%`;
-            renderLessonList();
-        }
-
-        function resetAllProgress() {
-            if(confirm("Явцыг шинэчлэх үү?")) {
-                completedLessons = {};
-                localStorage.removeItem('academy_completed_lessons_v2');
-                initApp();
-            }
-        }
-
-        window.onload = initApp;
-    </script>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
 </body>
 </html>
