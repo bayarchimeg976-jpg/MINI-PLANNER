@@ -15,27 +15,33 @@
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #faf9f6;
-      color: #2d3748;
+      background-color: #fdfafb; /* Зөөлөн эмэгтэйлэг цайвар дэвсгэр */
+      color: #3b2e35;
+    }
+    /* Өнгөний палитр: Шар өнгө болон ягаан-лавандера хослол */
+    .btn-primary {
+      background-color: #d946ef;
+    }
+    .btn-primary:hover {
+      background-color: #c026d3;
     }
   </style>
 </head>
-<body class="bg-[#faf9f6] text-[#2d3748] min-h-screen flex flex-col">
+<body class="bg-[#fdfafb] text-[#3b2e35] min-h-screen flex flex-col">
 
-  <!-- 🔑 НЭВТРЭХ ЦОНХ (АЮУЛГҮЙ БАЙДЛЫН ХЭСЭГ) -->
-  <div id="login-overlay" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-2xl w-full max-w-sm text-center shadow-2xl">
-      <div class="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-        <i class="fa-solid fa-lock"></i>
+  <!-- 🔑 НЭВТРЭХ ЦОНХ -->
+  <div id="login-overlay" class="fixed inset-0 bg-[#3b2e35]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-3xl w-full max-w-sm text-center shadow-xl border border-pink-100">
+      <div class="w-14 h-14 bg-gradient-to-tr from-pink-500 to-rose-400 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-md shadow-pink-200">
+        <i class="fa-solid fa-heart"></i>
       </div>
-      <h2 class="text-2xl font-bold mb-2">Төлөвлөгч-2026</h2>
-      <p class="text-sm text-gray-500 mb-6">Бүртгэлтэй утасны дугаар эсвэл имэйл хаягаараа нэвтэрнэ үү:</p>
+      <h2 class="text-2xl font-bold mb-2 text-gray-800">Миний Төлөвлөгч</h2>
+      <p class="text-xs text-gray-500 mb-6">Бүртгэлтэй утасны дугаар эсвэл имэйл хаягаараа нэвтэрнэ үү:</p>
       
-      <!-- Нэвтрэх input (Утас эсвэл Имэйл) -->
-      <input type="text" id="login-identifier" placeholder="Утас (жишээ: 00000000) эсвэл Имэйл" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <input type="text" id="login-identifier" placeholder="Утас (жишээ: 00000000) эсвэл Имэйл" class="w-full px-4 py-3 border border-pink-200 rounded-xl text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/30" />
       
-      <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition shadow-md">Нэвтрэх</button>
-      <p id="login-error" class="text-red-500 text-xs mt-3 hidden">Бүртгэлгүй эсвэл буруу утга байна!</p>
+      <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl transition shadow-md shadow-pink-200 text-sm">Нэвтрэх</button>
+      <p id="login-error" class="text-rose-500 text-xs mt-3 hidden font-medium">Бүртгэлгүй эсвэл буруу утга байна!</p>
     </div>
   </div>
 
@@ -43,61 +49,60 @@
   <div id="app-container" class="hidden max-w-4xl mx-auto w-full p-4 flex-1 flex flex-col">
     
     <!-- Цаг болон огноо мэдээлэл -->
-    <div class="bg-slate-800 text-white px-4 py-2.5 rounded-lg flex justify-between items-center text-xs font-bold mb-3 shadow-sm">
+    <div class="bg-gradient-to-r from-rose-400 to-pink-500 text-white px-4 py-2.5 rounded-2xl flex justify-between items-center text-xs font-bold mb-3 shadow-sm">
       <span id="live-date">2026-00-00</span>
       <span id="live-clock">00:00:00</span>
     </div>
 
     <!-- Header & Excel Export/Import Options -->
-    <div class="flex flex-wrap justify-between items-center pb-3 border-b-2 border-gray-200 mb-4 gap-2">
+    <div class="flex flex-wrap justify-between items-center pb-3 border-b-2 border-pink-100 mb-4 gap-2">
       <div>
         <h3 id="user-display-name" class="text-lg font-bold m-0 text-gray-800">Хэрэглэгч</h3>
         <span id="user-display-phone" class="text-xs text-gray-500">-</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap">
-        <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-600">БАЗА</span>
+        <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-500">БАЗА</span>
         
-        <!-- 📊 EXCEL НӨӨЦЛӨХ БОЛОН СЭРГЭЭХ ТОВЧЛУУРУУД -->
-        <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold transition" title="Датагаа Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
-        <label class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-semibold transition cursor-pointer" title="Нөөцөлсөн Excel файлаа буцааж оруулах">
+        <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-2xs" title="Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
+        <label class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer shadow-2xs" title="Excel файлаас сэргээх">
           <i class="fa-solid fa-upload"></i> Сэргээх
           <input type="file" id="import-file" accept=".xlsx, .xls" onchange="importFromExcel(event)" class="hidden">
         </label>
 
-        <button onclick="logout()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-xs font-semibold transition">Гарах</button>
+        <button onclick="logout()" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition">Гарах</button>
       </div>
     </div>
 
     <!-- ТАБ ЦЭСҮҮД -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
-      <button class="tab-btn px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-bold text-sm whitespace-nowrap shadow-sm transition" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'finance')">💰 Санхүү</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
-      <button class="tab-btn px-4 py-2.5 bg-gray-100 text-gray-600 rounded-lg font-bold text-sm whitespace-nowrap hover:bg-gray-200 transition" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-500 text-white rounded-xl font-bold text-sm whitespace-nowrap shadow-sm transition" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'finance')">💰 Санхүү & Тайлан</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
     </div>
 
     <!-- 1. ӨДРИЙН АЖИЛ -->
     <div id="daily-sec" class="tab-content space-y-4">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-indigo-600"></i> Өдрийн ажлын төлөвлөгөө</h4>
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-pink-500"></i> Өдрийн ажлын төлөвлөгөө</h4>
         <div class="flex flex-wrap gap-2 mb-4">
-          <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <select id="daily-priority" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+          <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." class="flex-1 min-w-[200px] px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
+          <select id="daily-priority" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
             <option value="p-urgent">🔴 Нэн чухал</option>
             <option value="p-important">🟡 Чухал</option>
           </select>
-          <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition" onclick="addTask('daily')">Нэмэх</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addTask('daily')">Нэмэх</button>
         </div>
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Гүйцэтгэлийн ахиц:</span>
             <span id="daily-percent">0%</span>
           </div>
-          <div class="bg-gray-100 rounded-full h-4 overflow-hidden">
-            <div id="daily-bar" class="bg-emerald-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
+          <div class="bg-pink-50 rounded-full h-4 overflow-hidden">
+            <div id="daily-bar" class="bg-pink-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
         <div id="daily-list" class="mt-4 space-y-2"></div>
@@ -106,107 +111,140 @@
 
     <!-- 2. 7 ХОНОГИЙН АЖИЛ -->
     <div id="weekly-sec" class="tab-content space-y-4 hidden">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-indigo-600"></i> 7 хоногийн ажлын төлөвлөгөө</h4>
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-pink-500"></i> 7 хоногийн ажлын төлөвлөгөө</h4>
         <div class="flex flex-wrap gap-2 mb-4">
-          <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <select id="weekly-priority" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+          <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." class="flex-1 min-w-[200px] px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
+          <select id="weekly-priority" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
             <option value="p-urgent">🔴 Нэн чухал</option>
             <option value="p-important">🟡 Чухал</option>
           </select>
-          <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition" onclick="addTask('weekly')">Нэмэх</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addTask('weekly')">Нэмэх</button>
         </div>
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Гүйцэтгэлийн ахиц:</span>
             <span id="weekly-percent">0%</span>
           </div>
-          <div class="bg-gray-100 rounded-full h-4 overflow-hidden">
-            <div id="weekly-bar" class="bg-emerald-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
+          <div class="bg-pink-50 rounded-full h-4 overflow-hidden">
+            <div id="weekly-bar" class="bg-pink-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
         <div id="weekly-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
 
-    <!-- 3. САНХҮҮГИЙН МОДУЛЬ -->
+    <!-- 3. САНХҮҮГИЙН МОДУЛЬ & АВТОМАТ САРИЙН ТАЙЛАН -->
     <div id="finance-sec" class="tab-content space-y-4 hidden">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-wallet text-indigo-600"></i> Санхүүгийн бүртгэл ба Тооцоолол</h4>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-          <input type="date" id="fin-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white" />
-          <select id="fin-cat" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm space-y-5">
+        <h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-wallet text-pink-500"></i> Санхүүгийн бүртгэл ба Тооцоолол</h4>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <input type="date" id="fin-date" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <select id="fin-cat" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
             <option value="inc">🟩 Орлого</option>
             <option value="exp">🟥 Зардал</option>
             <option value="debt">🟧 Өр зээл</option>
             <option value="sav">🟦 Хуримтлал</option>
           </select>
-          <input type="text" id="fin-source" placeholder="Эх үүсвэр / Ямар гүйлгээ..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-          <input type="number" id="fin-amount" placeholder="Дүн (₮)..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="text" id="fin-source" placeholder="Эх үүсвэр / Ямар гүйлгээ..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="number" id="fin-amount" placeholder="Дүн (₮)..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addFinance()">Бүртгэх</button>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-          <div class="p-3 bg-emerald-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Орлого<br><span id="total-inc" class="text-base">0 ₮</span></div>
-          <div class="p-3 bg-rose-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Зардал<br><span id="total-exp" class="text-base">0 ₮</span></div>
-          <div class="p-3 bg-amber-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Өр зээл<br><span id="total-debt" class="text-base">0 ₮</span></div>
-          <div class="p-3 bg-indigo-600 text-white rounded-lg text-center font-bold text-sm shadow-sm">Хуримтлал<br><span id="total-sav" class="text-base">0 ₮</span></div>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addFinance()">Бүртгэх</button>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="p-3.5 bg-emerald-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Орлого<br><span id="total-inc" class="text-base">0 ₮</span></div>
+          <div class="p-3.5 bg-rose-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Зардал<br><span id="total-exp" class="text-base">0 ₮</span></div>
+          <div class="p-3.5 bg-amber-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Өр зээл<br><span id="total-debt" class="text-base">0 ₮</span></div>
+          <div class="p-3.5 bg-indigo-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Хуримтлал<br><span id="total-sav" class="text-base">0 ₮</span></div>
         </div>
-        <div class="mb-4">
+
+        <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Зардлын эзлэх хувь (Орлогоос):</span>
             <span id="fin-ratio-text">0%</span>
           </div>
-          <div class="bg-gray-100 rounded-full h-4 overflow-hidden">
+          <div class="bg-pink-50 rounded-full h-4 overflow-hidden">
             <div id="fin-ratio-bar" class="bg-rose-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
-        <div id="finance-list" class="space-y-2"></div>
+
+        <!-- 📊 АВТОМАТ САРИЙН ТАЙЛАНГИЙН БЛОК -->
+        <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-4 rounded-2xl border border-pink-200 space-y-3">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <h5 class="font-bold text-pink-700 text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Сарын эцсийн автомат тайлан</h5>
+            <div class="flex items-center gap-2">
+              <select id="report-month" onchange="renderFinance()" class="px-2.5 py-1 border border-pink-300 rounded-lg text-xs bg-white font-medium">
+                <!-- Javascript автоматаар саруудыг үүсгэнэ -->
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-2xs">
+              <span class="text-gray-500 block mb-1">Тухайн сарын нийт орлого:</span>
+              <b id="rep-inc" class="text-emerald-600 text-sm">0 ₮</b>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-2xs">
+              <span class="text-gray-500 block mb-1">Тухайн сарын нийт зардал:</span>
+              <b id="rep-exp" class="text-rose-600 text-sm">0 ₮</b>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-2xs">
+              <span class="text-gray-500 block mb-1">Цэвэр үлдэгдэл / Хэмнэлт:</span>
+              <b id="rep-net" class="text-indigo-600 text-sm">0 ₮</b>
+            </div>
+          </div>
+          <p id="rep-comment" class="text-xs text-gray-600 italic font-medium bg-white/60 p-2.5 rounded-lg border border-pink-100">
+            ✨ Санхүүгийн сахилга бат бол амжилттай амьдралын үндэс юм.
+          </p>
+        </div>
+
+        <div id="finance-list" class="space-y-2 pt-2"></div>
       </div>
     </div>
 
     <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС -->
     <div id="items-sec" class="tab-content space-y-4 hidden">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake text-indigo-600"></i> Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake text-pink-500"></i> Хүнд өгсөн болон авсан эд зүйлийн тэмдэглэл</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
-          <input type="date" id="item-date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white" />
-          <select id="item-type" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+          <input type="date" id="item-date" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <select id="item-type" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
             <option value="given">📤 Өгсөн (Зээлүүлсэн/Өгсөн)</option>
             <option value="taken">📥 Авсан (Хүнээс авсан)</option>
           </select>
-          <input type="text" id="item-person" placeholder="Хүний нэр..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-          <input type="text" id="item-name" placeholder="Юу өгсөн/авсан (Ном, Мөнгө...)" class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-          <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="text" id="item-person" placeholder="Хүний нэр..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="text" id="item-name" placeholder="Юу өгсөн/авсан (Ном, Мөнгө...)" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addItem()">Бүртгэх</button>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addItem()">Бүртгэх</button>
         <div id="items-list" class="space-y-2"></div>
       </div>
     </div>
 
     <!-- 5. ДАДАЛ ЗУРШИЛ -->
     <div id="habits-sec" class="tab-content space-y-4 hidden">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-rotate text-indigo-600"></i> 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-rotate text-pink-500"></i> 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
         <div class="flex gap-2 mb-4">
-          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition" onclick="addHabit()">Дадал нэмэх</button>
+          <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." class="flex-1 px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addHabit()">Дадал нэмэх</button>
         </div>
         <div id="habits-container" class="space-y-3"></div>
       </div>
     </div>
 
-    <!-- 6. 🎓 ОНЛАЙН КУРСУУД (MASTER БАГЦИЙН ЭКСКЛЮЗИВ АГУУЛГА) -->
+    <!-- 6. 🎓 ОНЛАЙН КУРСУУД -->
     <div id="courses-sec" class="tab-content space-y-4 hidden">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-indigo-600"></i> Онлайн курс & Суралцах явц хянагч</h4>
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-pink-500"></i> Онлайн курс & Суралцах явц хянагч</h4>
         <p id="course-lock-msg" class="text-xs text-rose-500 mb-4 hidden">⚠️ Энэхүү эксклюзив сургалтуудыг үзэх болон нэмэх эрх зөвхөн <b>МАСТЕР БАГЦ (29,900₮)</b>-д нээгдэнэ.</p>
-        <p id="course-master-notice" class="text-xs text-emerald-600 mb-4">✨ Мастер багцын тусгай курсууд болон ахиц хянагч:</p>
+        <p id="course-master-notice" class="text-xs text-pink-600 mb-4 font-medium">✨ Мастер багцын тусгай курсууд болон ахиц хянагч:</p>
         
         <div id="course-form-box" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <input type="text" id="course-name" placeholder="Курсын нэр..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-          <input type="number" id="course-lessons" placeholder="Нийт хичээлийн тоо..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="text" id="course-name" placeholder="Курсын нэр..." class="sm:col-span-2 px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="number" id="course-lessons" placeholder="Нийт хичээлийн тоо..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <button id="course-add-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addCourse()">Курс нэмэх</button>
+        <button id="course-add-btn" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addCourse()">Курс нэмэх</button>
         
         <div id="courses-list" class="space-y-3"></div>
       </div>
@@ -214,16 +252,16 @@
 
     <!-- 7. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО -->
     <div id="sidehustle-sec" class="tab-content space-y-4 hidden">
-      <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Аффилэт болон Нэмэлт Орлого Олох Боломж</h4>
+      <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
+        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-pink-500"></i> Аффилэт болон Нэмэлт Орлого Олох Боломж</h4>
         <p class="text-xs text-gray-500 mb-4">Өөрийн аффилэт линк, санал болгох бүтээгдэхүүнүүд болон нэмэлт орлогын урсгалаа бүртгэж, тооцооллоо хянаарай.</p>
         
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-          <input type="text" id="sh-title" placeholder="Бүтээгдэхүүн / Аффилэт санаа..." class="sm:col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-          <input type="text" id="sh-potential" placeholder="Тооцоолсон орлого (₮)..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input type="text" id="sh-title" placeholder="Бүтээгдэхүүн / Аффилэт санаа..." class="sm:col-span-2 px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
+          <input type="text" id="sh-potential" placeholder="Тооцоолсон орлого (₮)..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <textarea id="sh-desc" placeholder="Аффилэт линк, сурталчилгаа хийх суваг болон хэрэгжүүлэх төлөвлөгөө..." rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition mb-4 shadow-sm" onclick="addSideHustle()">Орлогын эх үүсвэр нэмэх</button>
+        <textarea id="sh-desc" placeholder="Аффилэт линк, сурталчилгаа хийх суваг болон хэрэгжүүлэх төлөвлөгөө..." rows="2" class="w-full px-3 py-2 border border-pink-200 rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20"></textarea>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addSideHustle()">Орлогын эх үүсвэр нэмэх</button>
         
         <div id="sidehustle-list" class="space-y-3"></div>
       </div>
@@ -232,23 +270,20 @@
   </div>
 
   <script>
-    // 1. ХЭРЭГЛЭГЧИЙН БАЗА (Өгөгдсөн шаардлагын дагуу 2 багцтай, мэйл болон утсаар орох боломжтой)
-    // Утасны жишээ дугаар дээр 00000000 байх бөгөөд имэйл хаягаар мөн нэвтрэх боломжтой болголоо.
+    // 1. ХЭРЭГЛЭГЧИЙН БАЗА
     const usersDatabase = {
-      // Мастер багц (29,900₮) - Дотроо "Далд ухамсар ба эрүүл мэнд", "Талархалын шид", "Аз жаргалтай мөнгө", "21 өдрийн челленж" курсуудтай
       "00000000": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", email: "master@planner.mn" },
       "master@planner.mn": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", phone: "00000000" },
 
-      // Суурь үндсэн багц (19,900₮)
       "11111111": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", email: "basic@planner.mn" },
       "basic@planner.mn": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", phone: "11111111" },
 
-      // Нэмэлт туршилтын хэрэглэгчид
       "99563946": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", email: "tuvshinbayar@planner.mn" },
       "tuvshinbayar@planner.mn": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", phone: "99563946" },
+
       "99392981": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", email: "mendbayar@planner.mn" },
-    "mendbayar@gmail.com": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", phone: "99392981" }
-     };
+      "mendbayar@planner.mn": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", phone: "99392981" }
+    };
 
     let currentPhone = null;
     let currentUser = null;
@@ -288,12 +323,31 @@
       if (finDate) finDate.valueAsDate = new Date();
       if (itemDate) itemDate.valueAsDate = new Date();
 
-      // Сесшн шалгах
+      initMonthSelector();
+
       const savedKey = localStorage.getItem("planner_user_key");
       if (savedKey && usersDatabase[savedKey]) {
         initApp(savedKey);
       }
     });
+
+    // Сарын сонгогчийг автоматаар үүсгэх
+    function initMonthSelector() {
+      const select = document.getElementById("report-month");
+      if (!select) return;
+      select.innerHTML = "";
+      
+      const now = new Date();
+      for (let i = 0; i < 12; i++) {
+        let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        let val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        let label = `${d.getFullYear()} оны ${d.getMonth() + 1}-р сар`;
+        let opt = document.createElement("option");
+        opt.value = val;
+        opt.innerText = label;
+        select.appendChild(opt);
+      }
+    }
 
     // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ
     function loadUserDataFromStorage(key) {
@@ -309,7 +363,6 @@
       } else {
         userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
         
-        // Хэрэв Мастер багц бол анх ороход шаардлагатай тусгай 4 курсыг автоматаар нэмж өгнө
         if (currentUser.package === 'MASTER') {
           userData.coursesData = [
             { name: "✨ Далд ухамсар ба эрүүл мэнд", totalLessons: 14, completedLessons: 0 },
@@ -328,26 +381,23 @@
       }
     }
 
-    // 📊 EXCEL РУҮ НӨӨЦЛӨХ (EXPORT TO EXCEL)
+    // 📊 EXCEL РУҮ НӨӨЦЛӨХ
     function exportToExcel() {
       if (!currentPhone) return;
       const wb = XLSX.utils.book_new();
 
-      // 1. Өдрийн ажил
       const dailyRows = (userData.taskData.daily || []).map((t, i) => ({
         "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
       }));
       const wsDaily = XLSX.utils.json_to_sheet(dailyRows.length ? dailyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsDaily, "Өдрийн ажил");
 
-      // 2. 7 Хоногийн ажил
       const weeklyRows = (userData.taskData.weekly || []).map((t, i) => ({
         "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
       }));
       const wsWeekly = XLSX.utils.json_to_sheet(weeklyRows.length ? weeklyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsWeekly, "7 хоногийн ажил");
 
-      // 3. Санхүү
       const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
       const finRows = (userData.finData || []).map((f, i) => ({
         "№": i + 1, "Огноо": f.date, "Ангилал": catNames[f.cat] || f.cat, "Эх үүсвэр": f.source, "Дүн (₮)": f.amount
@@ -355,14 +405,12 @@
       const wsFin = XLSX.utils.json_to_sheet(finRows.length ? finRows : [{"№": "", "Огноо": "", "Ангилал": "", "Эх үүсвэр": "", "Дүн (₮)": 0}]);
       XLSX.utils.book_append_sheet(wb, wsFin, "Санхүү");
 
-      // 4. Өгсөн / Авсан
       const itemRows = (userData.itemsData || []).map((it, i) => ({
         "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцаж авсан/өгсөн' : 'Хүлээгдэж буй'
       }));
       const wsItems = XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{"№": "", "Огноо": "", "Төрөл": "", "Хүний нэр": "", "Эд зүйл": "", "Буцаах хугацаа": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsItems, "Өгсөн-Авсан");
 
-      // 5. Дадал зуршил
       const habitRows = (userData.habitsData || []).map((h, i) => {
         let obj = { "№": i + 1, "Дадал зуршил": h.title };
         (h.days || []).forEach((d, dIdx) => {
@@ -373,25 +421,22 @@
       const wsHabits = XLSX.utils.json_to_sheet(habitRows.length ? habitRows : [{"№": "", "Дадал зуршил": "Хоосон байна"}]);
       XLSX.utils.book_append_sheet(wb, wsHabits, "Дадал зуршил");
 
-      // 6. Онлайн курс
       const courseRows = (userData.coursesData || []).map((c, i) => ({
         "№": i + 1, "Курсын нэр": c.name, "Нийт хичээл": c.totalLessons, "Үзсэн хичээл": c.completedLessons, "Гүйцэтгэл (%)": Math.round((c.completedLessons/c.totalLessons)*100) + '%'
       }));
       const wsCourses = XLSX.utils.json_to_sheet(courseRows.length ? courseRows : [{"№": "", "Курсын нэр": "Хоосон байна", "Нийт хичээл": 0, "Үзсэн хичээл": 0, "Гүйцэтгэл (%)": "0%"}]);
       XLSX.utils.book_append_sheet(wb, wsCourses, "Онлайн курс");
 
-      // 7. Аффилэт ба орлого
       const shRows = (userData.sideHustleData || []).map((sh, i) => ({
         "№": i + 1, "Бүтээгдэхүүн/Санаа": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
       }));
       const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Бүтээгдэхүүн/Санаа": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
       XLSX.utils.book_append_sheet(wb, wsSh, "Аффилэт ба Орлого");
 
-      // Файл татаж авах
       XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 
-    // 📥 EXCEL ФАЙЛААС СЭРГЭЭХ (IMPORT FROM EXCEL)
+    // 📥 EXCEL ФАЙЛААС СЭРГЭЭХ
     function importFromExcel(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -477,23 +522,21 @@
           alert("Excel файлаас датаг амжилттай сэргээлээ!");
         } catch (err) {
           console.error(err);
-          alert("Excel файлыг уншихад алдаа гарлаа! Файлын формат зөв эсэхийг шалгана уу.");
+          alert("Excel файлыг уншихад алдаа гарлаа!");
         }
       };
       reader.readAsArrayBuffer(file);
     }
 
-    // 4. НЭВТРЭХ & СЕСШН ЛОГИК (Утас эсвэл Имэйлээр нэвтрэх)
+    // 4. НЭВТРЭХ & СЕСШН ЛОГИК
     function handleLogin() {
       const identifier = document.getElementById("login-identifier").value.trim().toLowerCase();
       const errorEl = document.getElementById("login-error");
       
-      // Хэрэв имэйл эсвэл утасны дугаараар базе дотроос хайх
       let foundKey = null;
       if (usersDatabase[identifier]) {
         foundKey = identifier;
       } else {
-        // Имэйл болон утас хосолсон объектоос хайх
         for (let key in usersDatabase) {
           if (key.toLowerCase() === identifier || 
               (usersDatabase[key].email && usersDatabase[key].email.toLowerCase() === identifier) ||
@@ -505,14 +548,8 @@
       }
 
       if (foundKey) {
-        // Хэрэв имэйлээр орсон бол гол түлхүүрийг нь олж хадгалах
-        let realKey = foundKey;
-        if (usersDatabase[foundKey].email && usersDatabase[foundKey].email.toLowerCase() === identifier && !usersDatabase[identifier]) {
-          // Хэрэв имэйл түлхүүр байвал
-          realKey = foundKey;
-        }
-        localStorage.setItem("planner_user_key", realKey);
-        initApp(realKey);
+        localStorage.setItem("planner_user_key", foundKey);
+        initApp(foundKey);
       } else {
         errorEl.style.display = "block";
       }
@@ -534,10 +571,10 @@
       const badge = document.getElementById("user-pkg-badge");
       if (currentUser.package === 'MASTER') {
         badge.innerText = `МАСТЕР БАГЦ (${currentUser.price || '29,900₮'})`;
-        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-600";
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-500";
       } else {
         badge.innerText = `СУУРЬ БАГЦ (${currentUser.price || '19,900₮'})`;
-        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-blue-600";
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-pink-400";
       }
 
       loadUserDataFromStorage(key);
@@ -556,15 +593,15 @@
     function switchTab(evt, tabName) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(el => {
-        el.classList.remove("bg-indigo-600", "text-white");
-        el.classList.add("bg-gray-100", "text-gray-600");
+        el.classList.remove("bg-pink-500", "text-white");
+        el.classList.add("bg-pink-50", "text-gray-600");
       });
       document.getElementById(tabName + "-sec").classList.remove("hidden");
-      evt.currentTarget.classList.remove("bg-gray-100", "text-gray-600");
-      evt.currentTarget.classList.add("bg-indigo-600", "text-white");
+      evt.currentTarget.classList.remove("bg-pink-50", "text-gray-600");
+      evt.currentTarget.classList.add("bg-pink-500", "text-white");
     }
 
-    // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ (Өдөр & 7 хоног)
+    // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ
     function addTask(type) {
       const input = document.getElementById(`${type}-input`);
       const priority = document.getElementById(`${type}-priority`).value;
@@ -606,17 +643,17 @@
       tasks.forEach((task, idx) => {
         if (task.completed) completedCount++;
         const pText = task.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал';
-        const pBadgeClass = task.priority === 'p-urgent' ? 'bg-red-500 text-white' : 'bg-amber-500 text-white';
+        const pBadgeClass = task.priority === 'p-urgent' ? 'bg-rose-500 text-white' : 'bg-amber-400 text-white';
         
         const div = document.createElement("div");
-        div.className = `flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-2xs ${task.completed ? 'opacity-60 line-through' : ''}`;
+        div.className = `flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl shadow-2xs ${task.completed ? 'opacity-60 line-through' : ''}`;
         div.innerHTML = `
           <div class="flex items-center gap-2 overflow-hidden">
-            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
+            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})" class="w-4 h-4 text-pink-500 rounded cursor-pointer">
             <span class="text-sm text-gray-800 truncate">${task.text}</span>
             <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase ${pBadgeClass}">${pText}</span>
           </div>
-          <button class="text-red-500 hover:text-red-700 font-bold px-2 py-1 text-sm transition" onclick="deleteTask('${type}', ${idx})"><i class="fa-solid fa-xmark"></i></button>
+          <button class="text-rose-400 hover:text-rose-600 font-bold px-2 py-1 text-sm transition" onclick="deleteTask('${type}', ${idx})"><i class="fa-solid fa-xmark"></i></button>
         `;
         listContainer.appendChild(div);
       });
@@ -633,7 +670,7 @@
       }
     }
 
-    // 6. САНХҮҮ
+    // 6. САНХҮҮ & САРИЙН АВТОМАТ ТАЙЛАН
     function addFinance() {
       const date = document.getElementById("fin-date").value;
       const cat = document.getElementById("fin-cat").value;
@@ -665,13 +702,25 @@
       let totals = { inc: 0, exp: 0, debt: 0, sav: 0 };
       const items = userData.finData || [];
 
+      // Сонгосон сарыг авах
+      const selectedMonthVal = document.getElementById("report-month") ? document.getElementById("report-month").value : "";
+      let monthlyInc = 0;
+      let monthlyExp = 0;
+
       items.forEach((item, idx) => {
         totals[item.cat] += item.amount;
+
+        // Тухайн сарын тайланд шүүж оруулах
+        if (selectedMonthVal && item.date && item.date.startsWith(selectedMonthVal)) {
+          if (item.cat === 'inc') monthlyInc += item.amount;
+          if (item.cat === 'exp') monthlyExp += item.amount;
+        }
+
         const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
         const catColors = { inc: 'text-emerald-600', exp: 'text-rose-600', debt: 'text-amber-600', sav: 'text-indigo-600' };
 
         const div = document.createElement("div");
-        div.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg text-sm shadow-2xs";
+        div.className = "flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl text-sm shadow-2xs";
         div.innerHTML = `
           <div>
             <span class="text-xs text-gray-400 font-medium">${item.date}</span> - 
@@ -680,7 +729,7 @@
           </div>
           <div class="flex items-center gap-3">
             <span class="font-bold ${catColors[item.cat]}">${item.amount.toLocaleString()} ₮</span>
-            <button class="text-red-500 hover:text-red-700 font-bold text-sm" onclick="deleteFinance(${idx})"><i class="fa-solid fa-xmark"></i></button>
+            <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteFinance(${idx})"><i class="fa-solid fa-xmark"></i></button>
           </div>
         `;
         list.appendChild(div);
@@ -697,6 +746,25 @@
       if (ratioBar) {
         ratioBar.style.width = expRatio + "%";
         ratioBar.innerText = expRatio + "%";
+      }
+
+      // Сарын автомат тайлангийн утгыг шинэчлэх
+      const monthlyNet = monthlyInc - monthlyExp;
+      document.getElementById("rep-inc").innerText = monthlyInc.toLocaleString() + " ₮";
+      document.getElementById("rep-exp").innerText = monthlyExp.toLocaleString() + " ₮";
+      document.getElementById("rep-net").innerText = monthlyNet.toLocaleString() + " ₮";
+
+      const commentEl = document.getElementById("rep-comment");
+      if (commentEl) {
+        if (monthlyInc === 0 && monthlyExp === 0) {
+          commentEl.innerText = "✨ Сонгосон сард санхүүгийн гүйлгээ бүртгэгдээгүй байна.";
+        } else if (monthlyNet > 0) {
+          commentEl.innerText = `🌸 Маш сайн байна! Та энэ сард ${monthlyNet.toLocaleString()} ₮-ийн цэвэр хэмнэлт / ашиг гаргажээ.`;
+        } else if (monthlyNet === 0) {
+          commentEl.innerText = "⚖️ Таны энэ сарын орлого болон зардал тэнцүү байна.";
+        } else {
+          commentEl.innerText = `⚠️ Анхаараарай! Энэ сард зардал орлогоосоо ${Math.abs(monthlyNet).toLocaleString()} ₮-өөр давсан байна. Төсвөө хянаарай.`;
+        }
       }
     }
 
@@ -741,19 +809,19 @@
       items.forEach((item, idx) => {
         const isGiven = item.type === 'given';
         const badgeText = isGiven ? '📤 Өгсөн' : '📥 Авсан';
-        const badgeColor = isGiven ? 'bg-amber-600 text-white' : 'bg-indigo-600 text-white';
+        const badgeColor = isGiven ? 'bg-amber-500 text-white' : 'bg-pink-500 text-white';
 
         const div = document.createElement("div");
-        div.className = `flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg text-sm shadow-2xs ${item.done ? 'opacity-60 line-through' : ''}`;
+        div.className = `flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl text-sm shadow-2xs ${item.done ? 'opacity-60 line-through' : ''}`;
         div.innerHTML = `
           <div class="flex items-center gap-2 overflow-hidden">
-            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
+            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleItem(${idx})" class="w-4 h-4 text-pink-500 rounded cursor-pointer">
             <span class="text-[10px] px-2 py-0.5 rounded font-bold ${badgeColor}">${badgeText}</span>
             <span class="text-xs text-gray-400">${item.date}</span>
             <b class="text-gray-800 truncate">${item.person}: ${item.name}</b>
             ${item.duedate ? `<span class="text-xs text-rose-500 font-semibold">(Буцаах: ${item.duedate})</span>` : ''}
           </div>
-          <button class="text-red-500 hover:text-red-700 font-bold text-sm" onclick="deleteItem(${idx})"><i class="fa-solid fa-xmark"></i></button>
+          <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteItem(${idx})"><i class="fa-solid fa-xmark"></i></button>
         `;
         list.appendChild(div);
       });
@@ -799,13 +867,13 @@
         const percent = Math.round((doneCount / 31) * 100);
 
         const itemDiv = document.createElement("div");
-        itemDiv.className = "bg-white p-4 rounded-xl border border-gray-200 shadow-2xs space-y-3";
+        itemDiv.className = "bg-white p-4 rounded-2xl border border-pink-100 shadow-2xs space-y-3";
 
         let gridHtml = `<div class="grid grid-cols-7 sm:grid-cols-11 gap-1.5 mt-2">`;
         for (let i = 0; i < 31; i++) {
           const isDone = habitDays[i];
           gridHtml += `
-            <div class="h-8 flex items-center justify-center rounded border border-gray-300 text-xs font-bold cursor-pointer select-none transition ${isDone ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}" onclick="toggleHabitDay(${hIdx}, ${i})">
+            <div class="h-8 flex items-center justify-center rounded-lg border border-pink-200 text-xs font-bold cursor-pointer select-none transition ${isDone ? 'bg-pink-500 text-white border-pink-500 shadow-2xs' : 'bg-pink-50/30 text-gray-600 hover:bg-pink-100'}" onclick="toggleHabitDay(${hIdx}, ${i})">
               ${i + 1}
             </div>
           `;
@@ -816,8 +884,8 @@
           <div class="flex justify-between items-center">
             <b class="text-sm text-gray-800">📌 ${habit.title}</b>
             <div class="flex items-center gap-3">
-              <span class="text-xs font-bold text-emerald-600">${doneCount}/31 өдөр (${percent}%)</span>
-              <button class="text-red-500 hover:text-red-700 font-bold text-sm" onclick="deleteHabit(${hIdx})"><i class="fa-solid fa-xmark"></i></button>
+              <span class="text-xs font-bold text-pink-600">${doneCount}/31 өдөр (${percent}%)</span>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteHabit(${hIdx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
           ${gridHtml}
@@ -826,10 +894,10 @@
       });
     }
 
-    // 9. 🎓 ОНЛАЙН КУРСУУД (MASTER БАГЦ ТУСГАЙ АГУУЛГА)
+    // 9. 🎓 ОНЛАЙН КУРСУУД
     function addCourse() {
       if (currentUser.package !== 'MASTER') {
-        alert("Та Суурь багцтай байна. Энэхүү онлайн сургалтын модулийг ашиглахын тулд Мастер багц руу (29,900₮) шилжинэ үү.");
+        alert("Та Суурь багцтай байна. Энэхүү онлайн сургалтын модулийг ашиглахын тулд Мастер багц руу шилжинэ үү.");
         return;
       }
       const name = document.getElementById("course-name").value.trim();
@@ -878,29 +946,25 @@
 
       if (!container) return;
 
-      // Хэрэв хэрэглэгч СУУРЬ БАГЦ тай байвал курсууд хаалттай байна
       if (currentUser.package !== 'MASTER') {
         lockMsg.classList.remove("hidden");
         masterNotice.classList.add("hidden");
         formBox.classList.add("hidden");
         addBtn.classList.add("hidden");
         container.innerHTML = `
-          <div class="p-6 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center space-y-3">
-            <div class="text-3xl text-purple-600"><i class="fa-solid fa-lock"></i></div>
+          <div class="p-6 bg-pink-50/40 border border-dashed border-pink-200 rounded-2xl text-center space-y-3">
+            <div class="text-3xl text-pink-500"><i class="fa-solid fa-lock"></i></div>
             <h5 class="font-bold text-gray-800">Мастер багцын эксклюзив онлайн курсууд</h5>
             <p class="text-xs text-gray-500 max-w-md mx-auto">
-              Энэхүү хэсэгт <b>Далд ухамсар ба эрүүл мэнд</b>, <b>Талархалын шид</b>, <b>Аз жаргалтай мөнгө</b>, <b>21 Өдрийн челленж</b> зэрэг гүнзгийрүүлсэн сургалтууд багтдаг. Мастер багц (29,900₮)-аар эрхээ идэвхжүүлж бүх сургалтаа үзээрэй.
+              Энэхүү хэсэгт <b>Далд ухамсар ба эрүүл мэнд</b>, <b>Талархалын шид</b>, <b>Аз жаргалтай мөнгө</b>, <b>21 Өдрийн челленж</b> зэрэг курсууд багтдаг. Мастер багц (29,900₮)-аар эрхээ идэвхжүүлж бүх сургалтаа үзээрэй.
             </p>
           </div>
         `;
         return;
       }
 
-      // МАСТЕР БАГЦЫН ҮЕД ҮЗҮҮЛЭХ ХЭСЭГ
       lockMsg.classList.add("hidden");
       masterNotice.classList.remove("hidden");
-      formBox.classList.remove("grid");
-      formBox.classList.remove("hidden");
       formBox.style.display = "grid";
       addBtn.style.display = "block";
       container.innerHTML = "";
@@ -910,28 +974,28 @@
         const percent = Math.round((course.completedLessons / course.totalLessons) * 100);
 
         const div = document.createElement("div");
-        div.className = "p-4 bg-white border border-gray-200 rounded-xl space-y-2 shadow-2xs";
+        div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
         div.innerHTML = `
           <div class="flex justify-between items-center">
             <b class="text-sm text-gray-800">📖 ${course.name}</b>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-indigo-600">${course.completedLessons} / ${course.totalLessons} хичээл (${percent}%)</span>
-              <button class="text-red-500 hover:text-red-700 font-bold text-sm" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
+              <span class="text-xs font-bold text-pink-600">${course.completedLessons} / ${course.totalLessons} хичээл (${percent}%)</span>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <div class="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
-              <div class="bg-indigo-600 h-full transition-all duration-300" style="width: ${percent}%"></div>
+            <div class="flex-1 bg-pink-50 rounded-full h-3 overflow-hidden">
+              <div class="bg-pink-500 h-full transition-all duration-300" style="width: ${percent}%"></div>
             </div>
-            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 text-xs font-bold rounded transition">+ Хичээл дуусгах</button>
-            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded transition">- Хасах</button>
+            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-pink-100 text-pink-700 hover:bg-pink-200 text-xs font-bold rounded-lg transition">+ Хичээл дуусгах</button>
+            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded-lg transition">- Хасах</button>
           </div>
         `;
         container.appendChild(div);
       });
     }
 
-    // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО (AFFILIATE & SIDE HUSTLE)
+    // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО
     function addSideHustle() {
       const title = document.getElementById("sh-title").value.trim();
       const potential = document.getElementById("sh-potential").value.trim();
@@ -979,12 +1043,12 @@
       const items = userData.sideHustleData || [];
       items.forEach((sh, idx) => {
         let statusBadge = '';
-        if (sh.status === 'pending') statusBadge = '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">⏳ Төлөвлөж буй</span>';
-        else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold">🚀 Линк цацсан / Идэвхтэй</span>';
-        else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold">✅ Шимтгэл авсан</span>';
+        if (sh.status === 'pending') statusBadge = '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">⏳ Төлөвлөж буй</span>';
+        else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-pink-100 text-pink-700 rounded-lg text-[10px] font-bold">🚀 Линк цацсан / Идэвхтэй</span>';
+        else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold">✅ Шимтгэл авсан</span>';
 
         const div = document.createElement("div");
-        div.className = "p-4 bg-white border border-gray-200 rounded-xl space-y-2 shadow-2xs";
+        div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
         div.innerHTML = `
           <div class="flex justify-between items-start">
             <div>
@@ -993,11 +1057,11 @@
                 ${statusBadge}
               </div>
               <p class="text-xs text-gray-600 mb-1">${sh.desc}</p>
-              <span class="text-xs text-emerald-600 font-bold">💰 Тооцоолсон орлого: ${sh.potential}</span>
+              <span class="text-xs text-pink-600 font-bold">💰 Тооцоолсон орлого: ${sh.potential}</span>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="toggleSideHustleStatus(${idx})" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded transition" title="Төлөв өөрчлөх">Төлөв солих</button>
-              <button class="text-red-500 hover:text-red-700 font-bold text-sm px-2" onclick="deleteSideHustle(${idx})"><i class="fa-solid fa-xmark"></i></button>
+              <button onclick="toggleSideHustleStatus(${idx})" class="px-2.5 py-1 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-semibold rounded-lg transition" title="Төлөв өөрчлөх">Төлөв солих</button>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm px-2" onclick="deleteSideHustle(${idx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
         `;
