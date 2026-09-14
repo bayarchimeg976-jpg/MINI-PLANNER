@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ухаалаг Төлөвлөгч & Онлайн Сургалт-2026</title>
   
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#d946ef">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Төлөвлөгч">
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <!-- FontAwesome Icons -->
@@ -26,7 +32,6 @@
   </style>
 </head>
 <body class="bg-[#fdfafb] text-[#3b2e35] min-h-screen flex flex-col">
-
   <!-- 🔑 НЭВТРЭХ ЦОНХ -->
   <div id="login-overlay" class="fixed inset-0 bg-[#3b2e35]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
     <div class="bg-white p-8 rounded-3xl w-full max-w-sm text-center shadow-xl border border-pink-100">
@@ -42,7 +47,6 @@
       <p id="login-error" class="text-rose-500 text-xs mt-3 hidden font-medium">Бүртгэлгүй эсвэл буруу утга байна!</p>
     </div>
   </div>
-
   <!-- 📱 ҮНДСЭН АПП -->
   <div id="app-container" class="hidden max-w-4xl mx-auto w-full p-4 flex-1 flex flex-col">
     
@@ -51,7 +55,6 @@
       <span id="live-date">2026-00-00</span>
       <span id="live-clock">00:00:00</span>
     </div>
-
     <!-- Header & Excel Export/Import Options -->
     <div class="flex flex-wrap justify-between items-center pb-3 border-b-2 border-pink-100 mb-4 gap-2">
       <div>
@@ -69,7 +72,6 @@
         <button onclick="logout()" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition cursor-pointer">Гарах</button>
       </div>
     </div>
-
     <!-- ТАБ ЦЭСҮҮД -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
       <button class="tab-btn px-4 py-2.5 bg-pink-500 text-white rounded-xl font-bold text-sm whitespace-nowrap shadow-sm transition cursor-pointer" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
@@ -80,7 +82,6 @@
       <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
       <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
     </div>
-
     <!-- 1. ӨДРИЙН АЖИЛ -->
     <div id="daily-sec" class="tab-content space-y-4">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -105,7 +106,6 @@
         <div id="daily-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
-
     <!-- 2. 7 ХОНОГИЙН АЖИЛ -->
     <div id="weekly-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -130,7 +130,6 @@
         <div id="weekly-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
-
     <!-- 3. САНХҮҮГИЙН МОДУЛЬ & АВТОМАТ САРИЙН ТАЙЛАН -->
     <div id="finance-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm space-y-5">
@@ -164,7 +163,6 @@
             <div id="fin-ratio-bar" class="bg-rose-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
-
         <!-- 📊 АВТОМАТ САРИЙН ТАЙЛАНГИЙН БЛОК -->
         <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-4 rounded-2xl border border-pink-200 space-y-3">
           <div class="flex justify-between items-center flex-wrap gap-2">
@@ -196,7 +194,6 @@
         <div id="finance-list" class="space-y-2 pt-2"></div>
       </div>
     </div>
-
     <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС -->
     <div id="items-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -215,7 +212,6 @@
         <div id="items-list" class="space-y-2"></div>
       </div>
     </div>
-
     <!-- 5. ДАДАЛ ЗУРШИЛ -->
     <div id="habits-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -227,7 +223,6 @@
         <div id="habits-container" class="space-y-3"></div>
       </div>
     </div>
-
     <!-- 6. 🎓 ОНЛАЙН КУРСУУД -->
     <div id="courses-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -244,7 +239,6 @@
         <div id="courses-list" class="space-y-3"></div>
       </div>
     </div>
-
     <!-- 7. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО -->
     <div id="sidehustle-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -261,10 +255,74 @@
         <div id="sidehustle-list" class="space-y-3"></div>
       </div>
     </div>
-
   </div>
-
   <script>
+    // ==========================================
+    // ⚡ PWA & ОФФЛАЙН АЖИЛЛАГААНЫ ТОХИРГОО
+    // ==========================================
+    (function initPWA() {
+      // 1. PWA Manifest-ийг динамикаар үүсгэж холбох
+      const manifestObj = {
+        name: "Ухаалаг Төлөвлөгч 2026",
+        short_name: "Төлөвлөгч",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#fdfafb",
+        theme_color: "#d946ef",
+        icons: [{
+          src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23d946ef' d='M464 256c0-114.9-93.1-208-208-208S48 141.1 48 256s93.1 208 208 208 208-93.1 208-208zm-208 144c-79.5 0-144-64.5-144-144s64.5-144 144-144 144 64.5 144 144-64.5 144-144 144z'/></svg>",
+          sizes: "512x512",
+          type: "image/svg+xml"
+        }]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+      const manifestURL = URL.createObjectURL(manifestBlob);
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = manifestURL;
+      document.head.appendChild(link);
+
+      // 2. Service Worker бүртгэх (Оффлайн кэш)
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'planner-pwa-v1';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: 'text/javascript' });
+        const swURL = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swURL).catch(() => {});
+      }
+    })();
+
+    // ==========================================
+    // 🔄 ТӨХӨӨРӨМЖ / ЦОНХ ХООРОНД ДАТА СОЛИЛЦОХ
+    // ==========================================
+    const dataSyncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('planner_data_sync') : null;
+
+    if (dataSyncChannel) {
+      dataSyncChannel.onmessage = (event) => {
+        if (event.data && event.data.type === 'DATA_UPDATED' && event.data.key === currentPhone) {
+          loadUserDataFromStorage(currentPhone, false);
+        }
+      };
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === "planner_data_" + currentPhone) {
+        loadUserDataFromStorage(currentPhone, false);
+      }
+    });
+
     // 1. ХЭРЭГЛЭГЧИЙН БАЗА
     const usersDatabase = {
       "00000000": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29,900₮", email: "master@planner.mn", phone: "00000000" },
@@ -276,7 +334,6 @@
       "99392911": { name: "Б.Мэндбаяр", package: "BASIC", price: "19,900₮", email: "mendbayar@planner.mn", phone: "99392911" },
       "mendbayar@planner.mn": { name: "Б.Мэндбаяр", package: "BASIC", price: "19,900₮", email: "mendbayar@planner.mn", phone: "99392911" }
     };
-
     let currentPhone = null;
     let currentUser = null;
     let userData = {
@@ -287,7 +344,6 @@
       coursesData: [],
       sideHustleData: []
     };
-
     // 2. ОГНОО БА ЦАГ
     function updateClock() {
       const now = new Date();
@@ -299,29 +355,24 @@
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
-
       const dateEl = document.getElementById('live-date');
       const clockEl = document.getElementById('live-clock');
       if (dateEl) dateEl.innerText = `${year}-${month}-${date} (${dayName})`;
       if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds}`;
     }
     setInterval(updateClock, 1000);
-
     window.addEventListener('DOMContentLoaded', () => {
       updateClock();
       const finDate = document.getElementById('fin-date');
       const itemDate = document.getElementById('item-date');
       if (finDate) finDate.valueAsDate = new Date();
       if (itemDate) itemDate.valueAsDate = new Date();
-
       initMonthSelector();
-
       const savedKey = localStorage.getItem("planner_user_key");
       if (savedKey && usersDatabase[savedKey]) {
         initApp(savedKey);
       }
     });
-
     // Сарын сонгогчийг автоматаар үүсгэх
     function initMonthSelector() {
       const select = document.getElementById("report-month");
@@ -339,9 +390,8 @@
         select.appendChild(opt);
       }
     }
-
     // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ
-    function loadUserDataFromStorage(key) {
+    function loadUserDataFromStorage(key, shouldRender = true) {
       const saved = localStorage.getItem("planner_data_" + key);
       if (saved) {
         try {
@@ -355,7 +405,7 @@
       } else {
         userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
         
-        if (currentUser.package === 'MASTER') {
+        if (currentUser && currentUser.package === 'MASTER') {
           userData.coursesData = [
             { name: "✨ Далд ухамсар ба эрүүл мэнд", totalLessons: 14, completedLessons: 0 },
             { name: "💖 Талархалын шид", totalLessons: 7, completedLessons: 0 },
@@ -364,45 +414,41 @@
           ];
         }
       }
-      renderAll();
+      if (shouldRender) renderAll();
     }
-
     function saveUserData() {
       if (currentPhone) {
         localStorage.setItem("planner_data_" + currentPhone, JSON.stringify(userData));
+        if (dataSyncChannel) {
+          dataSyncChannel.postMessage({ type: 'DATA_UPDATED', key: currentPhone });
+        }
       }
     }
-
     // 📊 EXCEL РҮҮ НӨӨЦЛӨХ
     function exportToExcel() {
       if (!currentPhone) return;
       const wb = XLSX.utils.book_new();
-
       const dailyRows = (userData.taskData.daily || []).map((t, i) => ({
         "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
       }));
       const wsDaily = XLSX.utils.json_to_sheet(dailyRows.length ? dailyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsDaily, "Өдрийн ажил");
-
       const weeklyRows = (userData.taskData.weekly || []).map((t, i) => ({
         "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
       }));
       const wsWeekly = XLSX.utils.json_to_sheet(weeklyRows.length ? weeklyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsWeekly, "7 хоногийн ажил");
-
       const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
       const finRows = (userData.finData || []).map((f, i) => ({
         "№": i + 1, "Огноо": f.date, "Ангилал": catNames[f.cat] || f.cat, "Эх үүсвэр": f.source, "Дүн (₮)": f.amount
       }));
       const wsFin = XLSX.utils.json_to_sheet(finRows.length ? finRows : [{"№": "", "Огноо": "", "Ангилал": "", "Эх үүсвэр": "", "Дүн (₮)": 0}]);
       XLSX.utils.book_append_sheet(wb, wsFin, "Санхүү");
-
       const itemRows = (userData.itemsData || []).map((it, i) => ({
         "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцаж авсан/өгсөн' : 'Хүлээгдэж буй'
       }));
       const wsItems = XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{"№": "", "Огноо": "", "Төрөл": "", "Хүний нэр": "", "Эд зүйл": "", "Буцаах хугацаа": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsItems, "Өгсөн-Авсан");
-
       const habitRows = (userData.habitsData || []).map((h, i) => {
         let obj = { "№": i + 1, "Дадал зуршил": h.title };
         (h.days || []).forEach((d, dIdx) => {
@@ -412,22 +458,18 @@
       });
       const wsHabits = XLSX.utils.json_to_sheet(habitRows.length ? habitRows : [{"№": "", "Дадал зуршил": "Хоосон байна"}]);
       XLSX.utils.book_append_sheet(wb, wsHabits, "Дадал зуршил");
-
       const courseRows = (userData.coursesData || []).map((c, i) => ({
         "№": i + 1, "Курсын нэр": c.name, "Нийт хичээл": c.totalLessons, "Үзсэн хичээл": c.completedLessons, "Гүйцэтгэл (%)": Math.round((c.completedLessons/c.totalLessons)*100) + '%'
       }));
       const wsCourses = XLSX.utils.json_to_sheet(courseRows.length ? courseRows : [{"№": "", "Курсын нэр": "Хоосон байна", "Нийт хичээл": 0, "Үзсэн хичээл": 0, "Гүйцэтгэл (%)": "0%"}]);
       XLSX.utils.book_append_sheet(wb, wsCourses, "Онлайн курс");
-
       const shRows = (userData.sideHustleData || []).map((sh, i) => ({
         "№": i + 1, "Бүтээгдэхүүн/Санаа": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
       }));
       const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Бүтээгдэхүүн/Санаа": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
       XLSX.utils.book_append_sheet(wb, wsSh, "Аффилэт ба Орлого");
-
       XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
-
     // 📥 EXCEL ФАЙЛААС СЭРГЭЭХ
     function importFromExcel(event) {
       const file = event.target.files[0];
@@ -445,7 +487,6 @@
             coursesData: [],
             sideHustleData: []
           };
-
           if (workbook.Sheets["Өдрийн ажил"]) {
             const jsonDaily = XLSX.utils.sheet_to_json(workbook.Sheets["Өдрийн ажил"]);
             newUserData.taskData.daily = jsonDaily.map(row => ({
@@ -454,7 +495,6 @@
               completed: row["Төлөв"] === 'Дууссан'
             })).filter(t => t.text && t.text !== "Хоосон байна");
           }
-
           if (workbook.Sheets["7 хоногийн ажил"]) {
             const jsonWeekly = XLSX.utils.sheet_to_json(workbook.Sheets["7 хоногийн ажил"]);
             newUserData.taskData.weekly = jsonWeekly.map(row => ({
@@ -463,7 +503,6 @@
               completed: row["Төлөв"] === 'Дууссан'
             })).filter(t => t.text && t.text !== "Хоосон байна");
           }
-
           if (workbook.Sheets["Санхүү"]) {
             const jsonFin = XLSX.utils.sheet_to_json(workbook.Sheets["Санхүү"]);
             const revCat = { 'Орлого': 'inc', 'Зардал': 'exp', 'Өр зээл': 'debt', 'Хуримтлал': 'sav' };
@@ -474,7 +513,6 @@
               amount: parseFloat(row["Дүн (₮)"]) || 0
             })).filter(f => f.source);
           }
-
           if (workbook.Sheets["Өгсөн-Авсан"]) {
             const jsonItems = XLSX.utils.sheet_to_json(workbook.Sheets["Өгсөн-Авсан"]);
             newUserData.itemsData = jsonItems.map(row => ({
@@ -486,7 +524,6 @@
               done: row["Төлөв"] === 'Буцаж авсан/өгсөн'
             })).filter(i => i.person);
           }
-
           if (workbook.Sheets["Онлайн курс"]) {
             const jsonCourses = XLSX.utils.sheet_to_json(workbook.Sheets["Онлайн курс"]);
             newUserData.coursesData = jsonCourses.map(row => ({
@@ -495,7 +532,6 @@
               completedLessons: parseInt(row["Үзсэн хичээл"]) || 0
             })).filter(c => c.name && c.name !== "Хоосон байна");
           }
-
           if (workbook.Sheets["Аффилэт ба Орлого"]) {
             const jsonSh = XLSX.utils.sheet_to_json(workbook.Sheets["Аффилэт ба Орлого"]);
             newUserData.sideHustleData = jsonSh.map(row => ({
@@ -505,7 +541,6 @@
               status: row["Төлөв"] || "pending"
             })).filter(sh => sh.title && sh.title !== "Хоосон байна");
           }
-
           userData = newUserData;
           saveUserData();
           renderAll();
@@ -517,7 +552,6 @@
       };
       reader.readAsArrayBuffer(file);
     }
-
     // 4. НЭВТРЭХ & СЕСШН ЛОГИК
     function handleLogin() {
       const identifier = document.getElementById("login-identifier").value.trim().toLowerCase();
@@ -536,7 +570,6 @@
           }
         }
       }
-
       if (foundKey) {
         localStorage.setItem("planner_user_key", foundKey);
         initApp(foundKey);
@@ -544,12 +577,10 @@
         errorEl.style.display = "block";
       }
     }
-
     function logout() {
       localStorage.removeItem("planner_user_key");
       location.reload();
     }
-
     function initApp(key) {
       currentPhone = key;
       currentUser = usersDatabase[key];
@@ -566,10 +597,8 @@
         badge.innerText = `СУУРЬ БАГЦ (${currentUser.price || '19,900₮'})`;
         badge.className = "px-3 py-1 rounded-full text-xs font-bold text-white bg-pink-400";
       }
-
       loadUserDataFromStorage(key);
     }
-
     function renderAll() {
       renderTasks('daily');
       renderTasks('weekly');
@@ -579,49 +608,41 @@
       renderCourses();
       renderSideHustles();
     }
-
     function switchTab(evt, tabName) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(el => {
         el.classList.remove("bg-pink-500", "text-white");
         el.classList.add("bg-pink-50", "text-gray-600");
       });
-
       document.getElementById(tabName + "-sec").classList.remove("hidden");
       evt.currentTarget.classList.remove("bg-pink-50", "text-gray-600");
       evt.currentTarget.classList.add("bg-pink-500", "text-white");
     }
-
     // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ
     function addTask(type) {
       const input = document.getElementById(`${type}-input`);
       const priority = document.getElementById(`${type}-priority`).value;
       if (!input.value.trim()) return;
-
       if (!userData.taskData[type]) userData.taskData[type] = [];
       userData.taskData[type].push({
         text: input.value.trim(),
         priority: priority,
         completed: false
       });
-
       input.value = "";
       saveUserData();
       renderTasks(type);
     }
-
     function toggleTask(type, index) {
       userData.taskData[type][index].completed = !userData.taskData[type][index].completed;
       saveUserData();
       renderTasks(type);
     }
-
     function deleteTask(type, index) {
       userData.taskData[type].splice(index, 1);
       saveUserData();
       renderTasks(type);
     }
-
     function renderTasks(type) {
       const listContainer = document.getElementById(`${type}-list`);
       if (!listContainer) return;
@@ -647,7 +668,6 @@
         `;
         listContainer.appendChild(div);
       });
-
       const total = tasks.length;
       const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
       
@@ -659,56 +679,44 @@
         bar.innerText = percent + "%";
       }
     }
-
     // 6. САНХҮҮ & САРИЙН АВТОМАТ ТАЙЛАН
     function addFinance() {
       const date = document.getElementById("fin-date").value;
       const cat = document.getElementById("fin-cat").value;
       const source = document.getElementById("fin-source").value.trim();
       const amount = parseFloat(document.getElementById("fin-amount").value);
-
       if (!date || !source || isNaN(amount)) return;
-
       if (!userData.finData) userData.finData = [];
       userData.finData.push({ date, cat, source, amount });
-
       document.getElementById("fin-source").value = "";
       document.getElementById("fin-amount").value = "";
       saveUserData();
       renderFinance();
     }
-
     function deleteFinance(index) {
       userData.finData.splice(index, 1);
       saveUserData();
       renderFinance();
     }
-
     function renderFinance() {
       const list = document.getElementById("finance-list");
       if (!list) return;
       list.innerHTML = "";
-
       let totals = { inc: 0, exp: 0, debt: 0, sav: 0 };
       const items = userData.finData || [];
-
       // Сонгосон сарыг авах
       const selectedMonthVal = document.getElementById("report-month") ? document.getElementById("report-month").value : "";
       let monthlyInc = 0;
       let monthlyExp = 0;
-
       items.forEach((item, idx) => {
         totals[item.cat] += item.amount;
-
         // Тухайн сарын тайланд шүүж оруулах
         if (selectedMonthVal && item.date && item.date.startsWith(selectedMonthVal)) {
           if (item.cat === 'inc') monthlyInc += item.amount;
           if (item.cat === 'exp') monthlyExp += item.amount;
         }
-
         const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
         const catColors = { inc: 'text-emerald-600', exp: 'text-rose-600', debt: 'text-amber-600', sav: 'text-indigo-600' };
-
         const div = document.createElement("div");
         div.className = "flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl text-sm shadow-2xs";
         div.innerHTML = `
@@ -724,12 +732,10 @@
         `;
         list.appendChild(div);
       });
-
       document.getElementById("total-inc").innerText = totals.inc.toLocaleString() + " ₮";
       document.getElementById("total-exp").innerText = totals.exp.toLocaleString() + " ₮";
       document.getElementById("total-debt").innerText = totals.debt.toLocaleString() + " ₮";
       document.getElementById("total-sav").innerText = totals.sav.toLocaleString() + " ₮";
-
       const expRatio = totals.inc === 0 ? 0 : Math.min(100, Math.round((totals.exp / totals.inc) * 100));
       document.getElementById("fin-ratio-text").innerText = expRatio + "%";
       const ratioBar = document.getElementById("fin-ratio-bar");
@@ -737,13 +743,11 @@
         ratioBar.style.width = expRatio + "%";
         ratioBar.innerText = expRatio + "%";
       }
-
       // Сарын автомат тайлангийн утгыг шинэчлэх
       const monthlyNet = monthlyInc - monthlyExp;
       document.getElementById("rep-inc").innerText = monthlyInc.toLocaleString() + " ₮";
       document.getElementById("rep-exp").innerText = monthlyExp.toLocaleString() + " ₮";
       document.getElementById("rep-net").innerText = monthlyNet.toLocaleString() + " ₮";
-
       const commentEl = document.getElementById("rep-comment");
       if (commentEl) {
         if (monthlyInc === 0 && monthlyExp === 0) {
@@ -757,7 +761,6 @@
         }
       }
     }
-
     // 7. 🤝 ӨГСӨН / АВСАН ЗҮЙЛС
     function addItem() {
       const date = document.getElementById("item-date").value;
@@ -765,42 +768,34 @@
       const person = document.getElementById("item-person").value.trim();
       const name = document.getElementById("item-name").value.trim();
       const duedate = document.getElementById("item-duedate").value.trim();
-
       if (!date || !person || !name) return;
-
       if (!userData.itemsData) userData.itemsData = [];
       userData.itemsData.push({ date, type, person, name, duedate, done: false });
-
       document.getElementById("item-person").value = "";
       document.getElementById("item-name").value = "";
       document.getElementById("item-duedate").value = "";
       saveUserData();
       renderItems();
     }
-
     function toggleItem(index) {
       userData.itemsData[index].done = !userData.itemsData[index].done;
       saveUserData();
       renderItems();
     }
-
     function deleteItem(index) {
       userData.itemsData.splice(index, 1);
       saveUserData();
       renderItems();
     }
-
     function renderItems() {
       const list = document.getElementById("items-list");
       if (!list) return;
       list.innerHTML = "";
-
       const items = userData.itemsData || [];
       items.forEach((item, idx) => {
         const isGiven = item.type === 'given';
         const badgeText = isGiven ? '📤 Өгсөн' : '📥 Авсан';
         const badgeColor = isGiven ? 'bg-amber-500 text-white' : 'bg-pink-500 text-white';
-
         const div = document.createElement("div");
         div.className = `flex items-center justify-between p-3 bg-white border border-pink-100 rounded-xl text-sm shadow-2xs ${item.done ? 'opacity-60 line-through' : ''}`;
         div.innerHTML = `
@@ -816,49 +811,40 @@
         list.appendChild(div);
       });
     }
-
     // 8. ДАДАЛ ЗУРШИЛ
     function addHabit() {
       const input = document.getElementById("habit-input");
       if (!input.value.trim()) return;
-
       if (!userData.habitsData) userData.habitsData = [];
       userData.habitsData.push({
         title: input.value.trim(),
         days: new Array(31).fill(false)
       });
-
       input.value = "";
       saveUserData();
       renderHabits();
     }
-
     function toggleHabitDay(habitIdx, dayIdx) {
       userData.habitsData[habitIdx].days[dayIdx] = !userData.habitsData[habitIdx].days[dayIdx];
       saveUserData();
       renderHabits();
     }
-
     function deleteHabit(index) {
       userData.habitsData.splice(index, 1);
       saveUserData();
       renderHabits();
     }
-
     function renderHabits() {
       const container = document.getElementById("habits-container");
       if (!container) return;
       container.innerHTML = "";
-
       const habits = userData.habitsData || [];
       habits.forEach((habit, hIdx) => {
         const habitDays = habit.days || new Array(31).fill(false);
         const doneCount = habitDays.filter(Boolean).length;
         const percent = Math.round((doneCount / 31) * 100);
-
         const itemDiv = document.createElement("div");
         itemDiv.className = "bg-white p-4 rounded-2xl border border-pink-100 shadow-2xs space-y-3";
-
         let gridHtml = `<div class="grid grid-cols-7 sm:grid-cols-11 gap-1.5 mt-2">`;
         for (let i = 0; i < 31; i++) {
           const isDone = habitDays[i];
@@ -869,7 +855,6 @@
           `;
         }
         gridHtml += `</div>`;
-
         itemDiv.innerHTML = `
           <div class="flex justify-between items-center">
             <b class="text-sm text-gray-800">📌 ${habit.title}</b>
@@ -883,7 +868,6 @@
         container.appendChild(itemDiv);
       });
     }
-
     // 9. 🎓 ОНЛАЙН КУРСУУД
     function addCourse() {
       if (currentUser.package !== 'MASTER') {
@@ -892,22 +876,18 @@
       }
       const name = document.getElementById("course-name").value.trim();
       const lessons = parseInt(document.getElementById("course-lessons").value);
-
       if (!name || isNaN(lessons) || lessons <= 0) return;
-
       if (!userData.coursesData) userData.coursesData = [];
       userData.coursesData.push({
         name: name,
         totalLessons: lessons,
         completedLessons: 0
       });
-
       document.getElementById("course-name").value = "";
       document.getElementById("course-lessons").value = "";
       saveUserData();
       renderCourses();
     }
-
     function updateCourseProgress(index, change) {
       if (currentUser.package !== 'MASTER') return;
       let course = userData.coursesData[index];
@@ -917,23 +897,19 @@
       saveUserData();
       renderCourses();
     }
-
     function deleteCourse(index) {
       if (currentUser.package !== 'MASTER') return;
       userData.coursesData.splice(index, 1);
       saveUserData();
       renderCourses();
     }
-
     function renderCourses() {
       const container = document.getElementById("courses-list");
       const lockMsg = document.getElementById("course-lock-msg");
       const masterNotice = document.getElementById("course-master-notice");
       const formBox = document.getElementById("course-form-box");
       const addBtn = document.getElementById("course-add-btn");
-
       if (!container) return;
-
       if (currentUser.package !== 'MASTER') {
         lockMsg.classList.remove("hidden");
         masterNotice.classList.add("hidden");
@@ -950,17 +926,14 @@
         `;
         return;
       }
-
       lockMsg.classList.add("hidden");
       masterNotice.classList.remove("hidden");
       formBox.classList.remove("hidden");
       addBtn.classList.remove("hidden");
       container.innerHTML = "";
-
       const courses = userData.coursesData || [];
       courses.forEach((course, idx) => {
         const percent = Math.round((course.completedLessons / course.totalLessons) * 100);
-
         const div = document.createElement("div");
         div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
         div.innerHTML = `
@@ -982,15 +955,12 @@
         container.appendChild(div);
       });
     }
-
     // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО
     function addSideHustle() {
       const title = document.getElementById("sh-title").value.trim();
       const potential = document.getElementById("sh-potential").value.trim();
       const desc = document.getElementById("sh-desc").value.trim();
-
       if (!title) return;
-
       if (!userData.sideHustleData) userData.sideHustleData = [];
       userData.sideHustleData.push({
         title: title,
@@ -998,14 +968,12 @@
         desc: desc || 'Тэмдэглэл байхгүй',
         status: 'pending'
       });
-
       document.getElementById("sh-title").value = "";
       document.getElementById("sh-potential").value = "";
       document.getElementById("sh-desc").value = "";
       saveUserData();
       renderSideHustles();
     }
-
     function toggleSideHustleStatus(index) {
       let sh = userData.sideHustleData[index];
       if (sh.status === 'pending') sh.status = 'active';
@@ -1014,25 +982,21 @@
       saveUserData();
       renderSideHustles();
     }
-
     function deleteSideHustle(index) {
       userData.sideHustleData.splice(index, 1);
       saveUserData();
       renderSideHustles();
     }
-
     function renderSideHustles() {
       const container = document.getElementById("sidehustle-list");
       if (!container) return;
       container.innerHTML = "";
-
       const items = userData.sideHustleData || [];
       items.forEach((sh, idx) => {
         let statusBadge = '';
         if (sh.status === 'pending') statusBadge = '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">⏳ Төлөвлөж буй</span>';
         else if (sh.status === 'active') statusBadge = '<span class="px-2 py-0.5 bg-pink-100 text-pink-700 rounded-lg text-[10px] font-bold">🚀 Линк цацсан / Идэвхтэй</span>';
         else statusBadge = '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold">✅ Шимтгэл авсан</span>';
-
         const div = document.createElement("div");
         div.className = "p-4 bg-white border border-pink-100 rounded-2xl space-y-2 shadow-2xs";
         div.innerHTML = `
