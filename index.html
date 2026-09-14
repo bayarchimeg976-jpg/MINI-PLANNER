@@ -47,6 +47,7 @@
       <p id="login-error" class="text-rose-500 text-xs mt-3 hidden font-medium">Бүртгэлгүй эсвэл буруу утга байна!</p>
     </div>
   </div>
+
   <!-- 📱 ҮНДСЭН АПП -->
   <div id="app-container" class="hidden max-w-4xl mx-auto w-full p-4 flex-1 flex flex-col">
     
@@ -55,12 +56,28 @@
       <span id="live-date">2026-00-00</span>
       <span id="live-clock">00:00:00</span>
     </div>
+
     <!-- Header & Excel Export/Import Options -->
     <div class="flex flex-wrap justify-between items-center pb-3 border-b-2 border-pink-100 mb-4 gap-2">
-      <div>
-        <h3 id="user-display-name" class="text-lg font-bold m-0 text-gray-800">Хэрэглэгч</h3>
-        <span id="user-display-phone" class="text-xs text-gray-500">-</span>
+      <!-- ПРОФАЙЛ ЗУРАГ БОЛОН ХЭРЭГЛЭГЧИЙН НЭР -->
+      <div class="flex items-center gap-3">
+        <div class="relative group">
+          <label for="profile-upload" class="cursor-pointer block">
+            <div id="profile-avatar-box" class="w-12 h-12 rounded-full bg-pink-100 border-2 border-pink-400 flex items-center justify-center overflow-hidden shadow-xs hover:opacity-80 transition">
+              <i id="default-avatar-icon" class="fa-solid fa-user text-pink-400 text-xl"></i>
+              <img id="profile-avatar-img" class="w-full h-full object-cover hidden" alt="Profile" />
+            </div>
+          </label>
+          <input type="file" id="profile-upload" accept="image/*" onchange="uploadProfileImage(event)" class="hidden">
+          <button id="remove-avatar-btn" onclick="removeProfileImage()" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white rounded-full w-4 h-4 text-[10px] items-center justify-center shadow-xs cursor-pointer" title="Зураг арилгах">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div>
+          <h3 id="user-display-name" class="text-lg font-bold m-0 text-gray-800">Хэрэглэгч</h3>
+        </div>
       </div>
+
       <div class="flex items-center gap-2 flex-wrap">
         <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-500">БАЗА</span>
         
@@ -72,6 +89,7 @@
         <button onclick="logout()" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition cursor-pointer">Гарах</button>
       </div>
     </div>
+
     <!-- ТАБ ЦЭСҮҮД -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
       <button class="tab-btn px-4 py-2.5 bg-pink-500 text-white rounded-xl font-bold text-sm whitespace-nowrap shadow-sm transition cursor-pointer" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
@@ -82,11 +100,13 @@
       <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
       <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
     </div>
+
     <!-- 1. ӨДРИЙН АЖИЛ -->
     <div id="daily-sec" class="tab-content space-y-4">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
         <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-pink-500"></i> Өдрийн ажлын төлөвлөгөө</h4>
         <div class="flex flex-wrap gap-2 mb-4">
+          <input type="date" id="daily-date" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
           <input type="text" id="daily-input" placeholder="Хийх ажлаа бичнэ үү..." class="flex-1 min-w-[200px] px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
           <select id="daily-priority" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
             <option value="p-urgent">🔴 Нэн чухал</option>
@@ -106,11 +126,13 @@
         <div id="daily-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
+
     <!-- 2. 7 ХОНОГИЙН АЖИЛ -->
     <div id="weekly-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
         <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-week text-pink-500"></i> 7 хоногийн ажлын төлөвлөгөө</h4>
         <div class="flex flex-wrap gap-2 mb-4">
+          <input type="date" id="weekly-date" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
           <input type="text" id="weekly-input" placeholder="7 хоногт амжуулах ажил..." class="flex-1 min-w-[200px] px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
           <select id="weekly-priority" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-white">
             <option value="p-urgent">🔴 Нэн чухал</option>
@@ -130,6 +152,7 @@
         <div id="weekly-list" class="mt-4 space-y-2"></div>
       </div>
     </div>
+
     <!-- 3. САНХҮҮГИЙН МОДУЛЬ & АВТОМАТ САРИЙН ТАЙЛАН -->
     <div id="finance-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm space-y-5">
@@ -163,6 +186,7 @@
             <div id="fin-ratio-bar" class="bg-rose-500 h-full text-white text-[10px] font-bold text-center leading-4 transition-all duration-300" style="width: 0%">0%</div>
           </div>
         </div>
+        
         <!-- 📊 АВТОМАТ САРИЙН ТАЙЛАНГИЙН БЛОК -->
         <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-4 rounded-2xl border border-pink-200 space-y-3">
           <div class="flex justify-between items-center flex-wrap gap-2">
@@ -194,6 +218,7 @@
         <div id="finance-list" class="space-y-2 pt-2"></div>
       </div>
     </div>
+
     <!-- 4. 🤝 ХҮНД ӨГСӨН / АВСАН ЗҮЙЛС -->
     <div id="items-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -212,6 +237,7 @@
         <div id="items-list" class="space-y-2"></div>
       </div>
     </div>
+
     <!-- 5. ДАДАЛ ЗУРШИЛ -->
     <div id="habits-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -223,6 +249,7 @@
         <div id="habits-container" class="space-y-3"></div>
       </div>
     </div>
+
     <!-- 6. 🎓 ОНЛАЙН КУРСУУД -->
     <div id="courses-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -239,6 +266,7 @@
         <div id="courses-list" class="space-y-3"></div>
       </div>
     </div>
+
     <!-- 7. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО -->
     <div id="sidehustle-sec" class="tab-content space-y-4 hidden">
       <div class="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm">
@@ -256,12 +284,12 @@
       </div>
     </div>
   </div>
+
   <script>
     // ==========================================
     // ⚡ PWA & ОФФЛАЙН АЖИЛЛАГААНЫ ТОХИРГОО
     // ==========================================
     (function initPWA() {
-      // 1. PWA Manifest-ийг динамикаар үүсгэж холбох
       const manifestObj = {
         name: "Ухаалаг Төлөвлөгч 2026",
         short_name: "Төлөвлөгч",
@@ -282,20 +310,13 @@
       link.href = manifestURL;
       document.head.appendChild(link);
 
-      // 2. Service Worker бүртгэх (Оффлайн кэш)
       if ('serviceWorker' in navigator) {
         const swCode = `
           const CACHE_NAME = 'planner-pwa-v1';
-          self.addEventListener('install', (e) => {
-            self.skipWaiting();
-          });
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(clients.claim());
-          });
+          self.addEventListener('install', (e) => { self.skipWaiting(); });
+          self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
           self.addEventListener('fetch', (e) => {
-            e.respondWith(
-              fetch(e.request).catch(() => caches.match(e.request))
-            );
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
           });
         `;
         const swBlob = new Blob([swCode], { type: 'text/javascript' });
@@ -308,7 +329,6 @@
     // 🔄 ТӨХӨӨРӨМЖ / ЦОНХ ХООРОНД ДАТА СОЛИЛЦОХ
     // ==========================================
     const dataSyncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('planner_data_sync') : null;
-
     if (dataSyncChannel) {
       dataSyncChannel.onmessage = (event) => {
         if (event.data && event.data.type === 'DATA_UPDATED' && event.data.key === currentPhone) {
@@ -316,7 +336,6 @@
         }
       };
     }
-
     window.addEventListener('storage', (e) => {
       if (e.key === "planner_data_" + currentPhone) {
         loadUserDataFromStorage(currentPhone, false);
@@ -334,9 +353,11 @@
       "99392911": { name: "Б.Мэндбаяр", package: "BASIC", price: "19,900₮", email: "mendbayar@planner.mn", phone: "99392911" },
       "mendbayar@planner.mn": { name: "Б.Мэндбаяр", package: "BASIC", price: "19,900₮", email: "mendbayar@planner.mn", phone: "99392911" }
     };
+
     let currentPhone = null;
     let currentUser = null;
     let userData = {
+      profileImage: null,
       taskData: { daily: [], weekly: [] },
       finData: [],
       itemsData: [],
@@ -344,6 +365,7 @@
       coursesData: [],
       sideHustleData: []
     };
+
     // 2. ОГНОО БА ЦАГ
     function updateClock() {
       const now = new Date();
@@ -361,19 +383,28 @@
       if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds}`;
     }
     setInterval(updateClock, 1000);
+
     window.addEventListener('DOMContentLoaded', () => {
       updateClock();
+      const todayStr = new Date().toISOString().slice(0, 10);
+      
+      const dailyDate = document.getElementById('daily-date');
+      const weeklyDate = document.getElementById('weekly-date');
       const finDate = document.getElementById('fin-date');
       const itemDate = document.getElementById('item-date');
-      if (finDate) finDate.valueAsDate = new Date();
-      if (itemDate) itemDate.valueAsDate = new Date();
+      
+      if (dailyDate) dailyDate.value = todayStr;
+      if (weeklyDate) weeklyDate.value = todayStr;
+      if (finDate) finDate.value = todayStr;
+      if (itemDate) itemDate.value = todayStr;
+
       initMonthSelector();
       const savedKey = localStorage.getItem("planner_user_key");
       if (savedKey && usersDatabase[savedKey]) {
         initApp(savedKey);
       }
     });
-    // Сарын сонгогчийг автоматаар үүсгэх
+
     function initMonthSelector() {
       const select = document.getElementById("report-month");
       if (!select) return;
@@ -390,6 +421,47 @@
         select.appendChild(opt);
       }
     }
+
+    // 🖼️ ПРОФАЙЛ ЗУРАГ УДВАЛТ / ХАДГАЛАЛТ
+    function uploadProfileImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        userData.profileImage = e.target.result;
+        saveUserData();
+        renderProfileImage();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeProfileImage() {
+      userData.profileImage = null;
+      saveUserData();
+      renderProfileImage();
+    }
+
+    function renderProfileImage() {
+      const imgEl = document.getElementById("profile-avatar-img");
+      const iconEl = document.getElementById("default-avatar-icon");
+      const removeBtn = document.getElementById("remove-avatar-btn");
+
+      if (userData.profileImage) {
+        imgEl.src = userData.profileImage;
+        imgEl.classList.remove("hidden");
+        iconEl.classList.add("hidden");
+        removeBtn.classList.remove("hidden");
+        removeBtn.classList.add("flex");
+      } else {
+        imgEl.src = "";
+        imgEl.classList.add("hidden");
+        iconEl.classList.remove("hidden");
+        removeBtn.classList.add("hidden");
+        removeBtn.classList.remove("flex");
+      }
+    }
+
     // 3. ЛОКАЛ ДАТА ХАДГАЛАЛТ
     function loadUserDataFromStorage(key, shouldRender = true) {
       const saved = localStorage.getItem("planner_data_" + key);
@@ -400,10 +472,10 @@
           if(!userData.coursesData) userData.coursesData = [];
           if(!userData.sideHustleData) userData.sideHustleData = [];
         } catch(e) {
-          userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
+          userData = { profileImage: null, taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
         }
       } else {
-        userData = { taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
+        userData = { profileImage: null, taskData: { daily: [], weekly: [] }, finData: [], itemsData: [], habitsData: [], coursesData: [], sideHustleData: [] };
         
         if (currentUser && currentUser.package === 'MASTER') {
           userData.coursesData = [
@@ -416,6 +488,7 @@
       }
       if (shouldRender) renderAll();
     }
+
     function saveUserData() {
       if (currentPhone) {
         localStorage.setItem("planner_data_" + currentPhone, JSON.stringify(userData));
@@ -424,31 +497,36 @@
         }
       }
     }
+
     // 📊 EXCEL РҮҮ НӨӨЦЛӨХ
     function exportToExcel() {
       if (!currentPhone) return;
       const wb = XLSX.utils.book_new();
       const dailyRows = (userData.taskData.daily || []).map((t, i) => ({
-        "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
+        "№": i + 1, "Огноо": t.date || "-", "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
       }));
-      const wsDaily = XLSX.utils.json_to_sheet(dailyRows.length ? dailyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
+      const wsDaily = XLSX.utils.json_to_sheet(dailyRows.length ? dailyRows : [{"№": "", "Огноо": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsDaily, "Өдрийн ажил");
+
       const weeklyRows = (userData.taskData.weekly || []).map((t, i) => ({
-        "№": i + 1, "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
+        "№": i + 1, "Огноо": t.date || "-", "Ажил": t.text, "Төрөл": t.priority === 'p-urgent' ? 'Нэн чухал' : 'Чухал', "Төлөв": t.completed ? 'Дууссан' : 'Хийгдээгүй'
       }));
-      const wsWeekly = XLSX.utils.json_to_sheet(weeklyRows.length ? weeklyRows : [{"№": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
+      const wsWeekly = XLSX.utils.json_to_sheet(weeklyRows.length ? weeklyRows : [{"№": "", "Огноо": "", "Ажил": "Хоосон байна", "Төрөл": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsWeekly, "7 хоногийн ажил");
+
       const catNames = { inc: 'Орлого', exp: 'Зардал', debt: 'Өр зээл', sav: 'Хуримтлал' };
       const finRows = (userData.finData || []).map((f, i) => ({
         "№": i + 1, "Огноо": f.date, "Ангилал": catNames[f.cat] || f.cat, "Эх үүсвэр": f.source, "Дүн (₮)": f.amount
       }));
       const wsFin = XLSX.utils.json_to_sheet(finRows.length ? finRows : [{"№": "", "Огноо": "", "Ангилал": "", "Эх үүсвэр": "", "Дүн (₮)": 0}]);
       XLSX.utils.book_append_sheet(wb, wsFin, "Санхүү");
+
       const itemRows = (userData.itemsData || []).map((it, i) => ({
         "№": i + 1, "Огноо": it.date, "Төрөл": it.type === 'given' ? 'Өгсөн' : 'Авсан', "Хүний нэр": it.person, "Эд зүйл": it.name, "Буцаах хугацаа": it.duedate || '-', "Төлөв": it.done ? 'Буцаж авсан/өгсөн' : 'Хүлээгдэж буй'
       }));
       const wsItems = XLSX.utils.json_to_sheet(itemRows.length ? itemRows : [{"№": "", "Огноо": "", "Төрөл": "", "Хүний нэр": "", "Эд зүйл": "", "Буцаах хугацаа": "", "Төлөв": ""}]);
       XLSX.utils.book_append_sheet(wb, wsItems, "Өгсөн-Авсан");
+
       const habitRows = (userData.habitsData || []).map((h, i) => {
         let obj = { "№": i + 1, "Дадал зуршил": h.title };
         (h.days || []).forEach((d, dIdx) => {
@@ -458,18 +536,22 @@
       });
       const wsHabits = XLSX.utils.json_to_sheet(habitRows.length ? habitRows : [{"№": "", "Дадал зуршил": "Хоосон байна"}]);
       XLSX.utils.book_append_sheet(wb, wsHabits, "Дадал зуршил");
+
       const courseRows = (userData.coursesData || []).map((c, i) => ({
         "№": i + 1, "Курсын нэр": c.name, "Нийт хичээл": c.totalLessons, "Үзсэн хичээл": c.completedLessons, "Гүйцэтгэл (%)": Math.round((c.completedLessons/c.totalLessons)*100) + '%'
       }));
       const wsCourses = XLSX.utils.json_to_sheet(courseRows.length ? courseRows : [{"№": "", "Курсын нэр": "Хоосон байна", "Нийт хичээл": 0, "Үзсэн хичээл": 0, "Гүйцэтгэл (%)": "0%"}]);
       XLSX.utils.book_append_sheet(wb, wsCourses, "Онлайн курс");
+
       const shRows = (userData.sideHustleData || []).map((sh, i) => ({
         "№": i + 1, "Бүтээгдэхүүн/Санаа": sh.title, "Тооцоолсон орлого": sh.potential, "Төлөв": sh.status, "Тэмдэглэл": sh.desc
       }));
       const wsSh = XLSX.utils.json_to_sheet(shRows.length ? shRows : [{"№": "", "Бүтээгдэхүүн/Санаа": "Хоосон байна", "Тооцоолсон орлого": "", "Төлөв": "", "Тэмдэглэл": ""}]);
       XLSX.utils.book_append_sheet(wb, wsSh, "Аффилэт ба Орлого");
+
       XLSX.writeFile(wb, `Tolovlogch_Backup_${currentPhone}_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
+
     // 📥 EXCEL ФАЙЛААС СЭРГЭЭХ
     function importFromExcel(event) {
       const file = event.target.files[0];
@@ -480,6 +562,7 @@
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
           let newUserData = {
+            profileImage: userData.profileImage,
             taskData: { daily: [], weekly: [] },
             finData: [],
             itemsData: [],
@@ -490,6 +573,7 @@
           if (workbook.Sheets["Өдрийн ажил"]) {
             const jsonDaily = XLSX.utils.sheet_to_json(workbook.Sheets["Өдрийн ажил"]);
             newUserData.taskData.daily = jsonDaily.map(row => ({
+              date: row["Огноо"] || new Date().toISOString().slice(0,10),
               text: row["Ажил"] || "",
               priority: row["Төрөл"] === 'Нэн чухал' ? 'p-urgent' : 'p-important',
               completed: row["Төлөв"] === 'Дууссан'
@@ -498,6 +582,7 @@
           if (workbook.Sheets["7 хоногийн ажил"]) {
             const jsonWeekly = XLSX.utils.sheet_to_json(workbook.Sheets["7 хоногийн ажил"]);
             newUserData.taskData.weekly = jsonWeekly.map(row => ({
+              date: row["Огноо"] || new Date().toISOString().slice(0,10),
               text: row["Ажил"] || "",
               priority: row["Төрөл"] === 'Нэн чухал' ? 'p-urgent' : 'p-important',
               completed: row["Төлөв"] === 'Дууссан'
@@ -552,6 +637,7 @@
       };
       reader.readAsArrayBuffer(file);
     }
+
     // 4. НЭВТРЭХ & СЕСШН ЛОГИК
     function handleLogin() {
       const identifier = document.getElementById("login-identifier").value.trim().toLowerCase();
@@ -577,17 +663,18 @@
         errorEl.style.display = "block";
       }
     }
+
     function logout() {
       localStorage.removeItem("planner_user_key");
       location.reload();
     }
+
     function initApp(key) {
       currentPhone = key;
       currentUser = usersDatabase[key];
       document.getElementById("login-overlay").style.display = "none";
       document.getElementById("app-container").classList.remove("hidden");
       document.getElementById("user-display-name").innerText = currentUser.name;
-      document.getElementById("user-display-phone").innerText = currentUser.phone ? `Утас: ${currentUser.phone}` : `Имэйл: ${currentUser.email || key}`;
       
       const badge = document.getElementById("user-pkg-badge");
       if (currentUser.package === 'MASTER') {
@@ -599,7 +686,9 @@
       }
       loadUserDataFromStorage(key);
     }
+
     function renderAll() {
+      renderProfileImage();
       renderTasks('daily');
       renderTasks('weekly');
       renderFinance();
@@ -608,6 +697,7 @@
       renderCourses();
       renderSideHustles();
     }
+
     function switchTab(evt, tabName) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(el => {
@@ -618,13 +708,16 @@
       evt.currentTarget.classList.remove("bg-pink-50", "text-gray-600");
       evt.currentTarget.classList.add("bg-pink-500", "text-white");
     }
+
     // 5. АЖЛЫН ТӨЛӨВЛӨГӨӨ
     function addTask(type) {
       const input = document.getElementById(`${type}-input`);
+      const dateVal = document.getElementById(`${type}-date`).value;
       const priority = document.getElementById(`${type}-priority`).value;
       if (!input.value.trim()) return;
       if (!userData.taskData[type]) userData.taskData[type] = [];
       userData.taskData[type].push({
+        date: dateVal || new Date().toISOString().slice(0,10),
         text: input.value.trim(),
         priority: priority,
         completed: false
@@ -633,16 +726,19 @@
       saveUserData();
       renderTasks(type);
     }
+
     function toggleTask(type, index) {
       userData.taskData[type][index].completed = !userData.taskData[type][index].completed;
       saveUserData();
       renderTasks(type);
     }
+
     function deleteTask(type, index) {
       userData.taskData[type].splice(index, 1);
       saveUserData();
       renderTasks(type);
     }
+
     function renderTasks(type) {
       const listContainer = document.getElementById(`${type}-list`);
       if (!listContainer) return;
@@ -661,6 +757,7 @@
         div.innerHTML = `
           <div class="flex items-center gap-2 overflow-hidden">
             <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${type}', ${idx})" class="w-4 h-4 text-pink-500 rounded cursor-pointer">
+            ${task.date ? `<span class="text-xs text-pink-600 font-semibold bg-pink-50 px-2 py-0.5 rounded-md">${task.date}</span>` : ''}
             <span class="text-sm text-gray-800 truncate">${task.text}</span>
             <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase ${pBadgeClass}">${pText}</span>
           </div>
@@ -679,6 +776,7 @@
         bar.innerText = percent + "%";
       }
     }
+
     // 6. САНХҮҮ & САРИЙН АВТОМАТ ТАЙЛАН
     function addFinance() {
       const date = document.getElementById("fin-date").value;
@@ -693,24 +791,25 @@
       saveUserData();
       renderFinance();
     }
+
     function deleteFinance(index) {
       userData.finData.splice(index, 1);
       saveUserData();
       renderFinance();
     }
+
     function renderFinance() {
       const list = document.getElementById("finance-list");
       if (!list) return;
       list.innerHTML = "";
       let totals = { inc: 0, exp: 0, debt: 0, sav: 0 };
       const items = userData.finData || [];
-      // Сонгосон сарыг авах
       const selectedMonthVal = document.getElementById("report-month") ? document.getElementById("report-month").value : "";
       let monthlyInc = 0;
       let monthlyExp = 0;
+
       items.forEach((item, idx) => {
         totals[item.cat] += item.amount;
-        // Тухайн сарын тайланд шүүж оруулах
         if (selectedMonthVal && item.date && item.date.startsWith(selectedMonthVal)) {
           if (item.cat === 'inc') monthlyInc += item.amount;
           if (item.cat === 'exp') monthlyExp += item.amount;
@@ -732,10 +831,12 @@
         `;
         list.appendChild(div);
       });
+
       document.getElementById("total-inc").innerText = totals.inc.toLocaleString() + " ₮";
       document.getElementById("total-exp").innerText = totals.exp.toLocaleString() + " ₮";
       document.getElementById("total-debt").innerText = totals.debt.toLocaleString() + " ₮";
       document.getElementById("total-sav").innerText = totals.sav.toLocaleString() + " ₮";
+
       const expRatio = totals.inc === 0 ? 0 : Math.min(100, Math.round((totals.exp / totals.inc) * 100));
       document.getElementById("fin-ratio-text").innerText = expRatio + "%";
       const ratioBar = document.getElementById("fin-ratio-bar");
@@ -743,11 +844,12 @@
         ratioBar.style.width = expRatio + "%";
         ratioBar.innerText = expRatio + "%";
       }
-      // Сарын автомат тайлангийн утгыг шинэчлэх
+
       const monthlyNet = monthlyInc - monthlyExp;
       document.getElementById("rep-inc").innerText = monthlyInc.toLocaleString() + " ₮";
       document.getElementById("rep-exp").innerText = monthlyExp.toLocaleString() + " ₮";
       document.getElementById("rep-net").innerText = monthlyNet.toLocaleString() + " ₮";
+
       const commentEl = document.getElementById("rep-comment");
       if (commentEl) {
         if (monthlyInc === 0 && monthlyExp === 0) {
@@ -761,6 +863,7 @@
         }
       }
     }
+
     // 7. 🤝 ӨГСӨН / АВСАН ЗҮЙЛС
     function addItem() {
       const date = document.getElementById("item-date").value;
@@ -777,16 +880,19 @@
       saveUserData();
       renderItems();
     }
+
     function toggleItem(index) {
       userData.itemsData[index].done = !userData.itemsData[index].done;
       saveUserData();
       renderItems();
     }
+
     function deleteItem(index) {
       userData.itemsData.splice(index, 1);
       saveUserData();
       renderItems();
     }
+
     function renderItems() {
       const list = document.getElementById("items-list");
       if (!list) return;
@@ -811,6 +917,7 @@
         list.appendChild(div);
       });
     }
+
     // 8. ДАДАЛ ЗУРШИЛ
     function addHabit() {
       const input = document.getElementById("habit-input");
@@ -824,16 +931,19 @@
       saveUserData();
       renderHabits();
     }
+
     function toggleHabitDay(habitIdx, dayIdx) {
       userData.habitsData[habitIdx].days[dayIdx] = !userData.habitsData[habitIdx].days[dayIdx];
       saveUserData();
       renderHabits();
     }
+
     function deleteHabit(index) {
       userData.habitsData.splice(index, 1);
       saveUserData();
       renderHabits();
     }
+
     function renderHabits() {
       const container = document.getElementById("habits-container");
       if (!container) return;
@@ -868,6 +978,7 @@
         container.appendChild(itemDiv);
       });
     }
+
     // 9. 🎓 ОНЛАЙН КУРСУУД
     function addCourse() {
       if (currentUser.package !== 'MASTER') {
@@ -888,6 +999,7 @@
       saveUserData();
       renderCourses();
     }
+
     function updateCourseProgress(index, change) {
       if (currentUser.package !== 'MASTER') return;
       let course = userData.coursesData[index];
@@ -897,12 +1009,14 @@
       saveUserData();
       renderCourses();
     }
+
     function deleteCourse(index) {
       if (currentUser.package !== 'MASTER') return;
       userData.coursesData.splice(index, 1);
       saveUserData();
       renderCourses();
     }
+
     function renderCourses() {
       const container = document.getElementById("courses-list");
       const lockMsg = document.getElementById("course-lock-msg");
@@ -955,6 +1069,7 @@
         container.appendChild(div);
       });
     }
+
     // 10. 💡 АФФИЛЭТ БОЛОН НЭМЭЛТ ОРЛОГО
     function addSideHustle() {
       const title = document.getElementById("sh-title").value.trim();
@@ -974,6 +1089,7 @@
       saveUserData();
       renderSideHustles();
     }
+
     function toggleSideHustleStatus(index) {
       let sh = userData.sideHustleData[index];
       if (sh.status === 'pending') sh.status = 'active';
@@ -982,11 +1098,13 @@
       saveUserData();
       renderSideHustles();
     }
+
     function deleteSideHustle(index) {
       userData.sideHustleData.splice(index, 1);
       saveUserData();
       renderSideHustles();
     }
+
     function renderSideHustles() {
       const container = document.getElementById("sidehustle-list");
       if (!container) return;
