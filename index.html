@@ -11,14 +11,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- SheetJS (Excel Export Library) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #fdfafb; /* Зөөлөн эмэгтэйлэг цайвар дэвсгэр */
+      background-color: #fdfafb;
       color: #3b2e35;
     }
-    /* Өнгөний палитр: Шар өнгө болон ягаан-лавандера хослол */
     .btn-primary {
       background-color: #d946ef;
     }
@@ -38,9 +36,9 @@
       <h2 class="text-2xl font-bold mb-2 text-gray-800">Миний Төлөвлөгч</h2>
       <p class="text-xs text-gray-500 mb-6">Бүртгэлтэй утасны дугаар эсвэл имэйл хаягаараа нэвтэрнэ үү:</p>
       
-      <input type="text" id="login-identifier" placeholder="Утас (жишээ: 00000000) эсвэл Имэйл" class="w-full px-4 py-3 border border-pink-200 rounded-xl text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/30" />
+      <input type="text" id="login-identifier" placeholder="Утас эсвэл Имэйл" class="w-full px-4 py-3 border border-pink-200 rounded-xl text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/30" />
       
-      <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl transition shadow-md shadow-pink-200 text-sm">Нэвтрэх</button>
+      <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl transition shadow-md shadow-pink-200 text-sm cursor-pointer">Нэвтрэх</button>
       <p id="login-error" class="text-rose-500 text-xs mt-3 hidden font-medium">Бүртгэлгүй эсвэл буруу утга байна!</p>
     </div>
   </div>
@@ -63,25 +61,24 @@
       <div class="flex items-center gap-2 flex-wrap">
         <span id="user-pkg-badge" class="px-3 py-1 rounded-full text-xs font-bold text-white bg-purple-500">БАЗА</span>
         
-        <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition shadow-2xs" title="Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
+        <button onclick="exportToExcel()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer shadow-2xs" title="Excel файл болгон татаж авах"><i class="fa-solid fa-file-excel"></i> Excel-д татах</button>
         <label class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer shadow-2xs" title="Excel файлаас сэргээх">
           <i class="fa-solid fa-upload"></i> Сэргээх
           <input type="file" id="import-file" accept=".xlsx, .xls" onchange="importFromExcel(event)" class="hidden">
         </label>
-
-        <button onclick="logout()" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition">Гарах</button>
+        <button onclick="logout()" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition cursor-pointer">Гарах</button>
       </div>
     </div>
 
     <!-- ТАБ ЦЭСҮҮД -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
-      <button class="tab-btn px-4 py-2.5 bg-pink-500 text-white rounded-xl font-bold text-sm whitespace-nowrap shadow-sm transition" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
-      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
-      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'finance')">💰 Санхүү & Тайлан</button>
-      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
-      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
-      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
-      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-500 text-white rounded-xl font-bold text-sm whitespace-nowrap shadow-sm transition cursor-pointer" onclick="switchTab(event, 'daily')">📅 Өдрийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'weekly')">🗓️ 7 хоногийн ажил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'finance')">💰 Санхүү & Тайлан</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'items')">🤝 Өгсөн / Авсан</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'habits')">🔄 Дадал зуршил</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'courses')">🎓 Онлайн курс</button>
+      <button class="tab-btn px-4 py-2.5 bg-pink-50 text-gray-600 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-pink-100 transition cursor-pointer" onclick="switchTab(event, 'sidehustle')">💡 Аффилэт & Орлого</button>
     </div>
 
     <!-- 1. ӨДРИЙН АЖИЛ -->
@@ -94,7 +91,7 @@
             <option value="p-urgent">🔴 Нэн чухал</option>
             <option value="p-important">🟡 Чухал</option>
           </select>
-          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addTask('daily')">Нэмэх</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200 cursor-pointer" onclick="addTask('daily')">Нэмэх</button>
         </div>
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
@@ -119,7 +116,7 @@
             <option value="p-urgent">🔴 Нэн чухал</option>
             <option value="p-important">🟡 Чухал</option>
           </select>
-          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addTask('weekly')">Нэмэх</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200 cursor-pointer" onclick="addTask('weekly')">Нэмэх</button>
         </div>
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
@@ -150,7 +147,7 @@
           <input type="text" id="fin-source" placeholder="Эх үүсвэр / Ямар гүйлгээ..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
           <input type="number" id="fin-amount" placeholder="Дүн (₮)..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addFinance()">Бүртгэх</button>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm shadow-pink-200 cursor-pointer" onclick="addFinance()">Бүртгэх</button>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div class="p-3.5 bg-emerald-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Орлого<br><span id="total-inc" class="text-base">0 ₮</span></div>
@@ -158,7 +155,6 @@
           <div class="p-3.5 bg-amber-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Өр зээл<br><span id="total-debt" class="text-base">0 ₮</span></div>
           <div class="p-3.5 bg-indigo-500 text-white rounded-xl text-center font-bold text-sm shadow-sm">Хуримтлал<br><span id="total-sav" class="text-base">0 ₮</span></div>
         </div>
-
         <div>
           <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
             <span>Зардлын эзлэх хувь (Орлогоос):</span>
@@ -197,7 +193,6 @@
             ✨ Санхүүгийн сахилга бат бол амжилттай амьдралын үндэс юм.
           </p>
         </div>
-
         <div id="finance-list" class="space-y-2 pt-2"></div>
       </div>
     </div>
@@ -216,7 +211,7 @@
           <input type="text" id="item-name" placeholder="Юу өгсөн/авсан (Ном, Мөнгө...)" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
           <input type="text" id="item-duedate" placeholder="Буцаах хугацаа (жишээ: 10 сарын 1)" class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addItem()">Бүртгэх</button>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200 cursor-pointer" onclick="addItem()">Бүртгэх</button>
         <div id="items-list" class="space-y-2"></div>
       </div>
     </div>
@@ -227,7 +222,7 @@
         <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-rotate text-pink-500"></i> 31 Хоногийн Дадал Зуршил Мөшгөгч</h4>
         <div class="flex gap-2 mb-4">
           <input type="text" id="habit-input" placeholder="Шинэ дадал зуршил нэмэх..." class="flex-1 px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20" />
-          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200" onclick="addHabit()">Дадал нэмэх</button>
+          <button class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-sm shadow-pink-200 cursor-pointer" onclick="addHabit()">Дадал нэмэх</button>
         </div>
         <div id="habits-container" class="space-y-3"></div>
       </div>
@@ -244,7 +239,7 @@
           <input type="text" id="course-name" placeholder="Курсын нэр..." class="sm:col-span-2 px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
           <input type="number" id="course-lessons" placeholder="Нийт хичээлийн тоо..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
-        <button id="course-add-btn" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addCourse()">Курс нэмэх</button>
+        <button id="course-add-btn" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200 cursor-pointer" onclick="addCourse()">Курс нэмэх</button>
         
         <div id="courses-list" class="space-y-3"></div>
       </div>
@@ -261,7 +256,7 @@
           <input type="text" id="sh-potential" placeholder="Тооцоолсон орлого (₮)..." class="px-3 py-2 border border-pink-200 rounded-xl text-sm bg-pink-50/20" />
         </div>
         <textarea id="sh-desc" placeholder="Аффилэт линк, сурталчилгаа хийх суваг болон хэрэгжүүлэх төлөвлөгөө..." rows="2" class="w-full px-3 py-2 border border-pink-200 rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20"></textarea>
-        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200" onclick="addSideHustle()">Орлогын эх үүсвэр нэмэх</button>
+        <button class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition mb-4 shadow-sm shadow-pink-200 cursor-pointer" onclick="addSideHustle()">Орлогын эх үүсвэр нэмэх</button>
         
         <div id="sidehustle-list" class="space-y-3"></div>
       </div>
@@ -272,17 +267,14 @@
   <script>
     // 1. ХЭРЭГЛЭГЧИЙН БАЗА
     const usersDatabase = {
-      "00000000": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", email: "master@planner.mn" },
-      "master@planner.mn": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29900 ₮", phone: "00000000" },
-
-      "11111111": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", email: "basic@planner.mn" },
-      "basic@planner.mn": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19900 ₮", phone: "11111111" },
-
-      "99563900": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", email: "tuvshinbayar@planner.mn" },
-      "tuvshinbayar@planner.mn": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29900 ₮", phone: "99563900" },
-
-      "99392911": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", email: "mendbayar@planner.mn" },
-      "mendbayar@planner.mn": { name: "Б.Мэндбаяр", package: "BASIC", price: "19900 ₮", phone: "99392911" }
+      "00000000": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29,900₮", email: "master@planner.mn", phone: "00000000" },
+      "master@planner.mn": { name: "Мастер Хэрэглэгч", package: "MASTER", price: "29,900₮", email: "master@planner.mn", phone: "00000000" },
+      "11111111": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19,900₮", email: "basic@planner.mn", phone: "11111111" },
+      "basic@planner.mn": { name: "Суурь Хэрэглэгч", package: "BASIC", price: "19,900₮", email: "basic@planner.mn", phone: "11111111" },
+      "99563900": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29,900₮", email: "tuvshinbayar@planner.mn", phone: "99563900" },
+      "tuvshinbayar@planner.mn": { name: "Түвшинбаяр Баярчимэг", package: "MASTER", price: "29,900₮", email: "tuvshinbayar@planner.mn", phone: "99563900" },
+      "99392911": { name: "Б.Мэндбаяр", package: "BASIC", price: "19,900₮", email: "mendbayar@planner.mn", phone: "99392911" },
+      "mendbayar@planner.mn": { name: "Б.Мэндбаяр", package: "BASIC", price: "19,900₮", email: "mendbayar@planner.mn", phone: "99392911" }
     };
 
     let currentPhone = null;
@@ -304,7 +296,6 @@
       const date = String(now.getDate()).padStart(2, '0');
       const days = ['Ням', 'Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба'];
       const dayName = days[now.getDay()];
-
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -315,9 +306,9 @@
       if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds}`;
     }
     setInterval(updateClock, 1000);
-    updateClock();
 
     window.addEventListener('DOMContentLoaded', () => {
+      updateClock();
       const finDate = document.getElementById('fin-date');
       const itemDate = document.getElementById('item-date');
       if (finDate) finDate.valueAsDate = new Date();
@@ -355,6 +346,7 @@
       if (saved) {
         try {
           userData = JSON.parse(saved);
+          if(!userData.taskData) userData.taskData = { daily: [], weekly: [] };
           if(!userData.coursesData) userData.coursesData = [];
           if(!userData.sideHustleData) userData.sideHustleData = [];
         } catch(e) {
@@ -381,7 +373,7 @@
       }
     }
 
-    // 📊 EXCEL РУҮ НӨӨЦЛӨХ
+    // 📊 EXCEL РҮҮ НӨӨЦЛӨХ
     function exportToExcel() {
       if (!currentPhone) return;
       const wb = XLSX.utils.book_new();
@@ -440,13 +432,11 @@
     function importFromExcel(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-
           let newUserData = {
             taskData: { daily: [], weekly: [] },
             finData: [],
@@ -596,6 +586,7 @@
         el.classList.remove("bg-pink-500", "text-white");
         el.classList.add("bg-pink-50", "text-gray-600");
       });
+
       document.getElementById(tabName + "-sec").classList.remove("hidden");
       evt.currentTarget.classList.remove("bg-pink-50", "text-gray-600");
       evt.currentTarget.classList.add("bg-pink-500", "text-white");
@@ -608,7 +599,6 @@
       if (!input.value.trim()) return;
 
       if (!userData.taskData[type]) userData.taskData[type] = [];
-
       userData.taskData[type].push({
         text: input.value.trim(),
         priority: priority,
@@ -653,7 +643,7 @@
             <span class="text-sm text-gray-800 truncate">${task.text}</span>
             <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase ${pBadgeClass}">${pText}</span>
           </div>
-          <button class="text-rose-400 hover:text-rose-600 font-bold px-2 py-1 text-sm transition" onclick="deleteTask('${type}', ${idx})"><i class="fa-solid fa-xmark"></i></button>
+          <button class="text-rose-400 hover:text-rose-600 font-bold px-2 py-1 text-sm transition cursor-pointer" onclick="deleteTask('${type}', ${idx})"><i class="fa-solid fa-xmark"></i></button>
         `;
         listContainer.appendChild(div);
       });
@@ -678,12 +668,12 @@
       const amount = parseFloat(document.getElementById("fin-amount").value);
 
       if (!date || !source || isNaN(amount)) return;
-      if (!userData.finData) userData.finData = [];
 
+      if (!userData.finData) userData.finData = [];
       userData.finData.push({ date, cat, source, amount });
+
       document.getElementById("fin-source").value = "";
       document.getElementById("fin-amount").value = "";
-
       saveUserData();
       renderFinance();
     }
@@ -729,7 +719,7 @@
           </div>
           <div class="flex items-center gap-3">
             <span class="font-bold ${catColors[item.cat]}">${item.amount.toLocaleString()} ₮</span>
-            <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteFinance(${idx})"><i class="fa-solid fa-xmark"></i></button>
+            <button class="text-rose-400 hover:text-rose-600 font-bold text-sm cursor-pointer" onclick="deleteFinance(${idx})"><i class="fa-solid fa-xmark"></i></button>
           </div>
         `;
         list.appendChild(div);
@@ -777,13 +767,13 @@
       const duedate = document.getElementById("item-duedate").value.trim();
 
       if (!date || !person || !name) return;
-      if (!userData.itemsData) userData.itemsData = [];
 
+      if (!userData.itemsData) userData.itemsData = [];
       userData.itemsData.push({ date, type, person, name, duedate, done: false });
+
       document.getElementById("item-person").value = "";
       document.getElementById("item-name").value = "";
       document.getElementById("item-duedate").value = "";
-
       saveUserData();
       renderItems();
     }
@@ -821,7 +811,7 @@
             <b class="text-gray-800 truncate">${item.person}: ${item.name}</b>
             ${item.duedate ? `<span class="text-xs text-rose-500 font-semibold">(Буцаах: ${item.duedate})</span>` : ''}
           </div>
-          <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteItem(${idx})"><i class="fa-solid fa-xmark"></i></button>
+          <button class="text-rose-400 hover:text-rose-600 font-bold text-sm cursor-pointer" onclick="deleteItem(${idx})"><i class="fa-solid fa-xmark"></i></button>
         `;
         list.appendChild(div);
       });
@@ -831,8 +821,8 @@
     function addHabit() {
       const input = document.getElementById("habit-input");
       if (!input.value.trim()) return;
-      if (!userData.habitsData) userData.habitsData = [];
 
+      if (!userData.habitsData) userData.habitsData = [];
       userData.habitsData.push({
         title: input.value.trim(),
         days: new Array(31).fill(false)
@@ -885,7 +875,7 @@
             <b class="text-sm text-gray-800">📌 ${habit.title}</b>
             <div class="flex items-center gap-3">
               <span class="text-xs font-bold text-pink-600">${doneCount}/31 өдөр (${percent}%)</span>
-              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteHabit(${hIdx})"><i class="fa-solid fa-xmark"></i></button>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm cursor-pointer" onclick="deleteHabit(${hIdx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
           ${gridHtml}
@@ -904,8 +894,8 @@
       const lessons = parseInt(document.getElementById("course-lessons").value);
 
       if (!name || isNaN(lessons) || lessons <= 0) return;
-      if (!userData.coursesData) userData.coursesData = [];
 
+      if (!userData.coursesData) userData.coursesData = [];
       userData.coursesData.push({
         name: name,
         totalLessons: lessons,
@@ -914,7 +904,6 @@
 
       document.getElementById("course-name").value = "";
       document.getElementById("course-lessons").value = "";
-
       saveUserData();
       renderCourses();
     }
@@ -925,7 +914,6 @@
       course.completedLessons += change;
       if (course.completedLessons < 0) course.completedLessons = 0;
       if (course.completedLessons > course.totalLessons) course.completedLessons = course.totalLessons;
-
       saveUserData();
       renderCourses();
     }
@@ -965,8 +953,8 @@
 
       lockMsg.classList.add("hidden");
       masterNotice.classList.remove("hidden");
-      formBox.style.display = "grid";
-      addBtn.style.display = "block";
+      formBox.classList.remove("hidden");
+      addBtn.classList.remove("hidden");
       container.innerHTML = "";
 
       const courses = userData.coursesData || [];
@@ -980,15 +968,15 @@
             <b class="text-sm text-gray-800">📖 ${course.name}</b>
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-pink-600">${course.completedLessons} / ${course.totalLessons} хичээл (${percent}%)</span>
-              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm cursor-pointer" onclick="deleteCourse(${idx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <div class="flex-1 bg-pink-50 rounded-full h-3 overflow-hidden">
               <div class="bg-pink-500 h-full transition-all duration-300" style="width: ${percent}%"></div>
             </div>
-            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-pink-100 text-pink-700 hover:bg-pink-200 text-xs font-bold rounded-lg transition">+ Хичээл дуусгах</button>
-            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded-lg transition">- Хасах</button>
+            <button onclick="updateCourseProgress(${idx}, 1)" class="px-2 py-0.5 bg-pink-100 text-pink-700 hover:bg-pink-200 text-xs font-bold rounded-lg transition cursor-pointer">+ Хичээл дуусгах</button>
+            <button onclick="updateCourseProgress(${idx}, -1)" class="px-2 py-0.5 bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-bold rounded-lg transition cursor-pointer">- Хасах</button>
           </div>
         `;
         container.appendChild(div);
@@ -1002,8 +990,8 @@
       const desc = document.getElementById("sh-desc").value.trim();
 
       if (!title) return;
-      if (!userData.sideHustleData) userData.sideHustleData = [];
 
+      if (!userData.sideHustleData) userData.sideHustleData = [];
       userData.sideHustleData.push({
         title: title,
         potential: potential || 'Тодорхойгүй',
@@ -1014,7 +1002,6 @@
       document.getElementById("sh-title").value = "";
       document.getElementById("sh-potential").value = "";
       document.getElementById("sh-desc").value = "";
-
       saveUserData();
       renderSideHustles();
     }
@@ -1024,7 +1011,6 @@
       if (sh.status === 'pending') sh.status = 'active';
       else if (sh.status === 'active') sh.status = 'completed';
       else sh.status = 'pending';
-
       saveUserData();
       renderSideHustles();
     }
@@ -1060,8 +1046,8 @@
               <span class="text-xs text-pink-600 font-bold">💰 Тооцоолсон орлого: ${sh.potential}</span>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="toggleSideHustleStatus(${idx})" class="px-2.5 py-1 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-semibold rounded-lg transition" title="Төлөв өөрчлөх">Төлөв солих</button>
-              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm px-2" onclick="deleteSideHustle(${idx})"><i class="fa-solid fa-xmark"></i></button>
+              <button onclick="toggleSideHustleStatus(${idx})" class="px-2.5 py-1 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-semibold rounded-lg transition cursor-pointer" title="Төлөв өөрчлөх">Төлөв солих</button>
+              <button class="text-rose-400 hover:text-rose-600 font-bold text-sm px-2 cursor-pointer" onclick="deleteSideHustle(${idx})"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
         `;
